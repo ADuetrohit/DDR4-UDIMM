@@ -60,7 +60,7 @@ Minimum trace width is 0.075 mm (Annex A). The fab's capability still needs to b
 
 | Net group | Component | Value | Qty |
 |---|---|---|---|
-| DQ[63:0], DQS[7:0]_t/_c | Series R1 | 15 Ω ± 5 % | 80 |
+| DQ[63:0], DQS[7:0]_t/_c, DM[7:0] | Series R1 | 15 Ω ± 5 % | **88** (64 DQ + 16 DQS + 8 DM) |
 | A[16:0], BA[1:0], BG[1:0], ACT_n, PARITY | Termination to VTT | 39 Ω ± 5 % | 23 |
 | CS0_n, CKE0, ODT0 | Termination to VTT | 39 Ω ± 5 % | 3 |
 | CK0_t / CK0_c | R1, R2 + C2 to VDD (C1 = 0) | 39 Ω ± 5 %, 0.01 µF | 2 R + 1 C |
@@ -106,7 +106,44 @@ DRAM ball notes (Micron Rev H, Figure 5, verified from the rendered figure):
 | N8 | A13 | Address bus |
 | F2, G2, G8 | ODT1, CKE1, CS1_n (x8 SDP: NC) | Leave unconnected |
 
-## 7. Open items
+## 7. DRAM electrical rules (Micron Rev H)
+
+| Rule | Value | Source |
+|---|---|---|
+| VDD, VDDQ | 1.14 / 1.2 / 1.26 V | p254 Table 79 |
+| VPP | 2.375 / 2.5 / 2.75 V, and **VPP ≥ VDD at all times**; VPP ramps with or before VDD | p254, p37, p253 note 3 |
+| VREFCA | = VDD/2, reference input only (draws no bias current), ±1 % VDD AC noise limit | p255 |
+| **TEN (G9)** | Must be **LOW** in normal operation, and held below 0.2 × VDD for ≥ 700 µs at power-up → **tie to VSS** | p26, p37 |
+| RESET_n | Low ≥ 200 µs at power-up (tPW_RESET_L); comes from the connector | p37, p364 |
+| ZQ (B9) | 240 Ω ±1 % to **VSSQ**; max external load on ZQ is **5 pF**, so keep the trace short | p27, p301 note 12 |
+| NF vs NC | NF = internally connected but unused; NC = no internal connection. Both are left open. | p27 |
+| A17 (N7) | x8 uses A[16:0], so A17 is NF/NC → leave open | p2 Table 2, p23 |
+| C0/C1/C2 (G2, G8, F2) | Stack-address inputs, NC on this single-die package → leave open | p25 |
+| TDQS_c (A3) | x8 with TDQS disabled → not used | p27 |
+| DM_n/DBI_n (A7) | Used: goes to the module's DM pin through a 15 Ω series resistor | p27, Annex A |
+
+**Current budget (x8, DDR4-3200, die rev F, p324–325):** worst case per chip is IDD7 = 167 mA (burst read IDD4R = 140 mA, write 112 mA), so 8 chips ≈ **1.34 A on VDD**. IPP is ~3–6 mA per chip, ≈ 50 mA on VPP. This sets the VDD plane and bulk capacitor sizing.
+
+## 8. SPD timing values (for Annex L programming)
+
+Page size for 16 Gb x8 is **1 KB** (p2 Table 2), which selects the 1KB rows below.
+
+| Parameter | Value | Source |
+|---|---|---|
+| Speed bin | DDR4-3200, -062E, **CL22-22-22** | p341 Table 158 |
+| tCK (AVG) | 0.625 ns min, 1.9 ns max | p357 Table 161 |
+| tAA / tRCD / tRP | 13.75 ns each | p341 |
+| tRAS | 32 ns min | p341 |
+| tRC | tRAS + tRP = 45.75 ns | p341 |
+| tRFC1 / tRFC2 / tRFC4 (16 Gb) | 350 / 260 / 160 ns | p343, p365 |
+| tREFI | 7.8 µs (0–85 °C) | p343 |
+| tWR | 15 ns | p361 |
+| tRTP | max(4CK, 7.5 ns) | p362 |
+| tRRD_S / tRRD_L (1KB) | max(4CK, 2.5 ns) / max(4CK, 4.9 ns) | p361 |
+| tFAW (1KB) | max(20CK, 21 ns) | p361 |
+| tCCD_L | max(4CK, 5 ns) | p362 |
+
+## 9. Open items
 
 - [ ] Download official CAD models for every BOM part (see [CAD_MODELS.md](CAD_MODELS.md))
 - [ ] Check the Ultra Librarian DRAM footprint against Micron Figure 9 (SA package)
