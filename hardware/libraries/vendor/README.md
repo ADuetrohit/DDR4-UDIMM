@@ -6,6 +6,7 @@ Put each download (unzipped) in a folder named after the exact MPN. Replace `/` 
 
 ```
 vendor/
+  MT40A2G8SA-062E-IT-F/     (DRAM model; same SA package as the MT40A2G8SA-062E:F used on the board)
   34AA04T-I-MUY/
   RC0402FR-07240RL/
   RC0402FR-0715RL/
@@ -16,7 +17,6 @@ vendor/
   GRM155R71C104KA88D/
   CL05A105KP5NNNC/
   CL10A475KO8NNNC/
-  MT40A2G8SA-062E-IT-F/     (reference only, for cross-checking the DRAM footprint)
 ```
 
 These files are not edited. The project library (`hardware/libraries/DDR4_UDIMM.SchLib` / `.PcbLib`) is built from them.

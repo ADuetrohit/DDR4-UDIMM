@@ -26,7 +26,8 @@ Search jedec.org for `MODULE4.20.26`, `MODULE4.20.26.A`, `MO-309` and `Annex L`.
 
 | Document | Local file | Source |
 |---|---|---|
-| Alliance Memory 16Gb DDR4 (AS4C1G16D4A / AS4C2G8D4A), Rev 1.1, Jul 2025 | `Alliance-AS4C1G16D4A-AS4C2G8D4A-16Gb-DDR4-Rev1.1.pdf` | [alliancememory.com](https://www.alliancememory.com/wp-content/uploads/AllianceMemory_AS4C1G16D4A_AS4C2G8D4A_16Gb_DDR4_Datasheet_Rev1.1_July-2025.pdf) |
+| **Micron 16Gb DDR4 SDRAM (MT40A4G4 / MT40A2G8 / MT40A1G16), Rev H, Aug 2021** (DRAM in use) | `Micron-MT40A4G4-MT40A2G8-MT40A1G16-16Gb-DDR4-RevH.pdf` | [media.digikey.com](https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT40A4G4_2G8_1G16_RevH_Aug2021.pdf) |
+| Alliance Memory 16Gb DDR4 (AS4C1G16D4A / AS4C2G8D4A), Rev 1.1, Jul 2025 (superseded: Alliance part dropped) | `Alliance-AS4C1G16D4A-AS4C2G8D4A-16Gb-DDR4-Rev1.1.pdf` | [alliancememory.com](https://www.alliancememory.com/wp-content/uploads/AllianceMemory_AS4C1G16D4A_AS4C2G8D4A_16Gb_DDR4_Datasheet_Rev1.1_July-2025.pdf) |
 | Microchip 34AA04 4K SPD EEPROM (DS20005271B) | `Microchip-34AA04-SPD-EEPROM.pdf` | [microchip.com](https://ww1.microchip.com/downloads/en/DeviceDoc/20005271B.pdf) |
 | Micron/Crucial 8GB SR x8 288-pin DDR4 UDIMM (CT8G4DFS8) | `Micron-Crucial-CT8G4DFS8-DDR4-UDIMM-8GB-SRx8.pdf` | [rs-online.com](https://docs.rs-online.com/6ecf/0900766b81641250.pdf) |
 

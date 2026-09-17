@@ -12,7 +12,8 @@ The locked decisions and the engineering data taken from the reference documents
 | Speed | DDR4-3200 | Highest standard DDR4 UDIMM speed in JESD21-C 4.20.26 |
 | Reference design | Raw Card **A3** (1 rank, x8, planar, non-ECC) | The only single-rank card that reaches 16 GB (8 × 16 Gb). A3 supports DRAM outlines up to 10.2 × 11.0 mm, and ours is 7.5 × 11.0 mm. |
 | Rejected: Raw Card C | — | 1 rank x16, 4 DRAMs: **8 GB maximum** |
-| DRAM | Alliance AS4C2G8D4A-62BCN | Available at Digi-Key. JEDEC-standard 78-ball x8 ballout. |
+| DRAM | **Micron MT40A2G8SA-062E:F** (16 Gb, x8, DDR4-3200 CL22, 78-ball SA package 7.5 × 11 mm) | Active at Digi-Key. Has an official Altium model (Ultra Librarian, same-package IT:F variant). JEDEC-standard x8 ballout. |
+| Rejected: Alliance AS4C2G8D4A-62BCN | — | No official CAD model exists (replaced 17 Sep 2026) |
 | Passive size | 0402 minimum (0603 for bulk) | The main spec does not allow 0201 on UDIMM reference designs |
 
 ## 2. Mechanical (MO-309 Issue F, main spec §6.8)
@@ -75,7 +76,7 @@ Annex A notes that these resistor values are recommendations, and changing any o
 |---|---|
 | VDD | 2 per SDRAM (at the VDD balls), plus 4 bulk per module |
 | VTT | 1 per 2 termination resistors, plus 1 near the VTT finger |
-| VPP | 1 per DRAM VPP ball (78-ball: B1 and M9, so 2 per DRAM), plus 1 near the VPP finger |
+| VPP | 1 per DRAM VPP ball (78-ball SA: B1 and M9, so 2 per DRAM), plus 1 near the VPP finger |
 | VREFCA | 1 per DRAM (ball J1), plus 1 near the VREFCA finger |
 
 Recommended values: 0.01 µF, 0.1 µF and 1.0 µF, with 4.7 µF for bulk.
@@ -93,10 +94,22 @@ Recommended values: 0.01 µF, 0.1 µF and 1.0 µF, with 4.7 µF for bulk.
 
 The per-byte DQ lengths are in Annex A's data net table and will be turned into design rules later.
 
+DRAM ball notes (Micron Rev H, Figure 5, verified from the rendered figure):
+
+| Ball | Function | Connection |
+|---|---|---|
+| B1, M9 | VPP | 2.5 V, one decoupling cap each |
+| J1 | VREFCA | From the connector's VREFCA pin, one decoupling cap |
+| B9 | ZQ | 240 Ω 1 % to VSSQ |
+| G9 | TEN/NF | Tie low (there is no TEN pin on the UDIMM connector) |
+| N7 | A17 (x4 only); NF/NC on x8 | Not connected |
+| N8 | A13 | Address bus |
+| F2, G2, G8 | ODT1, CKE1, CS1_n (x8 SDP: NC) | Leave unconnected |
+
 ## 7. Open items
 
-- [ ] Download official CAD models for every BOM part; generate IPC-7351 footprints where none exist
-- [ ] Confirm the Alliance 78-ball ballout matches the JEDEC x8 DDR4 ballout
+- [ ] Download official CAD models for every BOM part (see [CAD_MODELS.md](CAD_MODELS.md))
+- [ ] Check the Ultra Librarian DRAM footprint against Micron Figure 9 (SA package)
 - [ ] Final decoupling-capacitor counts (schematic step)
 - [ ] Confirm the fab supports 0.075 mm traces, 8 layers, 1.40 mm thickness and hard gold with bevel
 - [ ] SPD contents per Annex L (UDIMM), and the programming method

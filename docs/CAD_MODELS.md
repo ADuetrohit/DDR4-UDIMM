@@ -8,8 +8,7 @@ Save each download, unzipped, to `hardware/libraries/vendor/<MPN>/`.
 
 | # | MPN | Official model | Where | Format | Login |
 |---|---|---|---|---|---|
-| 1 | AS4C2G8D4A-62BCN (DRAM) | **None exists** | Alliance publishes only the datasheet, reliability data, MDS and IBIS. Digi-Key and SnapMagic have no model. | — | — |
-| 1a | MT40A2G8SA-062E IT:F (Micron, same 78-ball 7.5×11 package), reference only | Yes (Ultra Librarian built & verified) | [Ultra Librarian](https://app.ultralibrarian.com/details/59d8b735-a85f-11ed-b159-0a34d6323d74/Micron/MT40A2G8SA-062E-IT-F) | Altium | Free UL account |
+| 1 | **MT40A2G8SA-062E:F** (Micron DRAM) | **Yes**, via the model for **MT40A2G8SA-062E IT:F** (Ultra Librarian built & verified; package `FBGA78_SA_MRN`) | [Ultra Librarian](https://app.ultralibrarian.com/details/59d8b735-a85f-11ed-b159-0a34d6323d74/Micron/MT40A2G8SA-062E-IT-F) | Altium, STEP | Free UL account |
 | 2 | 34AA04T-I/MUY (SPD) | Likely (Microchip uses Ultra Librarian) | [Digi-Key page → EDA/CAD Models](https://www.digikey.com/en/products/detail/microchip-technology/34AA04T-I-MUY/4860085) | To confirm | To confirm |
 | 3 | RC0402FR-07240RL | Likely; 3D model confirmed | [YAGEO spec sheet](https://yageogroup.com/component-documentation/download/specsheet/RC0402FR-07240RL) (3D link); Digi-Key → EDA/CAD Models | STEP; symbol/footprint to confirm | No (STEP) |
 | 4 | RC0402FR-0715RL | Likely; 3D model confirmed | [YAGEO spec sheet](https://yageogroup.com/component-documentation/download/specsheet/RC0402FR-0715RL); Digi-Key → EDA/CAD Models | Same | No (STEP) |
@@ -23,20 +22,23 @@ Save each download, unzipped, to `hardware/libraries/vendor/<MPN>/`.
 
 "Likely" means a Digi-Key "EDA/CAD Models" link exists but its contents couldn't be checked without a login. Update the row once the file has been downloaded.
 
-## DRAM footprint plan
+## DRAM model
 
-There is no official model for the AS4C2G8D4A-62BCN. The footprint will be built with Altium's **IPC Compliant Footprint Wizard (BGA)**, using the official package drawing in the Alliance datasheet (Figure 6, 78-ball FBGA x8):
+The DRAM was changed from the Alliance AS4C2G8D4A-62BCN to the **Micron MT40A2G8SA-062E:F**, because no official CAD model exists for the Alliance part.
+
+- The Ultra Librarian model is published for **MT40A2G8SA-062E IT:F**. That part is identical except for its industrial temperature rating, and its Digi-Key listing is obsolete.
+- The commercial **:F** is Active on Digi-Key. Both use Micron package code **SA**, so the symbol and footprint are the same.
+
+Check the model against Micron datasheet Rev H, **Figure 9: 78-Ball FBGA – x4, x8 (SA)**:
 
 | Parameter | Value |
 |---|---|
-| Body | 7.5 ± 0.1 × 11.0 ± 0.1 mm |
-| Ball pitch | 0.8 mm × 0.8 mm |
-| Matrix | 9 columns (columns 4–6 empty) × 13 rows (A–N), 78 balls |
-| Ball diameter | 0.525 ± 0.05 mm (post-reflow) |
-| Datasheet pad | Ø 0.47 mm, solder-mask defined |
-| Height | 1.1 ± 0.1 mm |
-
-The Ultra Librarian Micron MT40A2G8SA-062E IT:F model (same JEDEC 78-ball package) is used only as a cross-check.
+| Body | 7.5 ± 0.1 × 11 ± 0.1 mm |
+| Ball pitch | 0.8 mm × 0.8 mm (6.4 × 9.6 mm ball-centre span) |
+| Matrix | Columns 1–3 and 7–9 × rows A–N = 78 balls |
+| Ball diameter | Ø 0.47 ± 0.05 mm post-reflow |
+| Datasheet pad | **Ø 0.42 mm, solder-mask defined** |
+| Height | 1.1 ± 0.1 mm (ball height 0.34 ± 0.05) |
 
 ## Custom footprint (no vendor model possible)
 

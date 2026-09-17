@@ -10,19 +10,19 @@ A custom 288-pin DDR4 unbuffered DIMM with hard-gold edge fingers, designed in A
 | Standard | JESD21-C 4.20.26 (Rev 1.22) + Annex A, Raw Card **A3** (Rev 3.01) |
 | Capacity / organization | 16 GB, 1 rank, x8, non-ECC |
 | Speed | DDR4-3200 (PC4-3200) |
-| Memory ICs | 8 × Alliance Memory **AS4C2G8D4A-62BCN** (16 Gb, 78-ball FBGA 7.5 × 11 mm) |
+| Memory ICs | 8 × Micron **MT40A2G8SA-062E:F** (16 Gb x8, DDR4-3200 CL22, 78-ball FBGA 7.5 × 11 mm) |
 | SPD | Microchip **34AA04T-I/MUY** (EE1004, no thermal sensor) |
 | PCB | 8 layers, **1.40 ± 0.10 mm** across the fingers, hard-gold contacts |
 | Supplies (from motherboard) | VDD 1.2 V · VPP 2.5 V · VTT 0.6 V · VREFCA · VDDSPD 2.2–3.6 V |
 | Component height limit | ≤ 1.2 mm (single-sided module) |
 
-Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Parts: [bom/BOM_v1.csv](bom/BOM_v1.csv) · CAD sources: [docs/CAD_MODELS.md](docs/CAD_MODELS.md)
+Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Parts: [bom/BOM_v2.csv](bom/BOM_v2.csv) · CAD sources: [docs/CAD_MODELS.md](docs/CAD_MODELS.md)
 
 ## Progress
 
 - [x] Architecture locked (DDR4-3200 UDIMM, 16 GB, Raw Card A3)
 - [x] Reference documents collected ([docs/SOURCES.md](docs/SOURCES.md))
-- [x] BOM v1 with Digi-Key part numbers
+- [x] BOM with Digi-Key part numbers (current: v2)
 - [ ] Official CAD models collected for every part *(sources identified: [docs/CAD_MODELS.md](docs/CAD_MODELS.md); downloads pending)*
 - [ ] Libraries: 288-pin gold-finger footprint, DRAM, SPD, passives
 - [ ] Schematic
@@ -51,7 +51,8 @@ Reference PDFs (JEDEC standards and vendor datasheets) are copyrighted, so they 
 | Date | Change |
 |---|---|
 | 2026-09-17 | Repository created: locked specification, BOM v1, design notes, source list, PDF render helper |
-| 2026-09-17 | Official CAD model sources identified for all parts; DRAM has no vendor model (IPC footprint plan added); vendor library folder created |
+| 2026-09-17 | Official CAD model sources identified for all parts; vendor library folder created |
+| 2026-09-17 | BOM v2: DRAM changed from Alliance AS4C2G8D4A-62BCN (no official CAD model) to Micron MT40A2G8SA-062E:F (Ultra Librarian model, SA package); DRAM ball notes verified |
 
 ---
 Maintained by **ADuetrohit**
