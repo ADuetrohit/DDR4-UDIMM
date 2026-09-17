@@ -16,14 +16,14 @@ A custom 288-pin DDR4 unbuffered DIMM with hard-gold edge fingers, designed in A
 | Supplies (from motherboard) | VDD 1.2 V · VPP 2.5 V · VTT 0.6 V · VREFCA · VDDSPD 2.2–3.6 V |
 | Component height limit | ≤ 1.2 mm (single-sided module) |
 
-Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Parts: [bom/BOM_v1.csv](bom/BOM_v1.csv)
+Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Parts: [bom/BOM_v1.csv](bom/BOM_v1.csv) · CAD sources: [docs/CAD_MODELS.md](docs/CAD_MODELS.md)
 
 ## Progress
 
 - [x] Architecture locked (DDR4-3200 UDIMM, 16 GB, Raw Card A3)
 - [x] Reference documents collected ([docs/SOURCES.md](docs/SOURCES.md))
 - [x] BOM v1 with Digi-Key part numbers
-- [ ] Official CAD models collected for every part
+- [ ] Official CAD models collected for every part *(sources identified: [docs/CAD_MODELS.md](docs/CAD_MODELS.md); downloads pending)*
 - [ ] Libraries: 288-pin gold-finger footprint, DRAM, SPD, passives
 - [ ] Schematic
 - [ ] Stackup and impedance profiles
@@ -39,7 +39,8 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Parts: [bom/BOM_v1
 ```
 bom/        Bill of materials (versioned CSV)
 docs/       Design notes and reference-source list
-hardware/   Altium Designer project and libraries (added from the library step on)
+hardware/   Altium Designer project and libraries
+  libraries/vendor/   Official vendor CAD models, unmodified
 tools/      Helper scripts
 ```
 
@@ -50,6 +51,7 @@ Reference PDFs (JEDEC standards and vendor datasheets) are copyrighted, so they 
 | Date | Change |
 |---|---|
 | 2026-09-17 | Repository created: locked specification, BOM v1, design notes, source list, PDF render helper |
+| 2026-09-17 | Official CAD model sources identified for all parts; DRAM has no vendor model (IPC footprint plan added); vendor library folder created |
 
 ---
 Maintained by **ADuetrohit**
