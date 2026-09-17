@@ -1,0 +1,18 @@
+* text=auto
+
+# Altium Designer documents and libraries: never touch line endings
+*.SchDoc   binary
+*.PcbDoc   binary
+*.SchLib   binary
+*.PcbLib   binary
+*.IntLib   binary
+*.PrjPcb   text eol=crlf
+*.OutJob   text eol=crlf
+
+# Mechanical / images / fab data
+*.step     binary
+*.stp      binary
+*.png      binary
+*.jpg      binary
+*.pdf      binary
+*.zip      binary

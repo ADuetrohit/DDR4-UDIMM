@@ -1,0 +1,28 @@
+# Reference PDFs (JEDEC standards, vendor datasheets) are copyrighted and
+# licensed to the downloader. They are kept locally only.
+# See docs/SOURCES.md for where to obtain each one.
+docs/jedec/
+docs/datasheets/
+
+# Altium Designer auto-generated files
+History/
+__Previews/
+Project Logs for */
+Project Outputs for */
+*.PrjPcbStructure
+*.SchDocPreview
+*.PcbDocPreview
+*.$$$
+*.bak
+*.Bak
+~$*
+
+# Python
+__pycache__/
+*.pyc
+
+# OS / editor
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
