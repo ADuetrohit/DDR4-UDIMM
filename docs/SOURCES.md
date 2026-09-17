@@ -31,6 +31,26 @@ Search jedec.org for `MODULE4.20.26`, `MODULE4.20.26.A`, `MO-309` and `Annex L`.
 | Microchip 34AA04 4K SPD EEPROM (DS20005271B) | `Microchip-34AA04-SPD-EEPROM.pdf` | [microchip.com](https://ww1.microchip.com/downloads/en/DeviceDoc/20005271B.pdf) |
 | Micron/Crucial 8GB SR x8 288-pin DDR4 UDIMM (CT8G4DFS8) | `Micron-Crucial-CT8G4DFS8-DDR4-UDIMM-8GB-SRx8.pdf` | [rs-online.com](https://docs.rs-online.com/6ecf/0900766b81641250.pdf) |
 
+## Micron 16Gb DDR4 datasheet (Rev H): pages used
+
+PDF page numbers match the printed page numbers.
+
+| Design step | Pages | Content |
+|---|---|---|
+| Part selection | 1–2 | Features, options, part-number decode (MT40A2G8SA-062E:F), Table 1 key timing, Table 2 addressing |
+| Symbol and schematic | 21 | Figure 3: 2 Gig x 8 functional block diagram |
+| Symbol and schematic | **23** | **Figure 5: 78-ball x4/x8 ball assignments** (used to verify the symbol) |
+| Symbol and schematic | 25–27 | Table 3: ball descriptions (ZQ, TEN, VREFCA, ALERT_n, PAR, NF handling) |
+| Footprint | **30** | **Figure 9: 78-ball FBGA, SA package** (used to verify the footprint) |
+| Power and decoupling | 37 | Table 5: supply power-up slew rate |
+| Power and decoupling | 253–255 | Tables 77–81: absolute maximum ratings, temperature, supply operating conditions (VDD/VDDQ/VPP), VDD slew rate, VREFCA leakage |
+| Power and decoupling | 324–325 | Table 150: IDD/IPP current limits, **die rev F** (VDD/VPP current budget) |
+| Signal integrity and length matching | 298–301 | Tables 133 and 135: package electrical specs (x8) and pad capacitance |
+| Signal integrity and length matching | 292 | Table 127: ALERT_n driver |
+| SPD programming | 341 | Table 158: DDR4-3200 speed bins (CL22) |
+| SPD programming | 343 | Table 159: refresh parameters |
+| SPD programming | 357–369 | Table 161: AC timing parameters, DDR4-2666 to 3200 |
+
 ## Reading image-only drawings
 
 MO-309 has no text layer. Render its pages to PNG with:
