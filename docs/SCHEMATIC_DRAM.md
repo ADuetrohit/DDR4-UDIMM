@@ -196,11 +196,18 @@ card edge CK0_c ──┴── U1..U8 ──/\/\/──┘
                                 39 Ω
 ```
 
-The unused second clock is terminated at the card edge only: **CK1_t —75 Ω— CK1_c**.
+The unused second clock is terminated at the card edge only: **CK1_t —75 Ω— CK1_c** (Annex A, unused-clock net structure).
+
+The clock drawing also shows an optional capacitor C1 across CK_t/CK_c near the connector. It is 0 pF (not fitted) for Raw Card A3.
 
 ## 6. ALERT_n
 
-All eight ALERT_n pins (ball L9) are open-drain and join one net → **47 Ω** → card-edge ALERT_n pin.
+All eight ALERT_n pins (ball L9) join **one net that also goes straight to the card-edge ALERT_n pin (208)**. At the far end of the chain, after the last chip, a **47 Ω pull-up goes from ALERT_n to VDD** (Annex A, ALERT_n net structure: connector → TL5 → TL4 → fly-by past all 8 SDRAMs → TL0 → R1 → VDD).
+
+```
+card edge 208 ──┬── U1 ──┬── U2 ── … ── U8 ──/\/\/── VDD
+                  (each DRAM's L9 taps the net)   47 Ω
+```
 
 ## 7. Pins that are not connected
 
@@ -223,7 +230,7 @@ In Altium, mark each open pin with a **No ERC** directive so the checker stays c
 | 39 Ω | RC0402FR-0739RL | 28 (26 bus + 2 clock) |
 | 240 Ω | RC0402FR-07240RL | 8 |
 | 75 Ω | RC0402FR-0775RL | 1 |
-| 47 Ω | RC0402FR-0747RL | 1 |
+| 47 Ω | RC0402FR-0747RL | 1 (ALERT_n pull-up to VDD) |
 | 0.1 µF | GRM155R71C104KA88D | 57 |
 | 1.0 µF | CL05A105KP5NNNC | 8 |
 | 0.01 µF | GRM155R71H103KA88D | 1 |

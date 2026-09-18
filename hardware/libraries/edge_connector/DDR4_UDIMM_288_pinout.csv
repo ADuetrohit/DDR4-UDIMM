@@ -1,0 +1,289 @@
+Pin,Board side,JEDEC name,Net on this design,Connect with,Symbol part
+1,front,NC,,No-ERC (not connected),E
+2,front,VSS,GND,power port,D
+3,front,DQ4,DQ4,net label,A
+4,front,VSS,GND,power port,D
+5,front,DQ0,DQ0,net label,A
+6,front,VSS,GND,power port,D
+7,front,DM0_n/DBI0_n,DM0,net label,A
+8,front,NC,,No-ERC (not connected),E
+9,front,VSS,GND,power port,D
+10,front,DQ6,DQ6,net label,A
+11,front,VSS,GND,power port,D
+12,front,DQ2,DQ2,net label,A
+13,front,VSS,GND,power port,D
+14,front,DQ12,DQ12,net label,A
+15,front,VSS,GND,power port,D
+16,front,DQ8,DQ8,net label,A
+17,front,VSS,GND,power port,D
+18,front,DM1_n/DBI1_n,DM1,net label,A
+19,front,NC,,No-ERC (not connected),E
+20,front,VSS,GND,power port,D
+21,front,DQ14,DQ14,net label,A
+22,front,VSS,GND,power port,D
+23,front,DQ10,DQ10,net label,A
+24,front,VSS,GND,power port,D
+25,front,DQ20,DQ20,net label,A
+26,front,VSS,GND,power port,D
+27,front,DQ16,DQ16,net label,A
+28,front,VSS,GND,power port,D
+29,front,DM2_n/DBI2_n,DM2,net label,A
+30,front,NC,,No-ERC (not connected),E
+31,front,VSS,GND,power port,D
+32,front,DQ22,DQ22,net label,A
+33,front,VSS,GND,power port,D
+34,front,DQ18,DQ18,net label,A
+35,front,VSS,GND,power port,D
+36,front,DQ28,DQ28,net label,A
+37,front,VSS,GND,power port,D
+38,front,DQ24,DQ24,net label,A
+39,front,VSS,GND,power port,D
+40,front,DM3_n/DBI3_n,DM3,net label,A
+41,front,NC,,No-ERC (not connected),E
+42,front,VSS,GND,power port,D
+43,front,DQ30,DQ30,net label,A
+44,front,VSS,GND,power port,D
+45,front,DQ26,DQ26,net label,A
+46,front,VSS,GND,power port,D
+47,front,CB4/NC,,No-ERC (not connected),E
+48,front,VSS,GND,power port,D
+49,front,CB0/NC,,No-ERC (not connected),E
+50,front,VSS,GND,power port,D
+51,front,DM8_n/DBI8_n/NC,,No-ERC (not connected),E
+52,front,NC,,No-ERC (not connected),E
+53,front,VSS,GND,power port,D
+54,front,CB6/NC,,No-ERC (not connected),E
+55,front,VSS,GND,power port,D
+56,front,CB2/NC,,No-ERC (not connected),E
+57,front,VSS,GND,power port,D
+58,front,RESET_n,RESET_N,net label,C
+59,front,VDD,VDD,power port,E
+60,front,CKE0,CKE,net label,C
+61,front,VDD,VDD,power port,E
+62,front,ACT_n,ACT,net label,C
+63,front,BG0,BG0,net label,C
+64,front,VDD,VDD,power port,E
+65,front,A12/BC_n,A12_BC,net label,C
+66,front,A9,A9,net label,C
+67,front,VDD,VDD,power port,E
+68,front,A8,A8,net label,C
+69,front,A6,A6,net label,C
+70,front,VDD,VDD,power port,E
+71,front,A3,A3,net label,C
+72,front,A1,A1,net label,C
+73,front,VDD,VDD,power port,E
+74,front,CK0_t,CK0_T,net label,C
+75,front,CK0_c,CK0_C,net label,C
+76,front,VDD,VDD,power port,E
+77,front,VTT,VTT,power port,E
+78,front,EVENT_n,,No-ERC (not connected),C
+79,front,A0,A0,net label,C
+80,front,VDD,VDD,power port,E
+81,front,BA0,BA0,net label,C
+82,front,RAS_n/A16,A16_RAS,net label,C
+83,front,VDD,VDD,power port,E
+84,front,CS0_n,CS,net label,C
+85,front,VDD,VDD,power port,E
+86,front,CAS_n/A15,A15_CAS,net label,C
+87,front,ODT0,ODT,net label,C
+88,front,VDD,VDD,power port,E
+89,front,CS1_n,,No-ERC (not connected),C
+90,front,VDD,VDD,power port,E
+91,front,ODT1,,No-ERC (not connected),C
+92,front,VDD,VDD,power port,E
+93,front,NC,,No-ERC (not connected),E
+94,front,VSS,GND,power port,D
+95,front,DQ36,DQ36,net label,B
+96,front,VSS,GND,power port,D
+97,front,DQ32,DQ32,net label,B
+98,front,VSS,GND,power port,D
+99,front,DM4_n/DBI4_n,DM4,net label,B
+100,front,NC,,No-ERC (not connected),E
+101,front,VSS,GND,power port,D
+102,front,DQ38,DQ38,net label,B
+103,front,VSS,GND,power port,D
+104,front,DQ34,DQ34,net label,B
+105,front,VSS,GND,power port,D
+106,front,DQ44,DQ44,net label,B
+107,front,VSS,GND,power port,D
+108,front,DQ40,DQ40,net label,B
+109,front,VSS,GND,power port,D
+110,front,DM5_n/DBI5_n,DM5,net label,B
+111,front,NC,,No-ERC (not connected),E
+112,front,VSS,GND,power port,D
+113,front,DQ46,DQ46,net label,B
+114,front,VSS,GND,power port,D
+115,front,DQ42,DQ42,net label,B
+116,front,VSS,GND,power port,D
+117,front,DQ52,DQ52,net label,B
+118,front,VSS,GND,power port,D
+119,front,DQ48,DQ48,net label,B
+120,front,VSS,GND,power port,D
+121,front,DM6_n/DBI6_n,DM6,net label,B
+122,front,NC,,No-ERC (not connected),E
+123,front,VSS,GND,power port,D
+124,front,DQ54,DQ54,net label,B
+125,front,VSS,GND,power port,D
+126,front,DQ50,DQ50,net label,B
+127,front,VSS,GND,power port,D
+128,front,DQ60,DQ60,net label,B
+129,front,VSS,GND,power port,D
+130,front,DQ56,DQ56,net label,B
+131,front,VSS,GND,power port,D
+132,front,DM7_n/DBI7_n,DM7,net label,B
+133,front,NC,,No-ERC (not connected),E
+134,front,VSS,GND,power port,D
+135,front,DQ62,DQ62,net label,B
+136,front,VSS,GND,power port,D
+137,front,DQ58,DQ58,net label,B
+138,front,VSS,GND,power port,D
+139,front,SA0,SA0,net label,C
+140,front,SA1,SA1,net label,C
+141,front,SCL,SCL,net label,C
+142,front,VPP,VPP,power port,E
+143,front,VPP,VPP,power port,E
+144,front,RFU,,No-ERC (not connected),E
+145,back,NC,,No-ERC (not connected),E
+146,back,VREFCA,VREFCA,power port,E
+147,back,VSS,GND,power port,D
+148,back,DQ5,DQ5,net label,A
+149,back,VSS,GND,power port,D
+150,back,DQ1,DQ1,net label,A
+151,back,VSS,GND,power port,D
+152,back,DQS0_c,DQS0_C,net label,A
+153,back,DQS0_t,DQS0_T,net label,A
+154,back,VSS,GND,power port,D
+155,back,DQ7,DQ7,net label,A
+156,back,VSS,GND,power port,D
+157,back,DQ3,DQ3,net label,A
+158,back,VSS,GND,power port,D
+159,back,DQ13,DQ13,net label,A
+160,back,VSS,GND,power port,D
+161,back,DQ9,DQ9,net label,A
+162,back,VSS,GND,power port,D
+163,back,DQS1_c,DQS1_C,net label,A
+164,back,DQS1_t,DQS1_T,net label,A
+165,back,VSS,GND,power port,D
+166,back,DQ15,DQ15,net label,A
+167,back,VSS,GND,power port,D
+168,back,DQ11,DQ11,net label,A
+169,back,VSS,GND,power port,D
+170,back,DQ21,DQ21,net label,A
+171,back,VSS,GND,power port,D
+172,back,DQ17,DQ17,net label,A
+173,back,VSS,GND,power port,D
+174,back,DQS2_c,DQS2_C,net label,A
+175,back,DQS2_t,DQS2_T,net label,A
+176,back,VSS,GND,power port,D
+177,back,DQ23,DQ23,net label,A
+178,back,VSS,GND,power port,D
+179,back,DQ19,DQ19,net label,A
+180,back,VSS,GND,power port,D
+181,back,DQ29,DQ29,net label,A
+182,back,VSS,GND,power port,D
+183,back,DQ25,DQ25,net label,A
+184,back,VSS,GND,power port,D
+185,back,DQS3_c,DQS3_C,net label,A
+186,back,DQS3_t,DQS3_T,net label,A
+187,back,VSS,GND,power port,D
+188,back,DQ31,DQ31,net label,A
+189,back,VSS,GND,power port,D
+190,back,DQ27,DQ27,net label,A
+191,back,VSS,GND,power port,D
+192,back,CB5/NC,,No-ERC (not connected),E
+193,back,VSS,GND,power port,D
+194,back,CB1/NC,,No-ERC (not connected),E
+195,back,VSS,GND,power port,D
+196,back,DQS8_c,,No-ERC (not connected),E
+197,back,DQS8_t,,No-ERC (not connected),E
+198,back,VSS,GND,power port,D
+199,back,CB7/NC,,No-ERC (not connected),E
+200,back,VSS,GND,power port,D
+201,back,CB3/NC,,No-ERC (not connected),E
+202,back,VSS,GND,power port,D
+203,back,CKE1,,No-ERC (not connected),C
+204,back,VDD,VDD,power port,E
+205,back,RFU,,No-ERC (not connected),E
+206,back,VDD,VDD,power port,E
+207,back,BG1,BG1,net label,C
+208,back,ALERT_n,ALERT_n,net label,C
+209,back,VDD,VDD,power port,E
+210,back,A11,A11,net label,C
+211,back,A7,A7,net label,C
+212,back,VDD,VDD,power port,E
+213,back,A5,A5,net label,C
+214,back,A4,A4,net label,C
+215,back,VDD,VDD,power port,E
+216,back,A2,A2,net label,C
+217,back,VDD,VDD,power port,E
+218,back,CK1_t,CK1_T,net label,C
+219,back,CK1_c,CK1_C,net label,C
+220,back,VDD,VDD,power port,E
+221,back,VTT,VTT,power port,E
+222,back,PARITY,PAR,net label,C
+223,back,VDD,VDD,power port,E
+224,back,BA1,BA1,net label,C
+225,back,A10/AP,A10_AP,net label,C
+226,back,VDD,VDD,power port,E
+227,back,RFU,,No-ERC (not connected),E
+228,back,WE_n/A14,WE,net label,C
+229,back,VDD,VDD,power port,E
+230,back,NC,,No-ERC (not connected),E
+231,back,VDD,VDD,power port,E
+232,back,A13,A13,net label,C
+233,back,VDD,VDD,power port,E
+234,back,NC,,No-ERC (not connected),E
+235,back,NC,,No-ERC (not connected),E
+236,back,VDD,VDD,power port,E
+237,back,NC,,No-ERC (not connected),E
+238,back,SA2,SA2,net label,C
+239,back,VSS,GND,power port,D
+240,back,DQ37,DQ37,net label,B
+241,back,VSS,GND,power port,D
+242,back,DQ33,DQ33,net label,B
+243,back,VSS,GND,power port,D
+244,back,DQS4_c,DQS4_C,net label,B
+245,back,DQS4_t,DQS4_T,net label,B
+246,back,VSS,GND,power port,D
+247,back,DQ39,DQ39,net label,B
+248,back,VSS,GND,power port,D
+249,back,DQ35,DQ35,net label,B
+250,back,VSS,GND,power port,D
+251,back,DQ45,DQ45,net label,B
+252,back,VSS,GND,power port,D
+253,back,DQ41,DQ41,net label,B
+254,back,VSS,GND,power port,D
+255,back,DQS5_c,DQS5_C,net label,B
+256,back,DQS5_t,DQS5_T,net label,B
+257,back,VSS,GND,power port,D
+258,back,DQ47,DQ47,net label,B
+259,back,VSS,GND,power port,D
+260,back,DQ43,DQ43,net label,B
+261,back,VSS,GND,power port,D
+262,back,DQ53,DQ53,net label,B
+263,back,VSS,GND,power port,D
+264,back,DQ49,DQ49,net label,B
+265,back,VSS,GND,power port,D
+266,back,DQS6_c,DQS6_C,net label,B
+267,back,DQS6_t,DQS6_T,net label,B
+268,back,VSS,GND,power port,D
+269,back,DQ55,DQ55,net label,B
+270,back,VSS,GND,power port,D
+271,back,DQ51,DQ51,net label,B
+272,back,VSS,GND,power port,D
+273,back,DQ61,DQ61,net label,B
+274,back,VSS,GND,power port,D
+275,back,DQ57,DQ57,net label,B
+276,back,VSS,GND,power port,D
+277,back,DQS7_c,DQS7_C,net label,B
+278,back,DQS7_t,DQS7_T,net label,B
+279,back,VSS,GND,power port,D
+280,back,DQ63,DQ63,net label,B
+281,back,VSS,GND,power port,D
+282,back,DQ59,DQ59,net label,B
+283,back,VSS,GND,power port,D
+284,back,VDDSPD,VDDSPD,power port,E
+285,back,SDA,SDA,net label,C
+286,back,VPP,VPP,power port,E
+287,back,VPP,VPP,power port,E
+288,back,VPP,VPP,power port,E

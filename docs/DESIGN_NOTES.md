@@ -65,7 +65,7 @@ Minimum trace width is 0.075 mm (Annex A). The fab's capability still needs to b
 | CS0_n, CKE0, ODT0 | Termination to VTT | 39 Ω ± 5 % | 3 |
 | CK0_t / CK0_c | R1, R2 + C2 to VDD (C1 = 0) | 39 Ω ± 5 %, 0.01 µF | 2 R + 1 C |
 | CK1_t / CK1_c (unused) | R1 across the pair | 75 Ω ± 5 % | 1 |
-| ALERT_n | R1 | 47 Ω ± 5 % | 1 |
+| ALERT_n | R1, **pull-up to VDD** at the far end of the fly-by chain (not in series) | 47 Ω ± 5 % | 1 |
 | ZQ (per DRAM) | RZQ to VSSQ | 240 Ω ± 1 % | 8 |
 
 Annex A notes that these resistor values are recommendations, and changing any of them requires simulation.
