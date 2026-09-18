@@ -155,7 +155,11 @@ def build_rows():
     for i, r in enumerate(gnd):
         r["sym_side"] = "Left" if i < (len(gnd) + 1) // 2 else "Right"
     for p in parts:
-        parts[p].sort(key=lambda r: (r["sym_side"] != "Left", r["sort"]))
+        left = sorted((r for r in parts[p] if r["sym_side"] == "Left"), key=lambda r: r["sort"])
+        right = sorted((r for r in parts[p] if r["sym_side"] == "Right"), key=lambda r: r["sort"])
+        # Symbol Wizard (Manual layout) places right-side pins bottom-to-top, so feed them
+        # reversed to make both sides read top-to-bottom
+        parts[p] = left + right[::-1]
     return rows, parts
 
 
