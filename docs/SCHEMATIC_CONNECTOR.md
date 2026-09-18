@@ -84,6 +84,15 @@ Add a new sheet `EDGE.SchDoc` to the project and place J1A–J1E. Each pin's **D
 | `net GND`, `net VDD`, `net VPP`, `net VTT`, `net VREFCA`, `net VDDSPD` | a **power port** with that name | 129 |
 | `not connected` | a **No-ERC** mark | 34 |
 
-Altium auto-increments label numbers while you keep placing (DQ0 → DQ1 → DQ2), which makes Parts A and B fast.
+### Placing many labels, ports and No-ERC marks quickly
+
+Checked against Altium's documentation:
+
+- **Keep the tool running.** Start **Place → Net Label** (or Power Port, or **Place → Directives → Generic No ERC**), press **Tab** *before the first click* to set the name, then click pin end after pin end. **Esc** or right-click stops.
+- **Auto-increment** only works if the name was set with Tab before placing, and only when the number is at the **end** of the name: `SA0 → SA1 → SA2` and `DQ0 → DQ7` count up by themselves, but `DQS0_T` does not, so press Tab and retype for those.
+- **Ctrl+R** is **Edit → Duplicate**: it copies the selection and drops a copy with each click. The menu has no item called "Rubber Stamp".
+- **Smart Paste** is best opened from the menu, **Edit → Smart Paste**. The Shift+Ctrl+V shortcut is also listed for "make vertical spacing equal" when objects are selected. Its **Paste Array** section (Paste As = Themselves, Columns 1, Rows N, negative row spacing = downward, Text Increment = None) makes a column of identical power ports.
+- **Unverified:** pasting a Notepad list as a column of net labels (the files in `edge_connector/labels/`). The docs don't describe the resulting layout, so try it on a few pins first.
+- A net label's connection point is its **bottom-left corner**. Put it on the stub-wire end and wait for the cross cursor before clicking.
 
 New nets that first appear on this sheet: **VTT**, **VDDSPD**, **CK1_T/CK1_C**, **SA0–SA2**, **SCL**, **SDA**. Those go to the termination and SPD sheets, which come next.
