@@ -28,7 +28,7 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Parts: [bom/BOM_v3
 - [ ] Schematic
   - [x] DRAM sheets U1–U8 wired, verified 636/636 by `tools/check_dram.py` ([spec](docs/SCHEMATIC_DRAM.md))
   - [x] 288-pin edge-connector symbol (`hardware/libraries/DDR4_UDIMM.SchLib`, 5 parts) — 288/288 pins verified vs JEDEC Table 5 ([guide](docs/SCHEMATIC_CONNECTOR.md))
-  - [ ] EDGE sheet: place J1A–J1E and wire labels / power ports
+  - [x] EDGE sheet: J1A–J1E wired, 288/288 pins verified by `tools/check_connector.py`; net names match all 8 DRAM sheets
   - [ ] Address/command/clock termination (VTT) sheet
   - [ ] SPD EEPROM
 - [ ] Stackup and impedance profiles
@@ -68,6 +68,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 |---|---|
 | 2026-09-17 | Repository created: locked specification, BOM v1, design notes, source list, PDF render helper |
 | 2026-09-17 | Official CAD model sources identified for all parts; vendor library folder created |
+| 2026-09-19 | EDGE sheet wired: 288/288 connector pins correct, 0 warnings; cross-sheet net names consistent |
 | 2026-09-19 | Edge-connector symbol built in DDR4_UDIMM.SchLib (5 parts); 288/288 pins verified; SchLib checker added |
 | 2026-09-19 | Edge connector: 288-pin table from JEDEC Table 5 (cross-checked vs Micron), 5-part Symbol Wizard files; ALERT_n corrected to a 47 Ω pull-up to VDD (not series) |
 | 2026-09-19 | All 8 DRAM sheets (U1–U8) wired and annotated; 636/636 checks pass; net identifier scope set to Global |
