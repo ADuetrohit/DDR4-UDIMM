@@ -29,8 +29,8 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Parts: [bom/BOM_v3
   - [x] DRAM sheets U1–U8 wired, verified 636/636 by `tools/check_dram.py` ([spec](docs/SCHEMATIC_DRAM.md))
   - [x] 288-pin edge-connector symbol (`hardware/libraries/DDR4_UDIMM.SchLib`, 5 parts) — 288/288 pins verified vs JEDEC Table 5 ([guide](docs/SCHEMATIC_CONNECTOR.md))
   - [x] EDGE sheet: J1A–J1E wired, 288/288 pins verified by `tools/check_connector.py`; net names match all 8 DRAM sheets
-  - [ ] Address/command/clock termination (VTT) sheet
-  - [ ] SPD EEPROM
+  - [ ] Termination sheet ([spec](docs/SCHEMATIC_SUPPORT.md#sheet-termschdoc))
+  - [ ] SPD sheet ([spec](docs/SCHEMATIC_SUPPORT.md#sheet-spdschdoc))
 - [ ] Stackup and impedance profiles
 - [ ] Board outline, key notch, bevel (MO-309)
 - [ ] Component placement
