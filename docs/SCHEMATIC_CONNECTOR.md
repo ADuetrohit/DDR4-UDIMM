@@ -72,6 +72,8 @@ Same wizard, same steps, but finish with **Place → Place New Part** so each be
 
 Save the library.
 
+Verify it: `py -3.11 tools/check_edge_symbol.py hardware/libraries/DDR4_UDIMM.SchLib` checks every pin's number, name, part, type, side and description against the TSVs. (The first build passed 288/288; Part A's right side reads bottom-to-top, which is cosmetic only.)
+
 ## Step 5 — the EDGE sheet
 
 Add a new sheet `EDGE.SchDoc` to the project and place J1A–J1E. Each pin's **Description** says what to attach:
