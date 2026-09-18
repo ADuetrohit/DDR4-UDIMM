@@ -16,3 +16,6 @@
 *.jpg      binary
 *.pdf      binary
 *.zip      binary
+
+# Altium Smart Paste needs Windows line endings
+*.tsv      text eol=crlf

@@ -213,7 +213,8 @@ def main():
             how = {"power": "power port", "label": "net label", "nc": "No-ERC (not connected)"}[r["connect"]]
             w.writerow([r["pin"], r["board_side"], r["jedec_name"], r["net"], how, r["part"]])
     for p, prow in parts.items():
-        with open(os.path.join(out, f"symbol_wizard_part_{p}.tsv"), "w", newline="", encoding="utf-8") as f:
+        # CRLF line ends: Altium's Smart Paste splits rows on Windows line breaks
+        with open(os.path.join(out, f"symbol_wizard_part_{p}.tsv"), "w", newline="\r\n", encoding="utf-8") as f:
             for r in prow:
                 desc = f"net {r['net']}" if r["net"] else "not connected"
                 f.write("\t".join([PART_TITLES[p], r["jedec_name"], str(r["pin"]), "Passive", desc,
