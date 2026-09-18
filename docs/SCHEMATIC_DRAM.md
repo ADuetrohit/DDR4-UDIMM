@@ -22,27 +22,51 @@ Placement rules: bypass caps sit as close as possible to the DRAM's VDD, VPP and
 
 ## 2. Power and ground
 
+### What the names mean
+
+| Name | It is | Voltage | Balls on this chip |
+|---|---|---|---|
+| VDD | Main power | +1.2 V | A1, C7, F1, F9, H1, J9, M1, N9 |
+| VDDQ | Power for the data pins — **the same 1.2 V net** on a UDIMM | +1.2 V | B2, B8, C1, C9, E2, E8 |
+| VSS | Ground | 0 V | A9, C8, E1, E9, G1, H9, K1, K9, N1 |
+| VSSQ | Ground for the data pins — **the same ground net** | 0 V | A2, A8, D1, D9 |
+| VPP | Wordline supply | +2.5 V | B1, M9 |
+| VREFCA | Reference voltage for the address/command pins | VDD/2 ≈ 0.6 V | J1 |
+
+All 14 power balls sit on one 1.2 V net, and all 13 ground balls sit on one 0 V net. Tying pins of the *same* net together is normal, not a short. Two *different* nets (1.2 V, 2.5 V, 0.6 V, 0 V) must never touch through copper.
+
+### The capacitors
+
+A capacitor is not a wire: it blocks DC and only passes fast noise. Each one is a separate part with one leg on the supply and the other on ground.
+
 ```
-                    ┌── C1 0.1µF ──┐
-VDD plane 1.2V ─────┼── C2 0.1µF ──┼── VSS plane
-                    └── C3 1.0µF ──┘
-   │
-   ├── A1  VDD        ├── B2  VDDQ
-   ├── C7  VDD        ├── B8  VDDQ
-   ├── F1  VDD        ├── C1  VDDQ        (VDDQ and VDD are the same 1.2 V net
-   ├── F9  VDD        ├── C9  VDDQ         on a UDIMM; both come from the fingers)
-   ├── H1  VDD        ├── E2  VDDQ
-   ├── J9  VDD        └── E8  VDDQ
-   ├── M1  VDD
-   └── N9  VDD
++1.2 V (VDD + VDDQ balls)
+   ───────────┬───────────┬───────────┬──────────
+              │           │           │
+             C1          C2          C3
+           0.1 µF      0.1 µF      1.0 µF
+              │           │           │
+   ───────────┴───────────┴───────────┴──────────
+ 0 V (VSS + VSSQ balls)
 
-VPP plane 2.5V ──┬── B1  VPP ── C4 0.1µF ── VSS
-                 └── M9  VPP ── C5 0.1µF ── VSS
 
-VREFCA net ────────── J1  VREFCA ── C6 0.1µF ── VDD      (note: returns to VDD)
++2.5 V (VPP)
+   ──────┬────────────────┬──────
+      ball B1          ball M9
+         │                │
+        C4 0.1 µF        C5 0.1 µF
+         │                │
+   ──────┴────────────────┴──────
+ 0 V (VSS)
 
-VSS plane ── A9, C8, E1, E9, G1, H9, K1, K9, N1
-VSSQ      ── A2, A8, D1, D9          (same ground plane)
+
++1.2 V (VDD)
+   ──────────┬──────
+             │
+            C6 0.1 µF          VREFCA arrives from the card edge;
+             │                 the capacitor steadies it against VDD,
+   ──────────┴──── ball J1     which is what Table 9 requires.
+ VREFCA ≈ 0.6 V
 ```
 
 ## 3. Data byte (example: U1 = byte 0)
