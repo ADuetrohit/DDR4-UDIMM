@@ -69,6 +69,83 @@ A capacitor is not a wire: it blocks DC and only passes fast noise. Each one is 
  VREFCA ≈ 0.6 V
 ```
 
+## 2b. How this looks on the Altium sheet
+
+Parts to place for one chip: **U1A** (signal part), **U1B** (power part), **C1–C6**, **R_ZQ**, **R1–R11**.
+
+Altium keys: `P` `P` = place part · `P` `W` = wire · `P` `O` = power port · `P` `N` = net label.
+
+Two symbols with the **same power-port name** are the same net, even with no wire drawn between them. That is how VDD, GND, VPP and VREFCA get around the sheet.
+
+### U1B — put a short wire on each pin, then a power port on the wire
+
+```
+          U1B  (power part)
+          ┌───────────────────────────────┐
+  VDD ────┤ A1   VDD            VSS   A9  ├──── GND
+  VDD ────┤ C7   VDD            VSS   C8  ├──── GND
+  VDD ────┤ F1   VDD            VSS   E1  ├──── GND
+  VDD ────┤ F9   VDD            VSS   E9  ├──── GND
+  VDD ────┤ H1   VDD            VSS   G1  ├──── GND
+  VDD ────┤ J9   VDD            VSS   H9  ├──── GND
+  VDD ────┤ M1   VDD            VSS   K1  ├──── GND
+  VDD ────┤ N9   VDD            VSS   K9  ├──── GND
+          │                     VSS   N1  ├──── GND
+  VDD ────┤ B2   VDDQ                     │
+  VDD ────┤ B8   VDDQ          VSSQ   A2  ├──── GND
+  VDD ────┤ C1   VDDQ          VSSQ   A8  ├──── GND
+  VDD ────┤ C9   VDDQ          VSSQ   D1  ├──── GND
+  VDD ────┤ E2   VDDQ          VSSQ   D9  ├──── GND
+  VDD ────┤ E8   VDDQ                     │
+  VPP ────┤ B1   VPP                      │
+  VPP ────┤ M9   VPP                      │
+VREFCA ───┤ J1   VREFCA                   │
+          └───────────────────────────────┘
+```
+
+VDDQ pins get a **VDD** port, and VSSQ pins get a **GND** port: they are the same nets.
+
+### The six capacitors, drawn next to U1B
+
+```
+   VDD      VDD      VDD        VPP      VPP        VDD
+    │        │        │          │        │          │
+  ┌─┴─┐    ┌─┴─┐    ┌─┴─┐      ┌─┴─┐    ┌─┴─┐      ┌─┴─┐
+  │C1 │    │C2 │    │C3 │      │C4 │    │C5 │      │C6 │
+  │.1µ│    │.1µ│    │1µ │      │.1µ│    │.1µ│      │.1µ│
+  └─┬─┘    └─┬─┘    └─┬─┘      └─┬─┘    └─┬─┘      └─┬─┘
+    │        │        │          │        │          │
+   GND      GND      GND        GND      GND      VREFCA
+```
+
+Each capacitor is one part with two pins: one leg to the upper port, the other to the lower port. C6's lower leg uses a **VREFCA** port, which is the same net as ball J1.
+
+### U1A — signal pins
+
+```
+          U1A  (signal part)
+          ┌───────────────────────────────┐
+  GND ────┤ G9   TEN/NF                   │      ← must be tied to ground
+          │                      ZQ   B9  ├───[ R_ZQ 240Ω ]─── GND
+          │                                │
+   A0 ────┤ L3   A0             DQ0   C2  ├───[ R1  15Ω ]─── DQ0
+   A1 ────┤ L7   A1             DQ1   B7  ├───[ R2  15Ω ]─── DQ1
+   A2 ────┤ M3   A2             DQ2   D3  ├───[ R3  15Ω ]─── DQ2
+    …     │      …              DQ3   D7  ├───[ R4  15Ω ]─── DQ3
+  CK_t────┤ F7   CK t       NF/DQ4   D2  ├───[ R5  15Ω ]─── DQ4
+  CK_c────┤ F8   CK c       NF/DQ5   D8  ├───[ R6  15Ω ]─── DQ5
+   CS ────┤ G7   CS         NF/DQ6   E3  ├───[ R7  15Ω ]─── DQ6
+  CKE ────┤ G3   CKE        NF/DQ7   E7  ├───[ R8  15Ω ]─── DQ7
+  ODT ────┤ F3   ODT           DQS t  C3  ├───[ R9  15Ω ]─── DQS0_t
+RESET ────┤ L1   RESET         DQS c  B3  ├───[ R10 15Ω ]─── DQS0_c
+          │                  DM/DBI   A7  ├───[ R11 15Ω ]─── DM0
+          │                  ALERT   L9  ├─── ALERT_n
+          │       (leave open: N7, G2, G8, F2, A3 — add a No-ERC mark)
+          └───────────────────────────────┘
+```
+
+The text at the ends (`A0`, `DQ0`, `ALERT_n`, …) are **net labels**, not wires drawn across the schematic. A net label with the same name on the connector sheet joins the two.
+
 ## 3. Data byte (example: U1 = byte 0)
 
 Each line gets its own 15 Ω resistor near the card edge:
