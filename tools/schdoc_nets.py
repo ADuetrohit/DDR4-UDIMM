@@ -167,7 +167,18 @@ def extract(path):
         for n in nodes[1:]:
             dsu.union(nodes[0], n)
 
-    nets = defaultdict(lambda: {"names": set(), "pins": []})
+    # No-ERC markers apply to whatever they touch: a pin end or any point on a wire
+    noerc_nodes = []
+    for p in noerc:
+        node = ("noerc", p)
+        for wj in wires_at(p):
+            dsu.union(node, ("w", wj))
+        for k, pin in enumerate(pins):
+            if p in pin["ends"]:
+                dsu.union(node, ("p", k))
+        noerc_nodes.append(node)
+
+    nets = defaultdict(lambda: {"names": set(), "pins": [], "noerc": False})
     for k, p in enumerate(pins):
         c = comps[p["owner"]]
         ref = f'{c["designator"]}#{p["owner"]}'
@@ -177,10 +188,15 @@ def extract(path):
         for n in nodes:
             nets[dsu.find(n)]["names"].add(text)
 
+    for node in noerc_nodes:
+        root = dsu.find(node)
+        if root in nets:
+            nets[root]["noerc"] = True
+
     near_noerc = {k for k, p in enumerate(pins) if any(e in noerc for e in p["ends"])}
     result = []
     for key, net in nets.items():
-        result.append({"names": sorted(net["names"]), "pins": net["pins"]})
+        result.append({"names": sorted(net["names"]), "pins": net["pins"], "noerc": net["noerc"]})
     return {"nets": result, "components": comps, "pins": pins, "noerc_pins": near_noerc,
             "sheet_ports": sheet_ports}
 

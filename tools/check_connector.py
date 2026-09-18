@@ -53,7 +53,7 @@ def main():
             if names or others:
                 fails.append(f"pin {pin} ({jedec}): must be NOT connected, but is on "
                              f"{sorted(names) or 'a wire to other pins'}")
-            elif pin not in noerc:
+            elif pin not in noerc and not net.get("noerc"):
                 warns.append(f"pin {pin} ({jedec}): unused, add a No-ERC mark")
         elif names != {want}:
             got = sorted(names) if names else "nothing (no label/port)"
