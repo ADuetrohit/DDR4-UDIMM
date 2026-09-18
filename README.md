@@ -57,6 +57,7 @@ Reference PDFs (JEDEC standards and vendor datasheets) are copyrighted, so they 
 py -3.11 tools/check_dram.py <sheet>.SchDoc      # every DRAM pin, resistor and capacitor vs the spec
 py -3.11 tools/schdoc_nets.py <sheet>.SchDoc     # full netlist straight from the Altium file
 py -3.11 tools/check_edge_symbol.py hardware/libraries/DDR4_UDIMM.SchLib   # 288 connector pins vs JEDEC
+py -3.11 tools/check_connector.py edge.SchDoc     # every EDGE-sheet pin's net, shorts, default labels, No-ERC
 ```
 
 Needs `py -3.11 -m pip install --user olefile`.
