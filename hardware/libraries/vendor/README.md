@@ -20,3 +20,10 @@ vendor/
 ```
 
 These files are not edited. The project library (`hardware/libraries/DDR4_UDIMM.SchLib` / `.PcbLib`) is built from them.
+
+## Already in use
+
+| MPN | Location | Notes |
+|---|---|---|
+| 34AA04T-I/MUY | `hardware/libraries/Altium/34AA04T-IMUY.*` (SchLib, PcbLib, LibPkg, STEP) | Ultra Librarian export, linked from the project by path. Footprint `UDFN8_2x3MC_MCH` has 8 pads and no center pad; Microchip's land pattern (C04-2136A) marks the center pad "Optional" and the datasheet allows it floating. |
+| MT40A2G8SA-062E:F | Altium Content Vault (Manufacturer Part Search), footprint `SA_MFG` | Placed from the vault; pin D8 name "NF" to be corrected in the project library. |
