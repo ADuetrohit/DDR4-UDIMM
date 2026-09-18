@@ -25,7 +25,11 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Parts: [bom/BOM_v3
 - [x] BOM with Digi-Key part numbers (current: v3, exact quantities)
 - [ ] Official CAD models collected for every part *(sources identified: [docs/CAD_MODELS.md](docs/CAD_MODELS.md); downloads pending)*
 - [ ] Libraries: 288-pin gold-finger footprint, DRAM, SPD, passives
-- [ ] Schematic *(DRAM sheet specified: [docs/SCHEMATIC_DRAM.md](docs/SCHEMATIC_DRAM.md); U1 wired and verified: 83/83 checks)*
+- [ ] Schematic
+  - [x] DRAM sheets U1–U8 wired, verified 636/636 by `tools/check_dram.py` ([spec](docs/SCHEMATIC_DRAM.md))
+  - [ ] 288-pin edge connector sheet
+  - [ ] Address/command/clock termination (VTT) sheet
+  - [ ] SPD EEPROM
 - [ ] Stackup and impedance profiles
 - [ ] Board outline, key notch, bevel (MO-309)
 - [ ] Component placement
@@ -61,6 +65,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 |---|---|
 | 2026-09-17 | Repository created: locked specification, BOM v1, design notes, source list, PDF render helper |
 | 2026-09-17 | Official CAD model sources identified for all parts; vendor library folder created |
+| 2026-09-19 | All 8 DRAM sheets (U1–U8) wired and annotated; 636/636 checks pass; net identifier scope set to Global |
 | 2026-09-19 | U1 schematic wired; netlist extractor + DRAM rule checker added; U1 passes 83/83 checks |
 | 2026-09-18 | DRAM sheet spec (per-chip parts, pin-by-pin wiring, termination, unused pins); BOM v3 with exact quantities (~205 parts) |
 | 2026-09-17 | BOM v2: DRAM changed from Alliance AS4C2G8D4A-62BCN (no official CAD model) to Micron MT40A2G8SA-062E:F (Ultra Librarian model, SA package); DRAM ball notes verified |
