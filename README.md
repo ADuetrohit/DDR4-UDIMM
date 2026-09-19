@@ -16,13 +16,13 @@ A custom 288-pin DDR4 unbuffered DIMM with hard-gold edge fingers, designed in A
 | Supplies (from motherboard) | VDD 1.2 V · VPP 2.5 V · VTT 0.6 V · VREFCA · VDDSPD 2.2–3.6 V |
 | Component height limit | ≤ 1.2 mm (single-sided module) |
 
-Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Parts: [bom/BOM_v3.csv](bom/BOM_v3.csv) · DRAM wiring: [docs/SCHEMATIC_DRAM.md](docs/SCHEMATIC_DRAM.md) · CAD sources: [docs/CAD_MODELS.md](docs/CAD_MODELS.md)
+Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Parts: [bom/BOM_v4.csv](bom/BOM_v4.csv) · DRAM wiring: [docs/SCHEMATIC_DRAM.md](docs/SCHEMATIC_DRAM.md) · CAD sources: [docs/CAD_MODELS.md](docs/CAD_MODELS.md)
 
 ## Progress
 
 - [x] Architecture locked (DDR4-3200 UDIMM, 16 GB, Raw Card A3)
 - [x] Reference documents collected ([docs/SOURCES.md](docs/SOURCES.md))
-- [x] BOM with Digi-Key part numbers (current: v3, exact quantities)
+- [x] BOM with Digi-Key part numbers (current: v4, exact quantities + approved alternates)
 - [ ] Official CAD models collected for every part *(sources identified: [docs/CAD_MODELS.md](docs/CAD_MODELS.md); downloads pending)*
 - [ ] Libraries: 288-pin gold-finger footprint, DRAM, SPD, passives
 - [ ] Schematic
@@ -68,6 +68,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 |---|---|
 | 2026-09-17 | Repository created: locked specification, BOM v1, design notes, source list, PDF render helper |
 | 2026-09-17 | Official CAD model sources identified for all parts; vendor library folder created |
+| 2026-09-19 | BOM v4: approved alternate for the 4.7 µF bulk cap (TDK C1608X5R1C475K080AC) |
 | 2026-09-19 | SPD sheet wired and verified; 34AA04 vendor model committed (official footprint has no center pad, which Microchip marks optional) |
 | 2026-09-19 | EDGE sheet wired: 288/288 connector pins correct, 0 warnings; cross-sheet net names consistent |
 | 2026-09-19 | Edge-connector symbol built in DDR4_UDIMM.SchLib (5 parts); 288/288 pins verified; SchLib checker added |

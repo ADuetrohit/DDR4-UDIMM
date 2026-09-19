@@ -43,7 +43,7 @@ All values from Annex A, Raw Card A3.
 | ALERT_n pull-up | 47 Ω to **VDD** | YAGEO **RC0402FR-0747RL** | 1 |
 | VPP cap at the card edge | 0.1 µF to GND | GRM155R71C104KA88D | 1 |
 | VREFCA cap at the card edge | 0.1 µF to **VDD** | GRM155R71C104KA88D | 1 |
-| VDD bulk | 4.7 µF to GND | Samsung **CL10A475KO8NNNC** | 4 |
+| VDD bulk | 4.7 µF to GND | Samsung **CL10A475KO8NNNC** (alternate: TDK **C1608X5R1C475K080AC**) | 4 |
 
 ### Address, command and control termination (26 × 39 Ω)
 
