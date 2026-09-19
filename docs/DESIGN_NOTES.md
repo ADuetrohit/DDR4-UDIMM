@@ -147,7 +147,19 @@ Page size for 16 Gb x8 is **1 KB** (p2 Table 2), which selects the 1KB rows belo
 | tFAW (1KB) | max(20CK, 21 ns) | p361 |
 | tCCD_L | max(4CK, 5 ns) | p362 |
 
-## 9. Open items
+## 9. Schematic ERC status
+
+Altium Designer 26.10.1 project validation completed on 2026-09-20 with **0 errors**. The saved schematics also pass the repository checks: 636/636 DRAM checks, 288/288 connector-pin checks, termination checks, BOM/project checks, edge-symbol checks, and edge-footprint/link checks.
+
+The eight active Micron `ALERT_n` pins (ball L9) are typed `Open Collector`, matching the shared pull-down alert topology. Eight off-grid VPP power ports—one on each DRAM sheet—were moved to the 100 mil schematic grid while preserving their wiring.
+
+The remaining 32 Altium warnings are reviewed board-boundary exceptions, not missing on-module drivers. The motherboard drives these nets through the passive DIMM edge connector J1, so the external source is outside this schematic project:
+
+`A0–A13`, `A15_CAS`, `A16_RAS`, `ACT`, `BA0–BA1`, `BG0–BG1`, `CK0_C`, `CK0_T`, `CKE`, `CS`, `ODT`, `PAR`, `RESET_N`, `SA0–SA2`, and `WE`.
+
+These warnings remain visible rather than weakening the project-wide ERC rule or applying generic No-ERC suppression.
+
+## 10. Open items
 
 - [ ] Download official CAD models for every BOM part (see [CAD_MODELS.md](CAD_MODELS.md))
 - [ ] Check the Ultra Librarian DRAM footprint against Micron Figure 9 (SA package)

@@ -35,6 +35,7 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Parts: [bom/BOM_v4
   - [x] EDGE sheet: J1A–J1E wired, 288/288 pins verified by `tools/check_connector.py`; net names match all 8 DRAM sheets
   - [x] Termination sheet: 26 VTT terminations, CK0/CK1/ALERT networks, decoupling — verified by `tools/check_term.py` ([spec](docs/SCHEMATIC_SUPPORT.md#sheet-termschdoc))
   - [x] SPD sheet: 34AA04T-I/MUY wired and verified (8/8 pins) ([spec](docs/SCHEMATIC_SUPPORT.md#sheet-spdschdoc))
+  - [x] Native Altium ERC: **0 errors**; 32 reviewed `no driving source` warnings are the address/command/clock/reset/SPD-address inputs driven externally through J1 ([record](docs/DESIGN_NOTES.md#9-schematic-erc-status))
 - [ ] Stackup and impedance profiles
 - [ ] Board outline, key notch, latch notches (MO-309) — dimensioned and scripted into the footprint ([spec](docs/FOOTPRINT_EDGE.md)); board shape set when the PcbDoc is created
 - [ ] Component placement
@@ -75,6 +76,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-20 | Final schematic ERC: 0 errors; ALERT_n pins modeled as open-collector, eight off-grid VPP power ports corrected, and 32 external-controller warnings reviewed and documented |
 | 2026-09-20 | Connector symbol linked to `DDR4_UDIMM_288_MO309`; all five J1 schematic parts updated and verified against the single physical footprint |
 | 2026-09-19 | `DDR4_UDIMM.PcbLib` built in Altium; gold-finger footprint passes all checks |
 | 2026-09-19 | Proprietary license added (all rights reserved; use only with written permission) |
