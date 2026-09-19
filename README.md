@@ -74,6 +74,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-19 | Proprietary license added (all rights reserved; use only with written permission) |
 | 2026-09-19 | Gold-finger footprint + board outline from MO-309F: generator, Altium build script (288 pads, 40-segment outline, mask windows), PcbLib reader and checker |
 | 2026-09-17 | Repository created: locked specification, BOM v1, design notes, source list, PDF render helper |
 | 2026-09-17 | Official CAD model sources identified for all parts; vendor library folder created |
@@ -87,6 +88,10 @@ Needs `py -3.11 -m pip install --user olefile`.
 | 2026-09-19 | U1 schematic wired; netlist extractor + DRAM rule checker added; U1 passes 83/83 checks |
 | 2026-09-18 | DRAM sheet spec (per-chip parts, pin-by-pin wiring, termination, unused pins); BOM v3 with exact quantities (~205 parts) |
 | 2026-09-17 | BOM v2: DRAM changed from Alliance AS4C2G8D4A-62BCN (no official CAD model) to Micron MT40A2G8SA-062E:F (Ultra Librarian model, SA package); DRAM ball notes verified |
+
+## License
+
+**All rights reserved. This is not open source.** You may view this repository. Using, copying, modifying, manufacturing or distributing any part of it requires prior written permission from the author. To ask, email rohitnalbuga2@gmail.com. Third-party vendor models and JEDEC-derived data stay under their owners' terms. See [LICENSE](LICENSE).
 
 ---
 Maintained by **ADuetrohit**

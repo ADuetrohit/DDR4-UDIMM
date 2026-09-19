@@ -1,0 +1,48 @@
+DDR4-UDIMM - Proprietary License (All Rights Reserved)
+
+Copyright (c) 2026 ADuetrohit. All rights reserved.
+
+This repository and everything in it that was created by the author are the
+exclusive property of the author. This includes the schematics, PCB layouts,
+libraries, footprints, scripts, tools, bills of materials, documentation and
+images (together, "the Work").
+
+1. NO RIGHTS GRANTED WITHOUT PERMISSION
+   You may view the Work only. You may NOT, in whole or in part, without the
+   author's prior written permission:
+     - use it, or copy or reproduce it;
+     - modify it or make derivative works from it;
+     - distribute, publish, sublicense or sell it;
+     - manufacture, assemble or sell hardware based on it;
+     - use it to train or build other products or services.
+
+2. HOW TO ASK FOR PERMISSION
+   Email the author at rohitnalbuga2@gmail.com (GitHub: ADuetrohit). Say who
+   you are, which parts you want to use, and for what purpose. A permission
+   counts only if the author gives it in writing, and only on the terms the
+   author states. The author may refuse or withdraw permission.
+
+3. THIRD-PARTY MATERIAL
+   Some files come from, or are derived from, third parties. Examples are the
+   vendor CAD models in hardware/libraries/Altium/ and hardware/libraries/vendor/,
+   and dimensions and pin tables taken from JEDEC standards. These remain under
+   their owners' own terms. This license grants no rights in them. JEDEC
+   standards and vendor datasheets are not included in this repository.
+
+4. NO WARRANTY
+   THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED. THIS INCLUDES WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+   PARTICULAR PURPOSE, CORRECTNESS AND NON-INFRINGEMENT. The design has not
+   been manufactured or validated. A faulty memory module can damage a
+   motherboard, a power supply or other equipment.
+
+5. LIMITATION OF LIABILITY
+   IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGE OR OTHER
+   LIABILITY ARISING FROM, OUT OF, OR IN CONNECTION WITH THE WORK OR ITS USE,
+   WHETHER IN CONTRACT, TORT OR OTHERWISE. This includes damage to hardware,
+   loss of data, and personal injury.
+
+6. VIEWING ON GITHUB
+   If this repository is made public, GitHub's Terms of Service let GitHub
+   users view it and fork it on GitHub. They grant no other right. Every
+   restriction above still applies to any fork or copy.
