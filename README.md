@@ -25,11 +25,11 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Parts: [bom/BOM_v4
 - [x] BOM with Digi-Key part numbers (current: v4, exact quantities + approved alternates)
 - [ ] Official CAD models collected for every part *(sources identified: [docs/CAD_MODELS.md](docs/CAD_MODELS.md); downloads pending)*
 - [ ] Libraries: 288-pin gold-finger footprint, DRAM, SPD, passives
-- [ ] Schematic
+- [x] Schematic — **complete and verified**: 11 sheets, 131 nets, every BOM line matches (`tools/check_project.py`)
   - [x] DRAM sheets U1–U8 wired, verified 636/636 by `tools/check_dram.py` ([spec](docs/SCHEMATIC_DRAM.md))
   - [x] 288-pin edge-connector symbol (`hardware/libraries/DDR4_UDIMM.SchLib`, 5 parts) — 288/288 pins verified vs JEDEC Table 5 ([guide](docs/SCHEMATIC_CONNECTOR.md))
   - [x] EDGE sheet: J1A–J1E wired, 288/288 pins verified by `tools/check_connector.py`; net names match all 8 DRAM sheets
-  - [ ] Termination sheet ([spec](docs/SCHEMATIC_SUPPORT.md#sheet-termschdoc))
+  - [x] Termination sheet: 26 VTT terminations, CK0/CK1/ALERT networks, decoupling — verified by `tools/check_term.py` ([spec](docs/SCHEMATIC_SUPPORT.md#sheet-termschdoc))
   - [x] SPD sheet: 34AA04T-I/MUY wired and verified (8/8 pins) ([spec](docs/SCHEMATIC_SUPPORT.md#sheet-spdschdoc))
 - [ ] Stackup and impedance profiles
 - [ ] Board outline, key notch, bevel (MO-309)
@@ -59,6 +59,7 @@ py -3.11 tools/schdoc_nets.py <sheet>.SchDoc     # full netlist straight from th
 py -3.11 tools/check_edge_symbol.py hardware/libraries/DDR4_UDIMM.SchLib   # 288 connector pins vs JEDEC
 py -3.11 tools/check_connector.py edge.SchDoc     # every EDGE-sheet pin's net, shorts, default labels, No-ERC
 py -3.11 tools/check_term.py TERM.SchDoc          # 26 VTT terminations, CK0/CK1/ALERT networks, decoupling rails
+py -3.11 tools/check_project.py *.SchDoc          # whole schematic: dangling nets, shorts, part counts vs latest BOM
 ```
 
 Needs `py -3.11 -m pip install --user olefile`.
@@ -69,6 +70,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 |---|---|
 | 2026-09-17 | Repository created: locked specification, BOM v1, design notes, source list, PDF render helper |
 | 2026-09-17 | Official CAD model sources identified for all parts; vendor library folder created |
+| 2026-09-19 | **Schematic complete**: TERM sheet verified; whole-project check passes (11 sheets, 131 nets, 0 dangling, 0 shorts, all 11 BOM lines match) |
 | 2026-09-19 | BOM v4: approved alternate for the 4.7 µF bulk cap (TDK C1608X5R1C475K080AC) |
 | 2026-09-19 | SPD sheet wired and verified; 34AA04 vendor model committed (official footprint has no center pad, which Microchip marks optional) |
 | 2026-09-19 | EDGE sheet wired: 288/288 connector pins correct, 0 warnings; cross-sheet net names consistent |
