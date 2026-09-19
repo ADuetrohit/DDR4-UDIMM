@@ -7,7 +7,6 @@
 Var
     Lib  : IPCB_Library;
     Comp : IPCB_LibComponent;
-    OX, OY : TCoord;
 
 Procedure AddObj(Obj : IPCB_Primitive);
 Begin
@@ -23,8 +22,8 @@ Begin
     Pad.Mode     := ePadMode_Simple;
     Pad.HoleSize := 0;
     Pad.Layer    := Layer;
-    Pad.X        := OX + MMsToCoord(X);
-    Pad.Y        := OY + MMsToCoord(Y);
+    Pad.X        := MMsToCoord(X);
+    Pad.Y        := MMsToCoord(Y);
     Pad.TopShape := eRectangular;
     Pad.MidShape := eRectangular;
     Pad.BotShape := eRectangular;
@@ -45,10 +44,10 @@ Begin
     T := PCBServer.PCBObjectFactory(eTrackObject, eNoDimension, eCreate_Default);
     T.Layer := eMechanical1;
     T.Width := MMsToCoord(0.1000);
-    T.X1 := OX + MMsToCoord(X1);
-    T.Y1 := OY + MMsToCoord(Y1);
-    T.X2 := OX + MMsToCoord(X2);
-    T.Y2 := OY + MMsToCoord(Y2);
+    T.X1 := MMsToCoord(X1);
+    T.Y1 := MMsToCoord(Y1);
+    T.X2 := MMsToCoord(X2);
+    T.Y2 := MMsToCoord(Y2);
     AddObj(T);
 End;
 
@@ -59,8 +58,8 @@ Begin
     A := PCBServer.PCBObjectFactory(eArcObject, eNoDimension, eCreate_Default);
     A.Layer := eMechanical1;
     A.LineWidth := MMsToCoord(0.1000);
-    A.XCenter := OX + MMsToCoord(CX);
-    A.YCenter := OY + MMsToCoord(CY);
+    A.XCenter := MMsToCoord(CX);
+    A.YCenter := MMsToCoord(CY);
     A.Radius := MMsToCoord(R);
     A.StartAngle := A0;
     A.EndAngle := A1;
@@ -73,10 +72,10 @@ Var
 Begin
     F := PCBServer.PCBObjectFactory(eFillObject, eNoDimension, eCreate_Default);
     F.Layer := Layer;
-    F.X1Location := OX + MMsToCoord(X1);
-    F.Y1Location := OY + MMsToCoord(Y1);
-    F.X2Location := OX + MMsToCoord(X2);
-    F.Y2Location := OY + MMsToCoord(Y2);
+    F.X1Location := MMsToCoord(X1);
+    F.Y1Location := MMsToCoord(Y1);
+    F.X2Location := MMsToCoord(X2);
+    F.Y2Location := MMsToCoord(Y2);
     F.Rotation := 0;
     AddObj(F);
 End;
@@ -89,8 +88,7 @@ Begin
         ShowMessage('Open DDR4_UDIMM.PcbLib and click inside it first.');
         Exit;
     End;
-    OX := Lib.Board.XOrigin;
-    OY := Lib.Board.YOrigin;
+    { coordinates are footprint-local: do not add Lib.Board.XOrigin (that shifted everything by 1270 mm) }
 
     Comp := PCBServer.CreatePCBLibComp;
     Comp.Name := 'DDR4_UDIMM_288_MO309';
