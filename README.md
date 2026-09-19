@@ -26,7 +26,7 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Parts: [bom/BOM_v4
 - [ ] Official CAD models collected for every part *(sources identified: [docs/CAD_MODELS.md](docs/CAD_MODELS.md); downloads pending)*
 - [ ] Libraries
   - [x] 288-pin gold-finger footprint `DDR4_UDIMM_288_MO309` in `hardware/libraries/DDR4_UDIMM.PcbLib`: built from MO-309F, verified by `tools/check_edge_footprint.py` (288 pads, 40-segment outline, mask windows, no paste) ([spec](docs/FOOTPRINT_EDGE.md))
-  - [ ] Attach the footprint to the connector symbol
+  - [x] Attach the footprint to the connector symbol; J1A–J1E share one physical `DDR4_UDIMM_288_MO309` footprint
   - [x] SPD footprint (vendor model, UDFN-8)
   - [ ] DRAM footprint check vs Micron drawing; passives
 - [x] Schematic — **complete and verified**: 11 sheets, 131 nets, every BOM line matches (`tools/check_project.py`)
@@ -75,6 +75,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-20 | Connector symbol linked to `DDR4_UDIMM_288_MO309`; all five J1 schematic parts updated and verified against the single physical footprint |
 | 2026-09-19 | `DDR4_UDIMM.PcbLib` built in Altium; gold-finger footprint passes all checks |
 | 2026-09-19 | Proprietary license added (all rights reserved; use only with written permission) |
 | 2026-09-19 | Gold-finger footprint + board outline from MO-309F: generator, Altium build script (288 pads, 40-segment outline, mask windows), PcbLib reader and checker |
