@@ -26,9 +26,13 @@ The locked decisions and the engineering data taken from the reference documents
 | Component area | Starts ≥ 4.00 mm above the finger edge |
 | Edge chamfer (optional, Detail X) | 0.05–0.20 mm |
 | Max total module thickness (single-sided) | 2.7 mm (Micron CT8G4DFS8 drawing), so parts must be ≤ 1.2 mm tall |
-| Contact finish | Gold plated (Annex A, "Cross Section Recommendations") |
+| Contact finish | Hard gold 0.76 µm min over nickel 2.00 µm min (MO-309 plating code xxAx) |
+| Board | 133.35 × 31.25 mm; top corners 1.25 × 45° |
+| Fingers | 0.60 wide; tops at 2.60 above datum B; 0.25 bare strip above the edge; edge at 0.50 in the end zones, 0 in the centre, ramps over pins 35–47 and 105–117 |
+| Key notch | 1.50 wide, 3.85 deep, full radius; centre x = 72.25 from the left end (4.30 from pin 77, 1.65 from pin 78) |
+| Latch notches | Both ends, y 8.00–11.00 and 14.60–17.60, 2.10 deep, R0.65 inner corners |
 
-Finger, notch and outline dimensions will be taken from MO-309 sheets 2–13 in the library step.
+Full dimensioned drawings and the Altium build steps: [FOOTPRINT_EDGE.md](FOOTPRINT_EDGE.md).
 
 ## 3. PCB stackup — Annex A "PCB Fabrication Table of A2 and A3"
 
