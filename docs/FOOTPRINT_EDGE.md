@@ -5,7 +5,8 @@ Footprint **`DDR4_UDIMM_288_MO309`** in `hardware/libraries/DDR4_UDIMM.PcbLib`: 
 - Source: JEDEC **MO-309 Issue F** (288-pin DDR4 DIMM, 0.85 mm pitch), sheets 2–8, cross-checked against JESD21-C 4.20.26 §6.8.
 - Generator (single source of truth): `tools/gen_edge_footprint.py`. It writes:
   - the pad table `hardware/libraries/edge_connector/DDR4_UDIMM_288_footprint_pads.csv`;
-  - the Altium script `hardware/scripts/DDR4_Edge_Footprint.pas`, which builds the footprint.
+  - the Altium script `hardware/scripts/DDR4_Edge_Footprint.pas`, which builds the footprint;
+  - the script project `DDR4_Edge_Footprint.PrjScr` that Run Script opens.
 - Checker: `tools/check_edge_footprint.py` reads the saved PcbLib and compares every pad, outline segment and mask window with the generator.
 
 **Coordinates:** mm, front view (component side = Altium **Top**), pin 1 on the left. The origin is at **x = 0 on the left board end** and **y = 0 at datum B**, the lowest part of the finger edge.
@@ -130,9 +131,10 @@ A single mask window on **Top Solder** and **Bottom Solder** covers each finger 
    1. In the Projects panel, right-click the project, then **Add New to Project → PCB Library**.
    2. **File → Save As** `D:\Projects\DDR4-UDIMM\hardware\libraries\DDR4_UDIMM.PcbLib`.
 2. **Run the script.**
-   1. With the PcbLib open and clicked into, choose **File → Run Script… → Browse**.
-   2. Open `hardware\scripts\DDR4_Edge_Footprint.pas`, select **CreateEdgeFootprint**, then **OK**.
-   3. A message confirms 288 pads. Run the script only once.
+   1. With the PcbLib open and clicked into, choose **File → Run Script… → Browse**. This dialog only opens script projects.
+   2. Open `hardware\scripts\DDR4_Edge_Footprint.PrjScr`.
+   3. Expand `DDR4_Edge_Footprint.pas`, select **CreateEdgeFootprint**, then **OK**.
+   4. A message confirms 288 pads. Run the script only once.
 3. **Delete the empty `PCBCOMPONENT_1`.** In the PCB Library panel, right-click it and choose Delete.
 4. **Remove paste from the fingers.**
    1. Click any finger, then right-click → **Find Similar Objects** → *Object Kind: Same* → OK. All 288 pads are now selected.

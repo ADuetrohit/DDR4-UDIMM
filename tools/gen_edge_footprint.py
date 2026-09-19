@@ -211,6 +211,15 @@ def main():
     os.makedirs(pas_dir, exist_ok=True)
     with open(os.path.join(pas_dir, "DDR4_Edge_Footprint.pas"), "w", newline="", encoding="ascii") as fh:
         fh.write(pas_script(rows, segs, windows))
+    # File > Run Script > Browse only opens script projects, so wrap the .pas in one
+    with open(os.path.join(pas_dir, "DDR4_Edge_Footprint.PrjScr"), "w", newline="", encoding="ascii") as fh:
+        fh.write("\r\n".join(["[Design]", "Version=1.0", "HierarchyMode=0", "OpenOutputs=1", "ArchiveProject=0",
+                              "TimestampOutput=0", "SeparateFolders=0", "", "[Preferences]", "PrefsVaultGUID=",
+                              "PrefsRevisionGUID=", "", "[Document1]", "DocumentPath=DDR4_Edge_Footprint.pas",
+                              "AnnotationEnabled=1", "AnnotateStartValue=1", "AnnotationIndexControlEnabled=0",
+                              "AnnotateSuffix=", "AnnotateScope=All", "AnnotateOrder=-1", "DoLibraryUpdate=1",
+                              "DoDatabaseUpdate=1", "DItemRevisionGUID=", "GenerateClassCluster=0",
+                              "DocumentUniqueId=", ""]))
 
     lengths = sorted({r["h"] for r in rows})
     print(f"{FOOTPRINT}: {len(rows)} pads, pad length {lengths[0]}..{lengths[-1]} mm, "
