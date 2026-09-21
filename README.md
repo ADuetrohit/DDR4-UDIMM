@@ -41,9 +41,10 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Placement: [docs/P
   - [x] Dielectric Dk 4.2 so Altium's widths match the Annex A table (50 Ω = 0.10 mm, 55 Ω ≈ 0.078 mm, 40 Ω ≈ 0.15 mm on L3)
   - [x] Six impedance profiles on the Annex A layers; every reference is a plane (L2/L4/L7); DIFF_93 on L6 is routed at 0.075 mm (Annex A width)
 - [x] Board outline, key notch, latch notches (MO-309) — real PcbDoc Board Shape verified at **133.35 × 31.25 mm**, generated from the connector's 31 tracks + 9 arcs ([spec](docs/FOOTPRINT_EDGE.md))
-- [ ] Component placement — JEDEC-derived for all 206 parts ([placement](docs/PLACEMENT.md)); script ready, to be run in Altium
+- [x] Component placement — all 206 parts at JEDEC-derived positions, verified 206/206 by `tools/check_placement.py` ([placement](docs/PLACEMENT.md))
   - [x] Positions from Annex A (data-net lengths, fly-by TL3/TL4/TL5, CK1 TL0) and Table 9 decoupling: `tools/gen_placement.py` → `hardware/placement.csv` + `hardware/scripts/DDR4_Placement.pas`
-  - [ ] Run `DDR4_Placement.PrjScr` in Altium, then verify with `tools/check_placement.py` (DRAMs rotate 180° so the data balls face the fingers)
+  - [x] Placed by script in Altium; DRAMs rotated 180° so the data balls face the fingers
+  - [ ] Full DRC pass on the placed board; silkscreen designators tidied before fab outputs
 - [ ] Design rules — built block by block, verified by `tools/check_rules.py` ([rules](docs/DESIGN_NOTES.md#10-pcb-design-rules))
   - [x] 22 net classes: BYTE0–BYTE7, DQ, DQS, DM, DATA, ADDR, CTRL, CK, CK_UNUSED, RESET, ALERT, SPD, POWER (connector side of the 15 Ω resistors) and DATA_DRAM (the 88 resistor-to-DRAM nets)
   - [x] Block 1 — clearances: 0.10 mm general, track–pad 0.125, via–BGA pad 0.175, via–via 0.20, pad–pad 0.25 (not inside a footprint), anything–polygon 0.20, gold fingers 0.20; component clearance 0.25 (J1 excluded)
@@ -95,6 +96,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-22 | **Placement complete**: placement script run in Altium, all 206 parts verified at their planned positions; rules and stackup still PASS |
 | 2026-09-22 | Placement plan from JEDEC numbers: all 206 parts positioned (DRAMs over their byte lanes, rotated 180° so data balls face the fingers; terminations after U8 within TL5), with generator, Altium script and placement checker |
 | 2026-09-22 | Design rules Block 7: height ≤ 1.2 mm, top-side-only, finger-zone keep-out room (0–4 mm); rules Blocks 0–7 done, only xSignals/length matching left for after placement |
 | 2026-09-22 | Design rules Block 6: polygon connect styles (direct for vias, relief for pads) and 0.2 mm clearance from all objects to pours |

@@ -283,7 +283,6 @@ Fanout_BGA: BGA style, away from centre, vias centred between pads. Hole size 0.
 - [ ] Final decoupling-capacitor counts (schematic step)
 - [ ] Confirm the fab supports 0.075 mm traces, 8 layers, 1.40 mm thickness and hard gold with bevel
 - [ ] SPD contents per Annex L (UDIMM), and the programming method
-- [ ] Component placement: DRAMs, SPD and 88 series resistors placed; 108 parts still off the board
 - [ ] Silk To Silk Clearance: disabled during placement is fine; tidy designators and re-enable before fab outputs
 - [ ] Schematic part data: DRAM Comment says `MT40A2G8SA-062E IT:F` (BOM: `:F`); no MPN parameter on the 240 Ω, 1.0 µF, 4.7 µF and 0.01 µF parts; 0.1 µF datasheet link points to a 470 pF part
 - [ ] Project library paths are absolute (`D:\Projects\...`); make them relative

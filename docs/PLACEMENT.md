@@ -44,7 +44,7 @@ All DRAMs at y 15.3, rotated 180°. Around each DRAM (after rotation, column 1 o
 | VDD 0.1 µF | x + 4.6, y 14.1 | F1 / E2 side |
 | VREFCA 0.1 µF | x + 4.6, y 16.9 | J1 |
 | VDD 0.1 µF | x − 4.6, y 15.3 | F9 / J9 side |
-| VPP 0.1 µF | x − 4.6, y 19.1 | M9 |
+| VPP 0.1 µF | x − 4.6, y 19.3 | M9 |
 | 1.0 µF VDD | x, y 21.7 | above the DRAM |
 
 Other parts:
