@@ -216,6 +216,22 @@ The default ComponentClearance (All ↔ All) is disabled: J1's footprint carries
 
 Max 0.15 on address/clock allows the 40 Ω / 70 Ω segments; min 0.075 on DQ allows neck-down between DRAM balls.
 
+**Differential pairs (Block 3)**
+
+| Pair | Positive | Negative |
+|---|---|---|
+| CK0, CK1 | CKn_T | CKn_C |
+| DQS0 … DQS7 (connector ↔ 15 Ω) | DQSn_T | DQSn_C |
+| DQS0_DRAM … DQS7_DRAM (15 Ω ↔ DRAM) | NetR(12n+9)_1 | NetR(12n+10)_1 |
+
+On DRAM sheet n (U1 = 0 … U8 = 7) the ZQ resistor is R(12n+1), the data resistors R(12n+2)…R(12n+12), with DQS_t on R(12n+9) and DQS_c on R(12n+10). Classes: DP_DQS (16 pairs), DP_CK (CK0, CK1).
+
+| Priority | Rule | Scope | Width min / pref / max | Gap min / pref / max | Max uncoupled |
+|---|---|---|---|---|---|
+| 1 | DiffPair_DQS | DP_DQS | 0.075 / 0.10 / 0.10 | 0.10 / 0.10 / 0.127 | 3 mm |
+| 2 | DiffPair_CK | DP_CK | 0.075 / 0.075 / 0.15 | 0.10 / 0.10 / 0.127 | 3 mm |
+| 3 | DiffPairsRouting | all | 0.075 / 0.10 / 0.15 | 0.10 / 0.10 / 0.127 | 3 mm |
+
 ## 11. Open items
 
 - [ ] Download official CAD models for every BOM part (see [CAD_MODELS.md](CAD_MODELS.md))

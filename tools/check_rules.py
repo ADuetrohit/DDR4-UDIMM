@@ -1,7 +1,9 @@
 """Check the PcbDoc design rules against the values chosen from Annex A (Raw Card A3).
 
 Reads the Rules6 stream of the Altium .PcbDoc and compares each expected rule's scope,
-values, enabled state and priority. Rules not listed here are only printed.
+values, enabled state and priority. Rules not listed here are only counted.
+Also checks the differential pairs (DifferentialPairs6): CK0, CK1, DQS0-7 on the
+connector side and DQS0_DRAM-DQS7_DRAM between the 15 ohm resistors and the DRAMs.
 
 Usage:
     py -3.11 tools/check_rules.py <board.PcbDoc>
@@ -39,7 +41,43 @@ EXPECTED = {
     "Width_SPD": ("Width", "InNetClass('SPD')", None,
                   {"MINLIMIT": 0.1, "PREFEREDWIDTH": 0.15, "MAXLIMIT": 0.3}, True, 5),
     "Width": ("Width", "All", None, {"MINLIMIT": 0.075, "PREFEREDWIDTH": 0.1, "MAXLIMIT": 0.3}, True, 6),
+    # Block 3: differential pairs (Annex A: DQS 0.10/0.10, CK 0.075/0.10 or 0.15/0.10).
+    # MINLIMIT/MAXLIMIT are the gap; *WIDTH fields are checked on every copper layer.
+    "DiffPair_DQS": ("DiffPairsRouting", "InDifferentialPairClass('DP_DQS')", None,
+                     {"MINLIMIT": 0.1, "MOSTFREQGAP": 0.1, "MAXLIMIT": 0.127, "MAXUNCOUPLEDLENGTH": 3.0,
+                      "MINWIDTH": 0.075, "PREFWIDTH": 0.1, "MAXWIDTH": 0.1}, True, 1),
+    "DiffPair_CK": ("DiffPairsRouting", "InDifferentialPairClass('DP_CK')", None,
+                    {"MINLIMIT": 0.1, "MOSTFREQGAP": 0.1, "MAXLIMIT": 0.127, "MAXUNCOUPLEDLENGTH": 3.0,
+                     "MINWIDTH": 0.075, "PREFWIDTH": 0.075, "MAXWIDTH": 0.15}, True, 2),
+    "DiffPairsRouting": ("DiffPairsRouting", "All", None,
+                         {"MINLIMIT": 0.1, "MOSTFREQGAP": 0.1, "MAXLIMIT": 0.127, "MAXUNCOUPLEDLENGTH": 3.0,
+                          "MINWIDTH": 0.075, "PREFWIDTH": 0.1, "MAXWIDTH": 0.15}, True, 3),
 }
+
+# per-layer width fields in DiffPairsRouting rules (8 copper layers)
+LAYER_KEYS = ["TOPLAYER"] + [f"MIDLAYER{i}" for i in range(1, 7)] + ["BOTTOMLAYER"]
+
+
+# pair name: (positive net, negative net). On DRAM sheet k (U1..U8) the DQS resistors are
+# R(12k+9) for DQS_t and R(12k+10) for DQS_c; the DRAM side of each is the unnamed net NetRn_1.
+PAIRS = {"CK0": ("CK0_T", "CK0_C"), "CK1": ("CK1_T", "CK1_C")}
+for k in range(8):
+    PAIRS[f"DQS{k}"] = (f"DQS{k}_T", f"DQS{k}_C")
+    PAIRS[f"DQS{k}_DRAM"] = (f"NetR{12 * k + 9}_1", f"NetR{12 * k + 10}_1")
+
+
+def records(path, stream):
+    ole = olefile.OleFileIO(path)
+    if not ole.exists(stream):
+        return []
+    data = ole.openstream(stream).read()
+    out, pos = [], 0
+    while pos + 4 <= len(data):
+        n = int.from_bytes(data[pos:pos + 4], "little")
+        body = data[pos + 4:pos + 4 + n].decode("latin-1")
+        pos += 4 + n
+        out.append(dict(p.split("=", 1) for p in body.strip("\x00").split("|") if "=" in p))
+    return out
 
 
 def rules(path):
@@ -69,7 +107,13 @@ def main():
         if r is None:
             errors.append(f"{name}: missing")
             continue
-        got = {f: mm(r.get(f)) for f in values}
+        got = {}
+        for f in values:
+            if f.endswith("WIDTH") and kind == "DiffPairsRouting":
+                per_layer = {mm(r.get(f"{lk}_{f}")) for lk in LAYER_KEYS}
+                got[f] = per_layer.pop() if len(per_layer) == 1 else None
+            else:
+                got[f] = mm(r.get(f))
         print(f"  {kind:18} {name:28} {'on ' if r.get('ENABLED') == 'TRUE' else 'off'} "
               f"prio {r.get('PRIORITY')}  " + "  ".join(f"{f.lower()} {v:.3f}" for f, v in got.items() if v))
         if r.get("RULEKIND") != kind:
@@ -83,6 +127,17 @@ def main():
         for f, want in values.items():
             if got[f] is None or abs(got[f] - want) > 0.001:
                 errors.append(f"{name}: {f} {got[f]}, expected {want}")
+
+    pairs = {r.get("NAME"): (r.get("POSITIVENETNAME"), r.get("NEGATIVENETNAME"))
+             for r in records(sys.argv[1], "DifferentialPairs6/Data")}
+    print(f"\nDifferential pairs: {len(pairs)} (expected {len(PAIRS)})")
+    for name, nets in PAIRS.items():
+        if name not in pairs:
+            errors.append(f"differential pair {name} missing ({nets[0]} / {nets[1]})")
+        elif pairs[name] != nets:
+            errors.append(f"differential pair {name} is {pairs[name]}, expected {nets}")
+    for name in sorted(set(pairs) - set(PAIRS)):
+        errors.append(f"unexpected differential pair {name} {pairs[name]}")
 
     others = sorted(n for n in have if n not in EXPECTED)
     print(f"\nOther rules (not checked): {len(others)}")
