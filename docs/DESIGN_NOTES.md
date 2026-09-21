@@ -60,6 +60,25 @@ Full dimensioned drawings and the Altium build steps: [FOOTPRINT_EDGE.md](FOOTPR
 
 Minimum trace width is 0.075 mm (Annex A). The fab's capability still needs to be confirmed.
 
+**As built in the PcbDoc (Layer Stack Manager, 2026-09-21).** Copper names: L1 `Top Layer 1`, L2 `L2_PWR_GND`, L3 `L3_DQ_ADDR`, L4 `L4_VDD`, L5 `L5_ADDR`, L6 `L6_ADDR_CK`, L7 `L7_PWR_GND`, L8 `Bottom Layer 1`. Outer copper 1.4 mil (½ oz + plating), inner 0.7 mil, all dielectrics Dk 4.8 (PP-006 prepreg, FR-4 core between L4 and L5), solder resist 0.4 mil Dk 3.5. Thickness without mask **1.398 mm**. Checked by `tools/check_stackup.py`.
+
+Widths Altium solved for each profile (mm; diff pairs at 0.10 mm gap):
+
+| Profile | L1 / L8 | L3 | L5 | L6 |
+|---|---|---|---|---|
+| SE_50 (50 Ω ±10 %) | 0.100 | 0.084 | 0.086 | 0.084* |
+| SE_55 (55 Ω ±10 %) | 0.080 | 0.066 | 0.067 | 0.066* |
+| SE_40 (40 Ω ±10 %) | 0.155 | 0.138 | 0.141 | 0.138* |
+| DIFF_83 (83 Ω ±15 %) | 0.104 | 0.082 | — | 0.083 |
+| DIFF_93 (93 Ω ±15 %) | 0.078 | 0.059 | — | 0.059 |
+| DIFF_70 (70 Ω ±15 %) | 0.150 | 0.126 | — | 0.127 |
+
+\* L6 single-ended rows still reference L5 (a signal layer); the reference must be L4, which widens them slightly (to about the L5 values). Pending fix.
+
+Notes:
+- SE_55 and DIFF_93 on the inner layers come out **below the 0.075 mm Annex A minimum**. Use those two profiles on L1/L8 only, or confirm the fab can etch 0.06 mm.
+- L5 and L6 are adjacent signal layers (420 µm apart). Route them roughly orthogonal where they overlap to limit broadside coupling.
+
 ## 4. Resistor values — Annex A, Raw Card A3
 
 | Net group | Component | Value | Qty |
@@ -166,3 +185,5 @@ These warnings remain visible rather than weakening the project-wide ERC rule or
 - [ ] Final decoupling-capacitor counts (schematic step)
 - [ ] Confirm the fab supports 0.075 mm traces, 8 layers, 1.40 mm thickness and hard gold with bevel
 - [ ] SPD contents per Annex L (UDIMM), and the programming method
+- [ ] Stackup: set the L6 single-ended impedance reference to L4 (section 3)
+- [ ] Component placement: all 206 parts are imported to the PCB but still outside the board (only J1 placed)
