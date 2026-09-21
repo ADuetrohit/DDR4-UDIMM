@@ -45,10 +45,11 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Parts: [bom/BOM_v4
   - [x] U1–U8 DRAMs (X 17–50 and 79–112 mm, Y 18.5), U9 SPD at the centre, 88 × 15 Ω series resistors in two rows above the fingers
   - [ ] U4 Y 18.4 → 18.5; decide DRAM X (currently 8–14 mm off their byte-lane fingers)
   - [ ] ZQ resistors, decoupling, VTT terminations, CK/ALERT networks, bulk caps (108 parts still off the board)
-- [ ] Design rules (impedance, length matching, clearances)
+- [ ] Design rules — built block by block, verified by `tools/check_rules.py` ([rules](docs/DESIGN_NOTES.md#10-pcb-design-rules))
   - [x] 21 net classes: BYTE0–BYTE7, DQ, DQS, DM, DATA, ADDR, CTRL, CK, CK_UNUSED, RESET, ALERT, SPD, POWER (connector side of the 15 Ω resistors; the DRAM side gets xSignals)
-  - [x] Clearance rules: 0.10 mm general, track–pad 0.125, via–BGA pad 0.175, via–via 0.20, pad–pad 0.25 (not inside a footprint), gold fingers 0.20, board outline 0.254; default ComponentClearance off (J1 spans the board), ComponentClearance_Physical 0.25 mm active
-  - [ ] Differential pairs (CK0, DQS0–7), width rules from the impedance profiles, length matching, fanout vias, 1.2 mm height rule
+  - [x] Block 1 — clearances: 0.10 mm general, track–pad 0.125, via–BGA pad 0.175, via–via 0.20, pad–pad 0.25 (not inside a footprint), track–polygon 0.20, gold fingers 0.20; component clearance 0.25 (J1 excluded)
+  - [x] Block 2 — widths: DATA 0.10 (min 0.075), ADDR/CTRL/CK 0.075 (max 0.15), POWER 0.3 (min 0.15), SPD 0.15, default 0.10
+  - [ ] Block 3 differential pairs · 4 routing layers · 5 vias + BGA fanout · 6 planes · 7 placement rules · 8 xSignals + length matching
 - [ ] Routing
 - [ ] Fabrication and assembly outputs
 - [ ] Assembly, SPD programming, bring-up
@@ -79,6 +80,7 @@ py -3.11 tools/check_project.py *.SchDoc          # whole schematic: dangling ne
 py -3.11 tools/gen_edge_footprint.py              # regenerate the gold-finger pad table + Altium build script
 py -3.11 tools/check_edge_footprint.py hardware/libraries/DDR4_UDIMM.PcbLib [--sch <SchLib/SchDoc>]   # 288 pads, outline, mask vs MO-309
 py -3.11 tools/check_stackup.py "hardware/project/DDR4-UDIMM — 16 GB DDR4.PcbDoc"   # layer stack, thickness, impedance profiles vs Annex A
+py -3.11 tools/check_rules.py "hardware/project/DDR4-UDIMM — 16 GB DDR4.PcbDoc"     # design rules: scopes, values, priorities
 ```
 
 Needs `py -3.11 -m pip install --user olefile`.
@@ -87,6 +89,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-22 | Design rules Blocks 1–2: clearance set finished (track–polygon rule re-created with `InPolygon`) and six width rules from the Annex A table; `tools/check_rules.py` added (PASS) |
 | 2026-09-22 | Stackup Block 0: Dk 4.8 → 4.2 so widths match Annex A; SE_55 back on L3/L5/L6 and DIFF_93 on L6 as Annex A specifies. Placement started (8 DRAMs, SPD, 88 series resistors). Net classes (21) and clearance-rule fixes synced |
 | 2026-09-21 | Stackup complete and verified (PASS): L6 single-ended references moved from L5 to L4, SE_55/DIFF_93 limited to outer layers; checker now also flags widths under 0.075 mm. PcbDoc synced from the Altium working copy, bringing in 19 net classes and 9 clearance rules |
 | 2026-09-21 | Stackup + impedance: 8-layer Annex A stack (1.398 mm) and six impedance profiles set in the PcbDoc; `tools/check_stackup.py` added (L6 reference fix pending); all 206 parts imported to the PCB, placement next |

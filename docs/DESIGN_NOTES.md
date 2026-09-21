@@ -183,7 +183,40 @@ The remaining 32 Altium warnings are reviewed board-boundary exceptions, not mis
 
 These warnings remain visible rather than weakening the project-wide ERC rule or applying generic No-ERC suppression.
 
-## 10. Open items
+## 10. PCB design rules
+
+Set in Altium block by block; `tools/check_rules.py` checks every value, scope and priority below.
+
+**Clearance (Block 1)**
+
+| Rule | Scope | Clearance (mm) |
+|---|---|---|
+| Clearance_LineToShape | IsTrack ↔ InPolygon | 0.20 |
+| Clearance_GoldFingers | J1 ↔ J1 | 0.20 |
+| Clearance_ViaToBGA | via ↔ DRAM (SA_MFG) pad | 0.175 |
+| Clearance_ViaToOtherPad | via ↔ pad | 0.15 |
+| Clearance_ViaToVia | via ↔ via | 0.20 |
+| Clearance_LineToPad | track ↔ pad | 0.125 |
+| Clearance_PadToPad | pad ↔ pad, ignored inside a footprint | 0.25 |
+| Clearance (default) | all | 0.10 |
+| ComponentClearance_Physical | parts, J1 excluded | 0.25 |
+
+The default ComponentClearance (All ↔ All) is disabled: J1's footprint carries the whole board outline, so every part would collide with it. Altium's query for polygon copper is `InPolygon`; `IsPoly` is not valid and Altium deletes the rule when asked to "correct" it.
+
+**Width (Block 2)** — from the Annex A fabrication table (section 3)
+
+| Priority | Rule | Nets | Min | Preferred | Max |
+|---|---|---|---|---|---|
+| 1 | Width_POWER | POWER | 0.15 | 0.30 | 2.00 |
+| 2 | Width_CK | CK, CK_UNUSED | 0.075 | 0.075 | 0.15 |
+| 3 | Width_ADDR_CTRL | ADDR, CTRL, RESET, ALERT | 0.075 | 0.075 | 0.15 |
+| 4 | Width_DATA | DATA (DQ, DQS, DM) | 0.075 | 0.10 | 0.10 |
+| 5 | Width_SPD | SPD | 0.10 | 0.15 | 0.30 |
+| 6 | Width (default) | everything else, incl. the DRAM side of the 15 Ω resistors | 0.075 | 0.10 | 0.30 |
+
+Max 0.15 on address/clock allows the 40 Ω / 70 Ω segments; min 0.075 on DQ allows neck-down between DRAM balls.
+
+## 11. Open items
 
 - [ ] Download official CAD models for every BOM part (see [CAD_MODELS.md](CAD_MODELS.md))
 - [ ] Check the Ultra Librarian DRAM footprint against Micron Figure 9 (SA package)
@@ -191,7 +224,7 @@ These warnings remain visible rather than weakening the project-wide ERC rule or
 - [ ] Confirm the fab supports 0.075 mm traces, 8 layers, 1.40 mm thickness and hard gold with bevel
 - [ ] SPD contents per Annex L (UDIMM), and the programming method
 - [ ] Component placement: DRAMs, SPD and 88 series resistors placed; 108 parts still off the board
-- [ ] `Clearance_LineToShape` (track–polygon 0.20 mm) was deleted on 2026-09-22; re-create it if that wasn't intended
+- [ ] Silk To Silk Clearance: disabled during placement is fine; tidy designators and re-enable before fab outputs
 - [ ] Schematic part data: DRAM Comment says `MT40A2G8SA-062E IT:F` (BOM: `:F`); no MPN parameter on the 240 Ω, 1.0 µF, 4.7 µF and 0.01 µF parts; 0.1 µF datasheet link points to a 470 pF part
 - [ ] Project library paths are absolute (`D:\Projects\...`); make them relative
 - [ ] 204 of 206 parts come from the Altium Content Vault; snapshot them into a repo PcbLib/SchLib
