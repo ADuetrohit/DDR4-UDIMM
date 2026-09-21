@@ -16,7 +16,7 @@ A custom 288-pin DDR4 unbuffered DIMM with hard-gold edge fingers, designed in A
 | Supplies (from motherboard) | VDD 1.2 V · VPP 2.5 V · VTT 0.6 V · VREFCA · VDDSPD 2.2–3.6 V |
 | Component height limit | ≤ 1.2 mm (single-sided module) |
 
-Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Parts: [bom/BOM_v4.csv](bom/BOM_v4.csv) · DRAM wiring: [docs/SCHEMATIC_DRAM.md](docs/SCHEMATIC_DRAM.md) · Gold fingers + outline: [docs/FOOTPRINT_EDGE.md](docs/FOOTPRINT_EDGE.md) · CAD sources: [docs/CAD_MODELS.md](docs/CAD_MODELS.md)
+Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Placement: [docs/PLACEMENT.md](docs/PLACEMENT.md) · Parts: [bom/BOM_v4.csv](bom/BOM_v4.csv) · DRAM wiring: [docs/SCHEMATIC_DRAM.md](docs/SCHEMATIC_DRAM.md) · Gold fingers + outline: [docs/FOOTPRINT_EDGE.md](docs/FOOTPRINT_EDGE.md) · CAD sources: [docs/CAD_MODELS.md](docs/CAD_MODELS.md)
 
 ## Progress
 
@@ -41,10 +41,9 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Parts: [bom/BOM_v4
   - [x] Dielectric Dk 4.2 so Altium's widths match the Annex A table (50 Ω = 0.10 mm, 55 Ω ≈ 0.078 mm, 40 Ω ≈ 0.15 mm on L3)
   - [x] Six impedance profiles on the Annex A layers; every reference is a plane (L2/L4/L7); DIFF_93 on L6 is routed at 0.075 mm (Annex A width)
 - [x] Board outline, key notch, latch notches (MO-309) — real PcbDoc Board Shape verified at **133.35 × 31.25 mm**, generated from the connector's 31 tracks + 9 arcs ([spec](docs/FOOTPRINT_EDGE.md))
-- [ ] Component placement *(in progress)*
-  - [x] U1–U8 DRAMs (X 17–50 and 79–112 mm, Y 18.5), U9 SPD at the centre, 88 × 15 Ω series resistors in two rows above the fingers
-  - [ ] U4 Y 18.4 → 18.5; decide DRAM X (currently 8–14 mm off their byte-lane fingers)
-  - [ ] ZQ resistors, decoupling, VTT terminations, CK/ALERT networks, bulk caps (108 parts still off the board)
+- [ ] Component placement — JEDEC-derived for all 206 parts ([placement](docs/PLACEMENT.md)); script ready, to be run in Altium
+  - [x] Positions from Annex A (data-net lengths, fly-by TL3/TL4/TL5, CK1 TL0) and Table 9 decoupling: `tools/gen_placement.py` → `hardware/placement.csv` + `hardware/scripts/DDR4_Placement.pas`
+  - [ ] Run `DDR4_Placement.PrjScr` in Altium, then verify with `tools/check_placement.py` (DRAMs rotate 180° so the data balls face the fingers)
 - [ ] Design rules — built block by block, verified by `tools/check_rules.py` ([rules](docs/DESIGN_NOTES.md#10-pcb-design-rules))
   - [x] 22 net classes: BYTE0–BYTE7, DQ, DQS, DM, DATA, ADDR, CTRL, CK, CK_UNUSED, RESET, ALERT, SPD, POWER (connector side of the 15 Ω resistors) and DATA_DRAM (the 88 resistor-to-DRAM nets)
   - [x] Block 1 — clearances: 0.10 mm general, track–pad 0.125, via–BGA pad 0.175, via–via 0.20, pad–pad 0.25 (not inside a footprint), anything–polygon 0.20, gold fingers 0.20; component clearance 0.25 (J1 excluded)
@@ -86,6 +85,8 @@ py -3.11 tools/gen_edge_footprint.py              # regenerate the gold-finger p
 py -3.11 tools/check_edge_footprint.py hardware/libraries/DDR4_UDIMM.PcbLib [--sch <SchLib/SchDoc>]   # 288 pads, outline, mask vs MO-309
 py -3.11 tools/check_stackup.py "hardware/project/DDR4-UDIMM — 16 GB DDR4.PcbDoc"   # layer stack, thickness, impedance profiles vs Annex A
 py -3.11 tools/check_rules.py "hardware/project/DDR4-UDIMM — 16 GB DDR4.PcbDoc"     # design rules: scopes, values, priorities
+py -3.11 tools/gen_placement.py                   # regenerate hardware/placement.csv + Altium placement script
+py -3.11 tools/check_placement.py "hardware/project/DDR4-UDIMM — 16 GB DDR4.PcbDoc" # every part vs placement.csv
 ```
 
 Needs `py -3.11 -m pip install --user olefile`.
@@ -94,6 +95,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-22 | Placement plan from JEDEC numbers: all 206 parts positioned (DRAMs over their byte lanes, rotated 180° so data balls face the fingers; terminations after U8 within TL5), with generator, Altium script and placement checker |
 | 2026-09-22 | Design rules Block 7: height ≤ 1.2 mm, top-side-only, finger-zone keep-out room (0–4 mm); rules Blocks 0–7 done, only xSignals/length matching left for after placement |
 | 2026-09-22 | Design rules Block 6: polygon connect styles (direct for vias, relief for pads) and 0.2 mm clearance from all objects to pours |
 | 2026-09-22 | Design rules Block 5: via styles (signal 0.40/0.20, power 0.50/0.25), BGA fanout, hole size and annular ring; DRAM pad grid measured from the PcbDoc (0.34 mm pads, 0.8 mm pitch) |
