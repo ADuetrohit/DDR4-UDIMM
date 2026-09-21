@@ -78,6 +78,13 @@ EXPECTED = {
     "PolygonConnect": ("PolygonConnect", "All", None,
                        {"CONNECTSTYLE": "Relief", "RELIEFENTRIES": "4", "POLYGONRELIEFANGLE": "90 Angle",
                         "RELIEFCONDUCTORWIDTH": 0.2, "AIRGAPWIDTH": 0.2}, True, 2),
+    # Block 7: placement (single-sided module, parts <= 1.2 mm, MO-309 component area >= 4.00 mm)
+    "Height": ("Height", "All", None, {"MINHEIGHT": 0.0, "PREFHEIGHT": 1.0, "MAXHEIGHT": 1.2}, True, None),
+    "PermittedLayers_TopOnly": ("PermittedLayers", "All", None,
+                                {"TOPLAYERPERMITTED": "TRUE", "BOTTOMLAYERPERMITTED": "FALSE"}, True, None),
+    "Room_FingerZone": ("RoomDefinition", "Not InComponent('J1')", None,
+                        {"LAYER": "TOP", "CONFINEMENTSTYLE": "ConfineOut",
+                         "REGION": [(0.0, 0.0), (0.0, 4.0), (133.35, 4.0), (133.35, 0.0)]}, True, None),
 }
 
 # RoutingLayers keys for copper L1..L8 (Altium numbers inner layers Mid Layer 1..6)
@@ -150,6 +157,17 @@ def main():
                 if allowed != values[f]:
                     errors.append(f"{name}: layers {sorted(allowed)}, expected {sorted(values[f])}")
                 continue
+            if f == "REGION":
+                pts, i = [], 0
+                while f"VX{i}" in r:
+                    pts.append((round(mm(r[f"VX{i}"]), 2), round(mm(r[f"VY{i}"]), 2)))
+                    i += 1
+                if pts and pts[0] == pts[-1]:
+                    pts = pts[:-1]
+                print(f"  {kind:18} {name:28} {'on ' if r.get('ENABLED') == 'TRUE' else 'off'} region {pts}")
+                if pts != values[f]:
+                    errors.append(f"{name}: region {pts}, expected {values[f]}")
+                continue
             if isinstance(values[f], str):
                 if r.get(f) != values[f]:
                     errors.append(f"{name}: {f} {r.get(f)!r}, expected {values[f]!r}")
@@ -171,7 +189,7 @@ def main():
         if prio is not None and r.get("PRIORITY") != str(prio):
             errors.append(f"{name}: priority {r.get('PRIORITY')}, expected {prio}")
         for f, want in values.items():
-            if f == "LAYERS" or isinstance(want, str):
+            if f in ("LAYERS", "REGION") or isinstance(want, str):
                 continue
             if got[f] is None or abs(got[f] - want) > 0.001:
                 errors.append(f"{name}: {f} {got[f]}, expected {want}")

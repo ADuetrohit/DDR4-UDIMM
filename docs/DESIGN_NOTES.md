@@ -264,6 +264,16 @@ The DRAM footprint `SA_MFG` (read from the PcbDoc) has 78 round pads of 0.34 mm 
 
 Which net pours on which layer (L2/L7 GND with VDD areas, L4 VDD, VTT and VPP islands) is decided after placement.
 
+**Placement (Block 7)**
+
+| Rule | Setting | Why |
+|---|---|---|
+| Height | ≤ 1.2 mm (preferred 1.0) | single-sided module, 2.7 mm max total thickness (section 2) |
+| PermittedLayers_TopOnly | top side only | single-sided module |
+| Room_FingerZone | parts except J1 kept outside (0, 0)–(133.35, 4.0), top layer | MO-309: component area starts ≥ 4.00 mm above the finger edge |
+
+Drawing a room with Define: press Shift+Space for 90° corners and place each vertex with J → L (jump to location); in 45° mode Altium cuts the corners.
+
 Fanout_BGA: BGA style, away from centre, vias centred between pads. Hole size 0.2–0.3 mm, minimum annular ring 0.1 mm, hole-to-hole 0.254 mm. All vias are through-hole (1.40 mm board, 0.2 mm drill = 7:1 aspect ratio).
 
 ## 11. Open items

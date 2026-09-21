@@ -53,7 +53,8 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Parts: [bom/BOM_v4
   - [x] Block 4 — routing layers: DATA (+ new class DATA_DRAM, 88 nets) on L1/L3/L8; CK on L1/L6/L8; ADDR/CTRL/RESET/ALERT and default on L1/L3/L5/L6/L8; POWER on all; L2/L4/L7 kept for planes
   - [x] Block 5 — vias: signal 0.40/0.20 mm (max 0.45 to fit between DRAM balls), POWER 0.50/0.25 mm; BGA fanout centred between pads; holes 0.2–0.3 mm, annular ring ≥ 0.1 mm
   - [x] Block 6 — polygon pours (L2/L4/L7 are signal layers with VDD/GND pours): vias direct-connect, pads 4-spoke thermal relief 0.2/0.2 mm; 0.2 mm clearance from any object to polygon copper
-  - [ ] Block 7 placement rules · 8 xSignals + length matching
+  - [x] Block 7 — placement: height ≤ 1.2 mm, top side only, room `Room_FingerZone` keeps every part except J1 out of the bottom 4.0 mm (MO-309 component area)
+  - [ ] Block 8 xSignals + length matching (after placement)
 - [ ] Routing
 - [ ] Fabrication and assembly outputs
 - [ ] Assembly, SPD programming, bring-up
@@ -93,6 +94,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-22 | Design rules Block 7: height ≤ 1.2 mm, top-side-only, finger-zone keep-out room (0–4 mm); rules Blocks 0–7 done, only xSignals/length matching left for after placement |
 | 2026-09-22 | Design rules Block 6: polygon connect styles (direct for vias, relief for pads) and 0.2 mm clearance from all objects to pours |
 | 2026-09-22 | Design rules Block 5: via styles (signal 0.40/0.20, power 0.50/0.25), BGA fanout, hole size and annular ring; DRAM pad grid measured from the PcbDoc (0.34 mm pads, 0.8 mm pitch) |
 | 2026-09-22 | Design rules Block 4: DATA_DRAM net class and five routing-layer rules from the Annex A layer table; Width_DATA covers DATA_DRAM; checker extended (PASS) |
