@@ -295,6 +295,15 @@ Plane referencing (Table 12): DQ/DQS reference **GND**; address, command, contro
 
 The routing-space rules (Table 14) match what is set: small via 0.20/0.40 mm (anti-pad 0.60), line–line 0.10, diff line–line 0.10, line–pad 0.125, line–shape 0.20, pad–pad 0.25. Table 14's large via (0.25/0.45 mm) is the power via.
 
+**xSignals (Block 8)** — made with Design → xSignals → Run xSignals Wizard → On-Board DDR3/DDR4, controller = J1, memory = U1–U8, fly-by order U1 → U8.
+
+| Class | xSignals | Rule |
+|---|---|---|
+| ADDR_PP1 … ADDR_PP8 | 28 each, J1 → that DRAM: A0–A13, A15_CAS, A16_RAS, ACT, BA0/1, BG0/1, CK0_T/C, CKE, CS, ODT, PAR, WE | MatchedLengths_ADDR_PPn, 1.0 mm |
+| (CK pair in every ADDR class) | CK0_T / CK0_C | MatchedLengths_DDR_CLOCKS_STROBES, 0.1 mm within the pair |
+
+Wizard notes: the Addresses pattern `A[#]` misses A10_AP and A12_BC, and BG0/BG1, ACT, PAR, CKE are not picked up, so add them with "Modify Nets in xSignal Classes"; RAS/CAS patterns `_RAS` / `_CAS` match A16_RAS / A15_CAS. The data group cannot trace through the 15 Ω series resistors, so the byte lanes are made separately.
+
 ## 11. Open items
 
 - [ ] Download official CAD models for every BOM part (see [CAD_MODELS.md](CAD_MODELS.md))

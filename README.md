@@ -54,7 +54,9 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Placement: [docs/P
   - [x] Block 5 — vias: signal 0.40/0.20 mm (max 0.45 to fit between DRAM balls), POWER 0.45/0.25 mm (JEDEC Table 14 large via); BGA fanout centred between pads; holes 0.2–0.3 mm, annular ring ≥ 0.1 mm
   - [x] Block 6 — polygon pours (L2/L4/L7 are signal layers with VDD/GND pours): vias direct-connect, pads 4-spoke thermal relief 0.2/0.2 mm; 0.2 mm clearance from any object to polygon copper
   - [x] Block 7 — placement: height ≤ 1.2 mm, top side only, room `Room_FingerZone` keeps every part except J1 out of the bottom 4.0 mm (MO-309 component area)
-  - [ ] Block 8 xSignals + length matching (after placement)
+  - [ ] Block 8 — xSignals + length matching
+    - [x] Address/command/clock: xSignal Multi-Chip Wizard (DDR4, fly-by J1 → U1 … U8) → classes ADDR_PP1–ADDR_PP8, 28 xSignals each; matched-length rules 1.0 mm per DRAM, CK pair 0.1 mm
+    - [ ] Data byte lanes (through the 15 Ω resistors) → XS_BYTE0–7, DQ/DM within DQS ± 1.0 mm, DQS pair 0.1 mm
 - [ ] Routing
 - [ ] Fabrication and assembly outputs
 - [ ] Assembly, SPD programming, bring-up
@@ -96,6 +98,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-22 | Block 8 part 1: address/command/clock xSignals J1 → U1…U8 (ADDR_PP1–8, 28 each: A0–A13, A15_CAS, A16_RAS, ACT, BA0/1, BG0/1, CK0_T/C, CKE, CS, ODT, PAR, WE) and their matched-length rules |
 | 2026-09-22 | R102 moved beside U1 (ALERT_n pull-up before the first DRAM); power via set to JEDEC's 0.45/0.25 mm large via; final placement re-recorded |
 | 2026-09-22 | Correction: ALERT_n pull-up R102 belongs before the first DRAM U1 (Annex A p.12, main spec 6.3.7), not after U8; plan and docs updated. JEDEC length-matching rules (Tables 10–12, §6.4) recorded for Block 8 |
 | 2026-09-22 | Placement finalised by hand (caps and terminations nudged ≤ 2 mm, C49 to the other side of U9; DRAMs, SPD and 15 Ω resistors unchanged); recorded as `placement_final.csv` |
