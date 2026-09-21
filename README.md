@@ -41,7 +41,7 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Placement: [docs/P
   - [x] Dielectric Dk 4.2 so Altium's widths match the Annex A table (50 Ω = 0.10 mm, 55 Ω ≈ 0.078 mm, 40 Ω ≈ 0.15 mm on L3)
   - [x] Six impedance profiles on the Annex A layers; every reference is a plane (L2/L4/L7); DIFF_93 on L6 is routed at 0.075 mm (Annex A width)
 - [x] Board outline, key notch, latch notches (MO-309) — real PcbDoc Board Shape verified at **133.35 × 31.25 mm**, generated from the connector's 31 tracks + 9 arcs ([spec](docs/FOOTPRINT_EDGE.md))
-- [x] Component placement — all 206 parts at JEDEC-derived positions, verified 206/206 by `tools/check_placement.py` ([placement](docs/PLACEMENT.md))
+- [x] Component placement — all 206 parts at JEDEC-derived positions, fine-tuned by hand and recorded in `hardware/placement_final.csv`; verified 206/206 by `tools/check_placement.py` ([placement](docs/PLACEMENT.md))
   - [x] Positions from Annex A (data-net lengths, fly-by TL3/TL4/TL5, CK1 TL0) and Table 9 decoupling: `tools/gen_placement.py` → `hardware/placement.csv` + `hardware/scripts/DDR4_Placement.pas`
   - [x] Placed by script in Altium; DRAMs rotated 180° so the data balls face the fingers
   - [ ] Full DRC pass on the placed board; silkscreen designators tidied before fab outputs
@@ -87,7 +87,7 @@ py -3.11 tools/check_edge_footprint.py hardware/libraries/DDR4_UDIMM.PcbLib [--s
 py -3.11 tools/check_stackup.py "hardware/project/DDR4-UDIMM — 16 GB DDR4.PcbDoc"   # layer stack, thickness, impedance profiles vs Annex A
 py -3.11 tools/check_rules.py "hardware/project/DDR4-UDIMM — 16 GB DDR4.PcbDoc"     # design rules: scopes, values, priorities
 py -3.11 tools/gen_placement.py                   # regenerate hardware/placement.csv + Altium placement script
-py -3.11 tools/check_placement.py "hardware/project/DDR4-UDIMM — 16 GB DDR4.PcbDoc" # every part vs placement.csv
+py -3.11 tools/check_placement.py "hardware/project/DDR4-UDIMM — 16 GB DDR4.PcbDoc" # every part vs placement_final.csv (--plan: vs JEDEC plan, --export: record)
 ```
 
 Needs `py -3.11 -m pip install --user olefile`.
@@ -96,6 +96,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-22 | Placement finalised by hand (caps and terminations nudged ≤ 2 mm, C49 to the other side of U9; DRAMs, SPD and 15 Ω resistors unchanged); recorded as `placement_final.csv` |
 | 2026-09-22 | **Placement complete**: placement script run in Altium, all 206 parts verified at their planned positions; rules and stackup still PASS |
 | 2026-09-22 | Placement plan from JEDEC numbers: all 206 parts positioned (DRAMs over their byte lanes, rotated 180° so data balls face the fingers; terminations after U8 within TL5), with generator, Altium script and placement checker |
 | 2026-09-22 | Design rules Block 7: height ≤ 1.2 mm, top-side-only, finger-zone keep-out room (0–4 mm); rules Blocks 0–7 done, only xSignals/length matching left for after placement |
