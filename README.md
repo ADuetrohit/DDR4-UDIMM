@@ -36,13 +36,15 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Parts: [bom/BOM_v4
   - [x] Termination sheet: 26 VTT terminations, CK0/CK1/ALERT networks, decoupling — verified by `tools/check_term.py` ([spec](docs/SCHEMATIC_SUPPORT.md#sheet-termschdoc))
   - [x] SPD sheet: 34AA04T-I/MUY wired and verified (8/8 pins) ([spec](docs/SCHEMATIC_SUPPORT.md#sheet-spdschdoc))
   - [x] Native Altium ERC: **0 errors**; 32 reviewed `no driving source` warnings are the address/command/clock/reset/SPD-address inputs driven externally through J1 ([record](docs/DESIGN_NOTES.md#9-schematic-erc-status))
-- [ ] Stackup and impedance profiles *(built in the PcbDoc; one fix pending)*
+- [x] Stackup and impedance profiles — verified by `tools/check_stackup.py` (PASS)
   - [x] 8-layer stack per Annex A: 70/80/420/80/420/80/70 µm, 1.398 mm without mask ([table](docs/DESIGN_NOTES.md#3-pcb-stackup--annex-a-pcb-fabrication-table-of-a2-and-a3))
-  - [x] Six impedance profiles (SE_50/55/40, DIFF_83/93/70) solved on L1, L3, L5, L6, L8
-  - [ ] L6 single-ended profiles: set the top reference to L4 (currently L5, a signal layer) — `tools/check_stackup.py` flags it
+  - [x] Six impedance profiles; every reference is a plane (L2/L4/L7); SE_55 and DIFF_93 limited to L1/L8 (inner widths would be under 0.075 mm)
 - [x] Board outline, key notch, latch notches (MO-309) — real PcbDoc Board Shape verified at **133.35 × 31.25 mm**, generated from the connector's 31 tracks + 9 arcs ([spec](docs/FOOTPRINT_EDGE.md))
 - [ ] Component placement
 - [ ] Design rules (impedance, length matching, clearances)
+  - [x] 19 net classes: BYTE0–BYTE7, DQ, DQS, DM, DATA, ADDR, CTRL, CK, CK_UNUSED, RESET, ALERT, POWER
+  - [x] Clearance rules: 0.10 mm general, track–pad 0.125, via–BGA pad 0.175, via–via 0.20, pad–pad 0.25, gold fingers 0.20, board outline 0.254
+  - [ ] Differential pairs (CK0, DQS0–7), width rules from the impedance profiles, length matching, fanout vias, 1.2 mm height rule
 - [ ] Routing
 - [ ] Fabrication and assembly outputs
 - [ ] Assembly, SPD programming, bring-up
@@ -81,6 +83,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-21 | Stackup complete and verified (PASS): L6 single-ended references moved from L5 to L4, SE_55/DIFF_93 limited to outer layers; checker now also flags widths under 0.075 mm. PcbDoc synced from the Altium working copy, bringing in 19 net classes and 9 clearance rules |
 | 2026-09-21 | Stackup + impedance: 8-layer Annex A stack (1.398 mm) and six impedance profiles set in the PcbDoc; `tools/check_stackup.py` added (L6 reference fix pending); all 206 parts imported to the PCB, placement next |
 | 2026-09-20 | First PCB milestone: Altium project sources versioned; MO-309 Board Shape verified at 133.35 × 31.25 mm with center key and four latch notches |
 | 2026-09-20 | Final schematic ERC: 0 errors; ALERT_n pins modeled as open-collector, eight off-grid VPP power ports corrected, and 32 external-controller warnings reviewed and documented |

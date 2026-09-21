@@ -66,17 +66,18 @@ Widths Altium solved for each profile (mm; diff pairs at 0.10 mm gap):
 
 | Profile | L1 / L8 | L3 | L5 | L6 |
 |---|---|---|---|---|
-| SE_50 (50 Ω ±10 %) | 0.100 | 0.084 | 0.086 | 0.084* |
-| SE_55 (55 Ω ±10 %) | 0.080 | 0.066 | 0.067 | 0.066* |
-| SE_40 (40 Ω ±10 %) | 0.155 | 0.138 | 0.141 | 0.138* |
+| SE_50 (50 Ω ±10 %) | 0.100 | 0.084 | 0.086 | 0.086 |
+| SE_55 (55 Ω ±10 %) | 0.080 | off | off | off |
+| SE_40 (40 Ω ±10 %) | 0.155 | 0.138 | 0.141 | 0.141 |
 | DIFF_83 (83 Ω ±15 %) | 0.104 | 0.082 | — | 0.083 |
-| DIFF_93 (93 Ω ±15 %) | 0.078 | 0.059 | — | 0.059 |
+| DIFF_93 (93 Ω ±15 %) | 0.078 | off | — | off |
 | DIFF_70 (70 Ω ±15 %) | 0.150 | 0.126 | — | 0.127 |
 
-\* L6 single-ended rows still reference L5 (a signal layer); the reference must be L4, which widens them slightly (to about the L5 values). Pending fix.
+References: L1 → L2; L3 → L2 + L4; L5 and L6 → L4 + L7 (L5 and L6 never reference each other); L8 → L7.
 
 Notes:
-- SE_55 and DIFF_93 on the inner layers come out **below the 0.075 mm Annex A minimum**. Use those two profiles on L1/L8 only, or confirm the fab can etch 0.06 mm.
+- SE_55 and DIFF_93 are **disabled on the inner layers**: there they would need 0.066 / 0.059 mm, below the 0.075 mm Annex A minimum. Route 55 Ω and 93 Ω nets on L1/L8 only.
+- Picking a material from the library (e.g. `CF-004`) resets the copper weight to 1 oz. After changing a layer's material, retype 1/2 oz (0.01778 mm) on inner layers.
 - L5 and L6 are adjacent signal layers (420 µm apart). Route them roughly orthogonal where they overlap to limit broadside coupling.
 
 ## 4. Resistor values — Annex A, Raw Card A3
@@ -185,5 +186,7 @@ These warnings remain visible rather than weakening the project-wide ERC rule or
 - [ ] Final decoupling-capacitor counts (schematic step)
 - [ ] Confirm the fab supports 0.075 mm traces, 8 layers, 1.40 mm thickness and hard gold with bevel
 - [ ] SPD contents per Annex L (UDIMM), and the programming method
-- [ ] Stackup: set the L6 single-ended impedance reference to L4 (section 3)
 - [ ] Component placement: all 206 parts are imported to the PCB but still outside the board (only J1 placed)
+- [ ] Schematic part data: DRAM Comment says `MT40A2G8SA-062E IT:F` (BOM: `:F`); no MPN parameter on the 240 Ω, 1.0 µF, 4.7 µF and 0.01 µF parts; 0.1 µF datasheet link points to a 470 pF part
+- [ ] Project library paths are absolute (`D:\Projects\...`); make them relative
+- [ ] 204 of 206 parts come from the Altium Content Vault; snapshot them into a repo PcbLib/SchLib

@@ -321,6 +321,10 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=IMSWRYXK
 
+[GeneratedDocument1]
+DocumentPath=Project Outputs for DDR4-UDIMM — 16 GB DDR4\Design Rule Check - DDR4-UDIMM — 16 GB DDR4.html
+DItemRevisionGUID=
+
 [Configuration1]
 Name=Sources
 ParameterCount=0

@@ -5,6 +5,7 @@ Reads the Board6 stream of the Altium .PcbDoc and checks:
   - board thickness over the fingers 1.40 +/- 0.10 mm (without solder mask)
   - the six impedance profiles exist with their Annex A targets and tolerances
   - every enabled profile layer references only plane layers (L2, L4, L7) or the surface
+  - no enabled profile layer needs a trace narrower than 0.075 mm (Annex A minimum)
 
 Usage:
     py -3.11 tools/check_stackup.py <board.PcbDoc>
@@ -17,6 +18,7 @@ import olefile
 MIL = 0.0254                                   # mm
 DIELECTRIC_UM = [70, 80, 420, 80, 420, 80, 70]
 PLANES = {2, 4, 7}                             # copper layer numbers used as references
+MIN_WIDTH = 0.075                              # mm, Annex A minimum trace width
 PROFILES = {"SE_50": (50, 10, False), "SE_55": (55, 10, False), "SE_40": (40, 10, False),
             "DIFF_83": (83, 15, True), "DIFF_93": (93, 15, True), "DIFF_70": (70, 15, True)}
 
@@ -98,6 +100,9 @@ def main():
         bad = [f"L{layer_no[r]}" for r in refs if layer_no[r] not in PLANES]
         if bad:
             errors.append(f"{prof} on L{layer_no[layer]} references signal layer {', '.join(bad)}")
+        if mm(g("TRACE_WIDTH")) < MIN_WIDTH:
+            errors.append(f"{prof} on L{layer_no[layer]} needs {mm(g('TRACE_WIDTH')):.4f} mm, "
+                          f"below the {MIN_WIDTH} mm Annex A minimum; disable it on this layer")
 
     print()
     for e in errors:
