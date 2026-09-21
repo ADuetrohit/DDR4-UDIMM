@@ -46,11 +46,12 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Parts: [bom/BOM_v4
   - [ ] U4 Y 18.4 → 18.5; decide DRAM X (currently 8–14 mm off their byte-lane fingers)
   - [ ] ZQ resistors, decoupling, VTT terminations, CK/ALERT networks, bulk caps (108 parts still off the board)
 - [ ] Design rules — built block by block, verified by `tools/check_rules.py` ([rules](docs/DESIGN_NOTES.md#10-pcb-design-rules))
-  - [x] 21 net classes: BYTE0–BYTE7, DQ, DQS, DM, DATA, ADDR, CTRL, CK, CK_UNUSED, RESET, ALERT, SPD, POWER (connector side of the 15 Ω resistors; the DRAM side gets xSignals)
+  - [x] 22 net classes: BYTE0–BYTE7, DQ, DQS, DM, DATA, ADDR, CTRL, CK, CK_UNUSED, RESET, ALERT, SPD, POWER (connector side of the 15 Ω resistors) and DATA_DRAM (the 88 resistor-to-DRAM nets)
   - [x] Block 1 — clearances: 0.10 mm general, track–pad 0.125, via–BGA pad 0.175, via–via 0.20, pad–pad 0.25 (not inside a footprint), track–polygon 0.20, gold fingers 0.20; component clearance 0.25 (J1 excluded)
   - [x] Block 2 — widths: DATA 0.10 (min 0.075), ADDR/CTRL/CK 0.075 (max 0.15), POWER 0.3 (min 0.15), SPD 0.15, default 0.10
   - [x] Block 3 — differential pairs: 18 pairs (CK0, CK1, DQS0–7, and DQS0_DRAM–DQS7_DRAM between the 15 Ω resistors and the DRAMs), classes DP_DQS / DP_CK; DQS 0.10/0.10, CK 0.075/0.10 (max 0.15), gap 0.10–0.127, 3 mm max uncoupled
-  - [ ] Block 4 routing layers · 5 vias + BGA fanout · 6 planes · 7 placement rules · 8 xSignals + length matching
+  - [x] Block 4 — routing layers: DATA (+ new class DATA_DRAM, 88 nets) on L1/L3/L8; CK on L1/L6/L8; ADDR/CTRL/RESET/ALERT and default on L1/L3/L5/L6/L8; POWER on all; L2/L4/L7 kept for planes
+  - [ ] Block 5 vias + BGA fanout · 6 planes · 7 placement rules · 8 xSignals + length matching
 - [ ] Routing
 - [ ] Fabrication and assembly outputs
 - [ ] Assembly, SPD programming, bring-up
@@ -90,6 +91,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-22 | Design rules Block 4: DATA_DRAM net class and five routing-layer rules from the Annex A layer table; Width_DATA covers DATA_DRAM; checker extended (PASS) |
 | 2026-09-22 | Design rules Block 3: 18 differential pairs (named and DRAM-side DQS), pair classes and diff-pair routing rules; `check_rules.py` now checks pairs and per-layer widths (PASS) |
 | 2026-09-22 | Design rules Blocks 1–2: clearance set finished (track–polygon rule re-created with `InPolygon`) and six width rules from the Annex A table; `tools/check_rules.py` added (PASS) |
 | 2026-09-22 | Stackup Block 0: Dk 4.8 → 4.2 so widths match Annex A; SE_55 back on L3/L5/L6 and DIFF_93 on L6 as Annex A specifies. Placement started (8 DRAMs, SPD, 88 series resistors). Net classes (21) and clearance-rule fixes synced |

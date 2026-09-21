@@ -210,9 +210,9 @@ The default ComponentClearance (All ↔ All) is disabled: J1's footprint carries
 | 1 | Width_POWER | POWER | 0.15 | 0.30 | 2.00 |
 | 2 | Width_CK | CK, CK_UNUSED | 0.075 | 0.075 | 0.15 |
 | 3 | Width_ADDR_CTRL | ADDR, CTRL, RESET, ALERT | 0.075 | 0.075 | 0.15 |
-| 4 | Width_DATA | DATA (DQ, DQS, DM) | 0.075 | 0.10 | 0.10 |
+| 4 | Width_DATA | DATA (DQ, DQS, DM) and DATA_DRAM | 0.075 | 0.10 | 0.10 |
 | 5 | Width_SPD | SPD | 0.10 | 0.15 | 0.30 |
-| 6 | Width (default) | everything else, incl. the DRAM side of the 15 Ω resistors | 0.075 | 0.10 | 0.30 |
+| 6 | Width (default) | everything else (ZQ, termination nodes, …) | 0.075 | 0.10 | 0.30 |
 
 Max 0.15 on address/clock allows the 40 Ω / 70 Ω segments; min 0.075 on DQ allows neck-down between DRAM balls.
 
@@ -231,6 +231,20 @@ On DRAM sheet n (U1 = 0 … U8 = 7) the ZQ resistor is R(12n+1), the data resist
 | 1 | DiffPair_DQS | DP_DQS | 0.075 / 0.10 / 0.10 | 0.10 / 0.10 / 0.127 | 3 mm |
 | 2 | DiffPair_CK | DP_CK | 0.075 / 0.075 / 0.15 | 0.10 / 0.10 / 0.127 | 3 mm |
 | 3 | DiffPairsRouting | all | 0.075 / 0.10 / 0.15 | 0.10 / 0.10 / 0.127 | 3 mm |
+
+**Routing layers (Block 4)** — Annex A A3 layer use; L2, L4, L7 are kept for VDD/GND planes
+
+Net class **DATA_DRAM** holds the 88 resistor-to-DRAM data nets: `NetRn_1` for n = 2…96 except the ZQ nets n = 12k+1 (1, 13, 25, 37, 49, 61, 73, 85).
+
+| Priority | Rule | Nets | Allowed layers |
+|---|---|---|---|
+| 1 | RoutingLayers_POWER | POWER | all |
+| 2 | RoutingLayers_DATA | DATA, DATA_DRAM | L1, L3, L8 |
+| 3 | RoutingLayers_CK | CK, CK_UNUSED | L1, L6, L8 |
+| 4 | RoutingLayers_ADDR | ADDR, CTRL, RESET, ALERT | L1, L3, L5, L6, L8 |
+| 5 | RoutingLayers (default) | everything else | L1, L3, L5, L6, L8 |
+
+In rules, Altium names the inner copper Mid Layer 1–6 (= L2–L7).
 
 ## 11. Open items
 

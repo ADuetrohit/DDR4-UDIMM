@@ -2,7 +2,7 @@
 
 Reads the Rules6 stream of the Altium .PcbDoc and compares each expected rule's scope,
 values, enabled state and priority. Rules not listed here are only counted.
-Also checks the differential pairs (DifferentialPairs6): CK0, CK1, DQS0-7 on the
+Also checks the DATA_DRAM net class and the differential pairs (DifferentialPairs6): CK0, CK1, DQS0-7 on the
 connector side and DQS0_DRAM-DQS7_DRAM between the 15 ohm resistors and the DRAMs.
 
 Usage:
@@ -36,7 +36,7 @@ EXPECTED = {
     "Width_ADDR_CTRL": ("Width", "InNetClass('ADDR') Or InNetClass('CTRL') Or InNetClass('RESET') Or "
                         "InNetClass('ALERT')", None,
                         {"MINLIMIT": 0.075, "PREFEREDWIDTH": 0.075, "MAXLIMIT": 0.15}, True, 3),
-    "Width_DATA": ("Width", "InNetClass('DATA')", None,
+    "Width_DATA": ("Width", "InNetClass('DATA') Or InNetClass('DATA_DRAM')", None,
                    {"MINLIMIT": 0.075, "PREFEREDWIDTH": 0.1, "MAXLIMIT": 0.1}, True, 4),
     "Width_SPD": ("Width", "InNetClass('SPD')", None,
                   {"MINLIMIT": 0.1, "PREFEREDWIDTH": 0.15, "MAXLIMIT": 0.3}, True, 5),
@@ -52,7 +52,22 @@ EXPECTED = {
     "DiffPairsRouting": ("DiffPairsRouting", "All", None,
                          {"MINLIMIT": 0.1, "MOSTFREQGAP": 0.1, "MAXLIMIT": 0.127, "MAXUNCOUPLEDLENGTH": 3.0,
                           "MINWIDTH": 0.075, "PREFWIDTH": 0.1, "MAXWIDTH": 0.15}, True, 3),
+    # Block 4: routing layers (Annex A A3 fabrication table); L2, L4, L7 are planes
+    "RoutingLayers_POWER": ("RoutingLayers", "InNetClass('POWER')", None, {"LAYERS": {1, 2, 3, 4, 5, 6, 7, 8}}, True, 1),
+    "RoutingLayers_DATA": ("RoutingLayers", "InNetClass('DATA') Or InNetClass('DATA_DRAM')", None,
+                           {"LAYERS": {1, 3, 8}}, True, 2),
+    "RoutingLayers_CK": ("RoutingLayers", "InNetClass('CK') Or InNetClass('CK_UNUSED')", None,
+                         {"LAYERS": {1, 6, 8}}, True, 3),
+    "RoutingLayers_ADDR": ("RoutingLayers", "InNetClass('ADDR') Or InNetClass('CTRL') Or InNetClass('RESET') Or "
+                           "InNetClass('ALERT')", None, {"LAYERS": {1, 3, 5, 6, 8}}, True, 4),
+    "RoutingLayers": ("RoutingLayers", "All", None, {"LAYERS": {1, 3, 5, 6, 8}}, True, 5),
 }
+
+# RoutingLayers keys for copper L1..L8 (Altium numbers inner layers Mid Layer 1..6)
+ROUTING_KEYS = {1: "TOP LAYER_V5", **{n: f"MID LAYER {n - 1}_V5" for n in range(2, 8)}, 8: "BOTTOM LAYER_V5"}
+
+# DATA_DRAM net class: DRAM side of the 88 data resistors, i.e. NetRn_1 except the ZQ nets (n = 12k+1)
+DATA_DRAM = {f"NetR{n}_1" for n in range(1, 97) if n % 12 != 1}
 
 # per-layer width fields in DiffPairsRouting rules (8 copper layers)
 LAYER_KEYS = ["TOPLAYER"] + [f"MIDLAYER{i}" for i in range(1, 7)] + ["BOTTOMLAYER"]
@@ -109,13 +124,21 @@ def main():
             continue
         got = {}
         for f in values:
+            if f == "LAYERS":
+                allowed = {n for n, key in ROUTING_KEYS.items() if r.get(key) == "TRUE"}
+                print(f"  {kind:18} {name:28} {'on ' if r.get('ENABLED') == 'TRUE' else 'off'} "
+                      f"prio {r.get('PRIORITY')}  layers " + ", ".join(f"L{n}" for n in sorted(allowed)))
+                if allowed != values[f]:
+                    errors.append(f"{name}: layers {sorted(allowed)}, expected {sorted(values[f])}")
+                continue
             if f.endswith("WIDTH") and kind == "DiffPairsRouting":
                 per_layer = {mm(r.get(f"{lk}_{f}")) for lk in LAYER_KEYS}
                 got[f] = per_layer.pop() if len(per_layer) == 1 else None
             else:
                 got[f] = mm(r.get(f))
-        print(f"  {kind:18} {name:28} {'on ' if r.get('ENABLED') == 'TRUE' else 'off'} "
-              f"prio {r.get('PRIORITY')}  " + "  ".join(f"{f.lower()} {v:.3f}" for f, v in got.items() if v))
+        if got:
+            print(f"  {kind:18} {name:28} {'on ' if r.get('ENABLED') == 'TRUE' else 'off'} "
+                  f"prio {r.get('PRIORITY')}  " + "  ".join(f"{f.lower()} {v:.3f}" for f, v in got.items() if v))
         if r.get("RULEKIND") != kind:
             errors.append(f"{name}: kind {r.get('RULEKIND')}, expected {kind}")
         if r.get("SCOPE1EXPRESSION") != s1 or (s2 is not None and r.get("SCOPE2EXPRESSION") != s2):
@@ -125,6 +148,8 @@ def main():
         if prio is not None and r.get("PRIORITY") != str(prio):
             errors.append(f"{name}: priority {r.get('PRIORITY')}, expected {prio}")
         for f, want in values.items():
+            if f == "LAYERS":
+                continue
             if got[f] is None or abs(got[f] - want) > 0.001:
                 errors.append(f"{name}: {f} {got[f]}, expected {want}")
 
@@ -138,6 +163,15 @@ def main():
             errors.append(f"differential pair {name} is {pairs[name]}, expected {nets}")
     for name in sorted(set(pairs) - set(PAIRS)):
         errors.append(f"unexpected differential pair {name} {pairs[name]}")
+
+    classes = {r.get("NAME"): {v for k, v in r.items() if k[:1] == "M" and k[1:].isdigit()}
+               for r in records(sys.argv[1], "Classes6/Data") if r.get("KIND") == "0"}
+    dd = classes.get("DATA_DRAM")
+    print(f"Net class DATA_DRAM: {len(dd) if dd is not None else 'missing'} nets (expected {len(DATA_DRAM)})")
+    if dd is None:
+        errors.append("net class DATA_DRAM missing")
+    elif dd != DATA_DRAM:
+        errors.append(f"DATA_DRAM missing {sorted(DATA_DRAM - dd)}, extra {sorted(dd - DATA_DRAM)}")
 
     others = sorted(n for n in have if n not in EXPECTED)
     print(f"\nOther rules (not checked): {len(others)}")
