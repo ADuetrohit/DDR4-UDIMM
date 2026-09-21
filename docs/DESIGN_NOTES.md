@@ -191,7 +191,7 @@ Set in Altium block by block; `tools/check_rules.py` checks every value, scope a
 
 | Rule | Scope | Clearance (mm) |
 |---|---|---|
-| Clearance_LineToShape | IsTrack ↔ InPolygon | 0.20 |
+| Clearance_LineToShape | anything ↔ InPolygon | 0.20 |
 | Clearance_GoldFingers | J1 ↔ J1 | 0.20 |
 | Clearance_ViaToBGA | via ↔ DRAM (SA_MFG) pad | 0.175 |
 | Clearance_ViaToOtherPad | via ↔ pad | 0.15 |
@@ -254,6 +254,15 @@ The DRAM footprint `SA_MFG` (read from the PcbDoc) has 78 round pads of 0.34 mm 
 |---|---|---|---|---|
 | 1 | RoutingVias_POWER | POWER | 0.40 / 0.50 / 0.60 | 0.20 / 0.25 / 0.30 |
 | 2 | RoutingVias | all | 0.40 / 0.40 / 0.45 | 0.20 / 0.20 / 0.25 |
+
+**Polygon pours (Block 6)** — L2, L4 and L7 are signal-type layers carrying VDD/GND polygon pours, so Altium's Power Plane rules don't apply; the polygon rules do.
+
+| Priority | Rule | Scope | Connection |
+|---|---|---|---|
+| 1 | PolygonConnect_Vias | vias | direct (solid) |
+| 2 | PolygonConnect | everything else | thermal relief, 4 spokes × 0.20 mm, 0.20 mm air gap, 90° |
+
+Which net pours on which layer (L2/L7 GND with VDD areas, L4 VDD, VTT and VPP islands) is decided after placement.
 
 Fanout_BGA: BGA style, away from centre, vias centred between pads. Hole size 0.2–0.3 mm, minimum annular ring 0.1 mm, hole-to-hole 0.254 mm. All vias are through-hole (1.40 mm board, 0.2 mm drill = 7:1 aspect ratio).
 

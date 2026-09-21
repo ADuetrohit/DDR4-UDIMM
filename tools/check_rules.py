@@ -23,7 +23,7 @@ EXPECTED = {
     "Clearance_ViaToVia": ("Clearance", "IsVia", "IsVia", {"GAP": 0.2}, True, None),
     "Clearance_LineToPad": ("Clearance", "IsTrack", "IsPad", {"GAP": 0.125}, True, None),
     "Clearance_PadToPad": ("Clearance", "IsPad", "IsPad", {"GAP": 0.25}, True, None),
-    "Clearance_LineToShape": ("Clearance", "IsTrack", "InPolygon", {"GAP": 0.2}, True, None),
+    "Clearance_LineToShape": ("Clearance", "All", "InPolygon", {"GAP": 0.2}, True, None),
     "Clearance": ("Clearance", "All", "All", {"GAP": 0.1}, True, None),
     "ComponentClearance_Physical": ("ComponentClearance", "Not InComponent('J1')", "Not InComponent('J1')",
                                     {"GAP": 0.25}, True, None),
@@ -73,6 +73,11 @@ EXPECTED = {
                    {"FANOUTSTYLE": "BGA", "BGAVIAMODE": "Centered"}, True, 1),
     "HoleSize": ("HoleSize", "All", None, {"MINLIMIT": 0.2, "MAXLIMIT": 0.3}, True, None),
     "MinimumAnnularRing": ("MinimumAnnularRing", "All", None, {"MINIMUMRING": 0.1}, True, None),
+    # Block 6: polygon pours on L2/L4/L7 (signal layers, so polygon rules, not plane rules)
+    "PolygonConnect_Vias": ("PolygonConnect", "IsVia", None, {"CONNECTSTYLE": "Direct"}, True, 1),
+    "PolygonConnect": ("PolygonConnect", "All", None,
+                       {"CONNECTSTYLE": "Relief", "RELIEFENTRIES": "4", "POLYGONRELIEFANGLE": "90 Angle",
+                        "RELIEFCONDUCTORWIDTH": 0.2, "AIRGAPWIDTH": 0.2}, True, 2),
 }
 
 # RoutingLayers keys for copper L1..L8 (Altium numbers inner layers Mid Layer 1..6)
