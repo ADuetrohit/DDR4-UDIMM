@@ -64,7 +64,7 @@ EXPECTED = {
     # Block 5: vias and BGA fanout. DRAM pads 0.34 mm at 0.8 mm pitch: a via centred between four balls
     # can be up to 0.44 mm across with 0.175 mm via-to-BGA clearance
     "RoutingVias_POWER": ("RoutingVias", "InNetClass('POWER')", None,
-                          {"MINWIDTH": 0.4, "WIDTH": 0.5, "MAXWIDTH": 0.6,
+                          {"MINWIDTH": 0.4, "WIDTH": 0.45, "MAXWIDTH": 0.45,
                            "MINHOLEWIDTH": 0.2, "HOLEWIDTH": 0.25, "MAXHOLEWIDTH": 0.3}, True, 1),
     "RoutingVias": ("RoutingVias", "All", None,
                     {"MINWIDTH": 0.4, "WIDTH": 0.4, "MAXWIDTH": 0.45,

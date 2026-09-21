@@ -51,7 +51,7 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Placement: [docs/P
   - [x] Block 2 — widths: DATA 0.10 (min 0.075), ADDR/CTRL/CK 0.075 (max 0.15), POWER 0.3 (min 0.15), SPD 0.15, default 0.10
   - [x] Block 3 — differential pairs: 18 pairs (CK0, CK1, DQS0–7, and DQS0_DRAM–DQS7_DRAM between the 15 Ω resistors and the DRAMs), classes DP_DQS / DP_CK; DQS 0.10/0.10, CK 0.075/0.10 (max 0.15), gap 0.10–0.127, 3 mm max uncoupled
   - [x] Block 4 — routing layers: DATA (+ new class DATA_DRAM, 88 nets) on L1/L3/L8; CK on L1/L6/L8; ADDR/CTRL/RESET/ALERT and default on L1/L3/L5/L6/L8; POWER on all; L2/L4/L7 kept for planes
-  - [x] Block 5 — vias: signal 0.40/0.20 mm (max 0.45 to fit between DRAM balls), POWER 0.50/0.25 mm; BGA fanout centred between pads; holes 0.2–0.3 mm, annular ring ≥ 0.1 mm
+  - [x] Block 5 — vias: signal 0.40/0.20 mm (max 0.45 to fit between DRAM balls), POWER 0.45/0.25 mm (JEDEC Table 14 large via); BGA fanout centred between pads; holes 0.2–0.3 mm, annular ring ≥ 0.1 mm
   - [x] Block 6 — polygon pours (L2/L4/L7 are signal layers with VDD/GND pours): vias direct-connect, pads 4-spoke thermal relief 0.2/0.2 mm; 0.2 mm clearance from any object to polygon copper
   - [x] Block 7 — placement: height ≤ 1.2 mm, top side only, room `Room_FingerZone` keeps every part except J1 out of the bottom 4.0 mm (MO-309 component area)
   - [ ] Block 8 xSignals + length matching (after placement)
@@ -96,6 +96,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-22 | R102 moved beside U1 (ALERT_n pull-up before the first DRAM); power via set to JEDEC's 0.45/0.25 mm large via; final placement re-recorded |
 | 2026-09-22 | Correction: ALERT_n pull-up R102 belongs before the first DRAM U1 (Annex A p.12, main spec 6.3.7), not after U8; plan and docs updated. JEDEC length-matching rules (Tables 10–12, §6.4) recorded for Block 8 |
 | 2026-09-22 | Placement finalised by hand (caps and terminations nudged ≤ 2 mm, C49 to the other side of U9; DRAMs, SPD and 15 Ω resistors unchanged); recorded as `placement_final.csv` |
 | 2026-09-22 | **Placement complete**: placement script run in Altium, all 206 parts verified at their planned positions; rules and stackup still PASS |

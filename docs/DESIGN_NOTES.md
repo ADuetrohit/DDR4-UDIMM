@@ -252,7 +252,7 @@ The DRAM footprint `SA_MFG` (read from the PcbDoc) has 78 round pads of 0.34 mm 
 
 | Priority | Rule | Nets | Via Ø min / pref / max | Hole min / pref / max |
 |---|---|---|---|---|
-| 1 | RoutingVias_POWER | POWER | 0.40 / 0.50 / 0.60 | 0.20 / 0.25 / 0.30 |
+| 1 | RoutingVias_POWER | POWER | 0.40 / 0.45 / 0.45 | 0.20 / 0.25 / 0.30 |
 | 2 | RoutingVias | all | 0.40 / 0.40 / 0.45 | 0.20 / 0.20 / 0.25 |
 
 **Polygon pours (Block 6)** — L2, L4 and L7 are signal-type layers carrying VDD/GND polygon pours, so Altium's Power Plane rules don't apply; the polygon rules do.
@@ -293,7 +293,7 @@ Fanout_BGA: BGA style, away from centre, vias centred between pads. Hole size 0.
 
 Plane referencing (Table 12): DQ/DQS reference **GND**; address, command, control, clock and VREFCA reference **VDD**.
 
-The routing-space rules (Table 14) match what is set: small via 0.20/0.40 mm (anti-pad 0.60), line–line 0.10, diff line–line 0.10, line–pad 0.125, line–shape 0.20, pad–pad 0.25. Table 14's large via is 0.25/0.45 mm.
+The routing-space rules (Table 14) match what is set: small via 0.20/0.40 mm (anti-pad 0.60), line–line 0.10, diff line–line 0.10, line–pad 0.125, line–shape 0.20, pad–pad 0.25. Table 14's large via (0.25/0.45 mm) is the power via.
 
 ## 11. Open items
 
