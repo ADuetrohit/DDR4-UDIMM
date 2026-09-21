@@ -84,7 +84,7 @@ On the PCB, one sits beside every pair of termination resistors and one at the c
 
  CK1_T ──/\/\/── CK1_C             (75 Ω across the unused clock pair)
 
- ALERT_n ──/\/\/── VDD             (47 Ω pull-up, at the far end of the chain)
+ ALERT_n ──/\/\/── VDD             (47 Ω pull-up, placed before the first DRAM U1)
 
  VPP    ──┤├── GND                 (0.1 µF, near the VPP fingers)
  VREFCA ──┤├── VDD                 (0.1 µF, near finger 146; returns to VDD)

@@ -86,7 +86,7 @@ def placement():
     put("R115", 126.0, 20.5, 90, "CK0_t 39 ohm after U8, TL5 13.0 mm (Annex A p.6)")
     put("R117", 127.3, 20.5, 90, "CK0_c 39 ohm after U8, TL5 13.0 mm (Annex A p.6)")
     put("C56", 128.6, 20.5, 90, "CK0 0.01 uF to VDD (Annex A p.6)")
-    put("R102", 129.9, 20.5, 90, "ALERT_n 47 ohm pull-up at the far end of the chain (Annex A p.12)")
+    put("R102", 4.4, 21.2, 90, "ALERT_n 47 ohm pull-up to VDD before the first DRAM U1, TL0 2.5 mm (Annex A p.12, main spec 6.3.7)")
 
     # Bulk VDD (Table 9: 4 per module), spread along the module
     put("C50", 48.8, DRAM_Y, 90, "4.7 uF bulk VDD (Table 9)")

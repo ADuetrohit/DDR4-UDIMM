@@ -96,6 +96,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-22 | Correction: ALERT_n pull-up R102 belongs before the first DRAM U1 (Annex A p.12, main spec 6.3.7), not after U8; plan and docs updated. JEDEC length-matching rules (Tables 10–12, §6.4) recorded for Block 8 |
 | 2026-09-22 | Placement finalised by hand (caps and terminations nudged ≤ 2 mm, C49 to the other side of U9; DRAMs, SPD and 15 Ω resistors unchanged); recorded as `placement_final.csv` |
 | 2026-09-22 | **Placement complete**: placement script run in Altium, all 206 parts verified at their planned positions; rules and stackup still PASS |
 | 2026-09-22 | Placement plan from JEDEC numbers: all 206 parts positioned (DRAMs over their byte lanes, rotated 180° so data balls face the fingers; terminations after U8 within TL5), with generator, Altium script and placement checker |

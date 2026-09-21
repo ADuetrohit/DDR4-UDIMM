@@ -14,7 +14,8 @@ Coordinates are in mm from the board origin: bottom-left corner, gold fingers al
 | TL0 finger → 15 Ω resistor **3.1–6.0 mm** (p.9) | 15 Ω resistors in two rows at y 5.0 and 7.0, between each byte's fingers and its DRAM |
 | TL3 DRAM → DRAM on the fly-by **12.8 mm** (p.6, p.10–11) | DRAM pitch 10.93 mm (≤ 12.8 mm, meandered to length) |
 | TL4 across the centre (U4 → U5) **46.3 mm** | U4–U5 centre spacing 45.82 mm |
-| TL5 last DRAM → termination **13.0 mm** (p.6, p.10–11) | 26 × 39 Ω VTT terminations, CK0 network and ALERT_n pull-up next to U8 |
+| TL5 last DRAM → termination **13.0 mm** (p.6, p.10–11) | 26 × 39 Ω VTT terminations and the CK0 network next to U8 |
+| ALERT_n: pull-up R1 then TL0 **2.5 mm** to the *first* DRAM (p.12; main spec 6.3.7) | R102 beside U1, the first DRAM on the clock chain |
 | CK1 finger → 75 Ω **3.7 ± 0.8 mm** (p.7) | R106 directly above the CK1 fingers |
 | Main spec Table 9 decoupling | Caps at each DRAM's VPP (B1, M9), VREFCA (J1) and VDD balls; caps at the VTT, VPP and VREFCA fingers; 4 × 4.7 µF bulk |
 | MO-309: components ≥ 4.00 mm above the finger edge | nothing below y 4.0 (room `Room_FingerZone`) |
@@ -61,7 +62,7 @@ Other parts:
 | 26 × 39 Ω terminations | two rows of 13 at y 23.2 / 25.6, x 113.0–128.6 | after U8 |
 | C57–C69 VTT | row at y 28.0, x 113.0–128.6 | 1 per 2 terminations |
 | R115 / R117 / C56 CK0 | (126.0 / 127.3 / 128.6, 20.5) | after U8 |
-| R102 ALERT_n 47 Ω | (129.9, 20.5) | far end of the chain |
+| R102 ALERT_n 47 Ω | (4.4, 21.2) | pull-up before the first DRAM U1 (ball L9 at x 6.1, y 18.5) |
 | C50, C51, C52, C55 bulk | (48.8, 15.3), (81.2, 15.3), (25.0, 25.5), (100.0, 25.5) | spread along the module |
 
 The order of the resistors inside a group (which 15 Ω goes to which finger, which termination to which address line) is set during routing by swapping identical parts; positions stay the same.

@@ -93,7 +93,7 @@ Notes:
 | CS0_n, CKE0, ODT0 | Termination to VTT | 39 Ω ± 5 % | 3 |
 | CK0_t / CK0_c | R1, R2 + C2 to VDD (C1 = 0) | 39 Ω ± 5 %, 0.01 µF | 2 R + 1 C |
 | CK1_t / CK1_c (unused) | R1 across the pair | 75 Ω ± 5 % | 1 |
-| ALERT_n | R1, **pull-up to VDD** at the far end of the fly-by chain (not in series) | 47 Ω ± 5 % | 1 |
+| ALERT_n | R1, **pull-up to VDD** at the start of the chain, 2.5 mm before the first DRAM (U1); the net then runs U1 → U8 and back to the connector (Annex A p.12, main spec 6.3.7) | 47 Ω ± 5 % | 1 |
 | ZQ (per DRAM) | RZQ to VSSQ | 240 Ω ± 1 % | 8 |
 
 Annex A notes that these resistor values are recommendations, and changing any of them requires simulation.
@@ -275,6 +275,25 @@ Which net pours on which layer (L2/L7 GND with VDD areas, L4 VDD, VTT and VPP is
 Drawing a room with Define: press Shift+Space for 90° corners and place each vertex with J → L (jump to location); in 45° mode Altium cuts the corners.
 
 Fanout_BGA: BGA style, away from centre, vias centred between pads. Hole size 0.2–0.3 mm, minimum annular ring 0.1 mm, hole-to-hole 0.254 mm. All vias are through-hole (1.40 mm board, 0.2 mm drill = 7:1 aspect ratio).
+
+**Length matching (for Block 8)** — main spec §6.3, Tables 10–12 and §6.4 (DDR4-3200 is a "higher speed" design). All lengths are velocity-compensated stripline equivalents: microstrip length ÷ 1.1.
+
+| Group | Rule |
+|---|---|
+| CK_t ↔ CK_c, DQS_t ↔ DQS_c | match segment by segment within 0.1 mm |
+| CTRL (CS, CKE, ODT) | within 1.0 mm of each other, and within CK ± 0.5 mm, connector → each DRAM |
+| ADDR/CMD | within 1.0 mm of each other, and within CK ± 0.5 mm (1-rank), connector → each DRAM |
+| TL2 stubs (via → DRAM ball) | ≤ 3.0 mm, matched per signal within ± 1.5 mm |
+| CK first → last DRAM | ≤ 153 mm |
+| Neck-down (end of TL1 at 0.1 mm) | 5.0–10.0 mm, matched ± 2.0 mm |
+| DQ/DM ↔ DQS in a byte | within DQS ± 1.0 mm, connector → DRAM |
+| Byte lane length | 12.0–32.0 mm (Annex A A3: 11.1–13.7 mm per byte; DQ lengths may move ± 0.8 mm at ≥ 2666) |
+| Higher-speed allowances (§6.4) | address DRAM → DRAM ± 5 mm, first → second DRAM ± 10 mm, U4 → U5 ± 20 mm; CK/CTRL adjusted to keep timing |
+| Via compensation | required inside a byte lane when via counts differ (e.g. 2.6 mm for an outer-to-outer via) |
+
+Plane referencing (Table 12): DQ/DQS reference **GND**; address, command, control, clock and VREFCA reference **VDD**.
+
+The routing-space rules (Table 14) match what is set: small via 0.20/0.40 mm (anti-pad 0.60), line–line 0.10, diff line–line 0.10, line–pad 0.125, line–shape 0.20, pad–pad 0.25. Table 14's large via is 0.25/0.45 mm.
 
 ## 11. Open items
 
