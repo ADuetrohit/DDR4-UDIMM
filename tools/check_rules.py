@@ -61,6 +61,18 @@ EXPECTED = {
     "RoutingLayers_ADDR": ("RoutingLayers", "InNetClass('ADDR') Or InNetClass('CTRL') Or InNetClass('RESET') Or "
                            "InNetClass('ALERT')", None, {"LAYERS": {1, 3, 5, 6, 8}}, True, 4),
     "RoutingLayers": ("RoutingLayers", "All", None, {"LAYERS": {1, 3, 5, 6, 8}}, True, 5),
+    # Block 5: vias and BGA fanout. DRAM pads 0.34 mm at 0.8 mm pitch: a via centred between four balls
+    # can be up to 0.44 mm across with 0.175 mm via-to-BGA clearance
+    "RoutingVias_POWER": ("RoutingVias", "InNetClass('POWER')", None,
+                          {"MINWIDTH": 0.4, "WIDTH": 0.5, "MAXWIDTH": 0.6,
+                           "MINHOLEWIDTH": 0.2, "HOLEWIDTH": 0.25, "MAXHOLEWIDTH": 0.3}, True, 1),
+    "RoutingVias": ("RoutingVias", "All", None,
+                    {"MINWIDTH": 0.4, "WIDTH": 0.4, "MAXWIDTH": 0.45,
+                     "MINHOLEWIDTH": 0.2, "HOLEWIDTH": 0.2, "MAXHOLEWIDTH": 0.25}, True, 2),
+    "Fanout_BGA": ("FanoutControl", "IsBGA", None,
+                   {"FANOUTSTYLE": "BGA", "BGAVIAMODE": "Centered"}, True, 1),
+    "HoleSize": ("HoleSize", "All", None, {"MINLIMIT": 0.2, "MAXLIMIT": 0.3}, True, None),
+    "MinimumAnnularRing": ("MinimumAnnularRing", "All", None, {"MINIMUMRING": 0.1}, True, None),
 }
 
 # RoutingLayers keys for copper L1..L8 (Altium numbers inner layers Mid Layer 1..6)
@@ -104,7 +116,7 @@ def rules(path):
         pos += 6 + n
         kv = dict(p.split("=", 1) for p in body.strip("\x00").split("|") if "=" in p)
         if "NAME" in kv:
-            out[kv["NAME"]] = kv
+            out[kv["NAME"].strip()] = kv
     return out
 
 
@@ -117,6 +129,8 @@ def main():
         sys.exit(__doc__)
     have = rules(sys.argv[1])
     errors = []
+    warnings = [f"rule name {r['NAME']!r} has leading/trailing spaces" for r in have.values()
+                if r["NAME"] != r["NAME"].strip()]
     for name, (kind, s1, s2, values, enabled, prio) in EXPECTED.items():
         r = have.get(name)
         if r is None:
@@ -130,6 +144,10 @@ def main():
                       f"prio {r.get('PRIORITY')}  layers " + ", ".join(f"L{n}" for n in sorted(allowed)))
                 if allowed != values[f]:
                     errors.append(f"{name}: layers {sorted(allowed)}, expected {sorted(values[f])}")
+                continue
+            if isinstance(values[f], str):
+                if r.get(f) != values[f]:
+                    errors.append(f"{name}: {f} {r.get(f)!r}, expected {values[f]!r}")
                 continue
             if f.endswith("WIDTH") and kind == "DiffPairsRouting":
                 per_layer = {mm(r.get(f"{lk}_{f}")) for lk in LAYER_KEYS}
@@ -148,7 +166,7 @@ def main():
         if prio is not None and r.get("PRIORITY") != str(prio):
             errors.append(f"{name}: priority {r.get('PRIORITY')}, expected {prio}")
         for f, want in values.items():
-            if f == "LAYERS":
+            if f == "LAYERS" or isinstance(want, str):
                 continue
             if got[f] is None or abs(got[f] - want) > 0.001:
                 errors.append(f"{name}: {f} {got[f]}, expected {want}")
@@ -175,6 +193,8 @@ def main():
 
     others = sorted(n for n in have if n not in EXPECTED)
     print(f"\nOther rules (not checked): {len(others)}")
+    for w in warnings:
+        print("WARNING", w)
     for e in errors:
         print("ERROR", e)
     print("PASS" if not errors else f"FAIL ({len(errors)} errors)")

@@ -246,6 +246,17 @@ Net class **DATA_DRAM** holds the 88 resistor-to-DRAM data nets: `NetRn_1` for n
 
 In rules, Altium names the inner copper Mid Layer 1–6 (= L2–L7).
 
+**Vias and fanout (Block 5)**
+
+The DRAM footprint `SA_MFG` (read from the PcbDoc) has 78 round pads of 0.34 mm at 0.8 mm pitch, 13 rows × 3 + 3 columns with the middle three columns empty, matching the Micron 78-ball SA ballout. A via centred between four balls sits 0.566 mm from each ball centre, so with a 0.17 mm pad radius and the 0.175 mm via-to-BGA clearance its pad can be at most 0.44 mm. One 0.075 mm trace between two balls needs 0.075 + 2 × 0.125 = 0.325 mm of the 0.46 mm gap.
+
+| Priority | Rule | Nets | Via Ø min / pref / max | Hole min / pref / max |
+|---|---|---|---|---|
+| 1 | RoutingVias_POWER | POWER | 0.40 / 0.50 / 0.60 | 0.20 / 0.25 / 0.30 |
+| 2 | RoutingVias | all | 0.40 / 0.40 / 0.45 | 0.20 / 0.20 / 0.25 |
+
+Fanout_BGA: BGA style, away from centre, vias centred between pads. Hole size 0.2–0.3 mm, minimum annular ring 0.1 mm, hole-to-hole 0.254 mm. All vias are through-hole (1.40 mm board, 0.2 mm drill = 7:1 aspect ratio).
+
 ## 11. Open items
 
 - [ ] Download official CAD models for every BOM part (see [CAD_MODELS.md](CAD_MODELS.md))
