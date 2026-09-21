@@ -60,24 +60,28 @@ Full dimensioned drawings and the Altium build steps: [FOOTPRINT_EDGE.md](FOOTPR
 
 Minimum trace width is 0.075 mm (Annex A). The fab's capability still needs to be confirmed.
 
-**As built in the PcbDoc (Layer Stack Manager, 2026-09-21).** Copper names: L1 `Top Layer 1`, L2 `L2_PWR_GND`, L3 `L3_DQ_ADDR`, L4 `L4_VDD`, L5 `L5_ADDR`, L6 `L6_ADDR_CK`, L7 `L7_PWR_GND`, L8 `Bottom Layer 1`. Outer copper 1.4 mil (½ oz + plating), inner 0.7 mil, all dielectrics Dk 4.8 (PP-006 prepreg, FR-4 core between L4 and L5), solder resist 0.4 mil Dk 3.5. Thickness without mask **1.398 mm**. Checked by `tools/check_stackup.py`.
+**As built in the PcbDoc (Layer Stack Manager, 2026-09-22).** Copper names: L1 `Top Layer 1`, L2 `L2_PWR_GND`, L3 `L3_DQ_ADDR`, L4 `L4_VDD`, L5 `L5_ADDR`, L6 `L6_ADDR_CK`, L7 `L7_PWR_GND`, L8 `Bottom Layer 1`. Outer copper 1.4 mil (½ oz + plating), inner 0.7 mil, all dielectrics **Dk 4.2** (PP-006 prepreg, FR-4 core between L4 and L5), solder resist 0.4 mil Dk 3.5. Thickness without mask **1.398 mm**. Checked by `tools/check_stackup.py`.
 
-Widths Altium solved for each profile (mm; diff pairs at 0.10 mm gap):
+Why Dk 4.2: the Annex A table gives 0.10 mm = 50 Ω, 0.075 mm = 55 Ω and 0.15 mm = 40 Ω on L3. With Dk 4.8 Altium needed 0.084 / 0.066 / 0.138 mm, which only fits the Annex A numbers at Dk ≈ 4.2–4.3 (typical FR-4 prepreg at DDR4 frequencies). The fab's material sets the real value; send them the Annex A impedance table for controlled-impedance tuning.
 
-| Profile | L1 / L8 | L3 | L5 | L6 |
-|---|---|---|---|---|
-| SE_50 (50 Ω ±10 %) | 0.100 | 0.084 | 0.086 | 0.086 |
-| SE_55 (55 Ω ±10 %) | 0.080 | off | off | off |
-| SE_40 (40 Ω ±10 %) | 0.155 | 0.138 | 0.141 | 0.141 |
-| DIFF_83 (83 Ω ±15 %) | 0.104 | 0.082 | — | 0.083 |
-| DIFF_93 (93 Ω ±15 %) | 0.078 | off | — | off |
-| DIFF_70 (70 Ω ±15 %) | 0.150 | 0.126 | — | 0.127 |
+Widths Altium solves for each profile (mm; diff pairs at 0.10 mm gap), enabled on the layers Annex A uses:
 
-References: L1 → L2; L3 → L2 + L4; L5 and L6 → L4 + L7 (L5 and L6 never reference each other); L8 → L7.
+| Profile | L1 / L8 | L3 | L5 | L6 | Annex A width |
+|---|---|---|---|---|---|
+| SE_50 (DQ) | 0.112 | 0.099 | 0.101 | 0.101 | 0.10 |
+| SE_55 (Address/CK) | 0.091 | 0.078 | 0.080 | 0.080 | 0.075 |
+| SE_40 | 0.171 | 0.157 | 0.160 | 0.160 | 0.15 |
+| DIFF_83 (DQS) | 0.116 | 0.098 | — | 0.098 | 0.10 / 0.10 |
+| DIFF_93 (CK) | 0.088 | — | — | 0.072* | 0.075 / 0.10 |
+| DIFF_70 (CK) | 0.166 | 0.147 | — | 0.147 | 0.15 / 0.10 |
+
+\* Below 0.075 mm, so it is routed at the Annex A width 0.075 / 0.10 (≈ 91 Ω, inside 93 Ω ± 15 %). The width rules (not the profiles) set the routed widths, using the Annex A column.
+
+References: L1 → L2; L3 → L2 + L4; L5 and L6 → L4 + L7 (L5 and L6 never reference each other); L8 → L7. In the Impedance tab each row's Top/Bottom Ref names the layers *around* that row, not the row itself.
 
 Notes:
-- SE_55 and DIFF_93 are **disabled on the inner layers**: there they would need 0.066 / 0.059 mm, below the 0.075 mm Annex A minimum. Route 55 Ω and 93 Ω nets on L1/L8 only.
 - Picking a material from the library (e.g. `CF-004`) resets the copper weight to 1 oz. After changing a layer's material, retype 1/2 oz (0.01778 mm) on inner layers.
+- Stackup edits live in the `[Stackup]` document: save that tab, then the PcbDoc (or File → Save All).
 - L5 and L6 are adjacent signal layers (420 µm apart). Route them roughly orthogonal where they overlap to limit broadside coupling.
 
 ## 4. Resistor values — Annex A, Raw Card A3
@@ -186,7 +190,8 @@ These warnings remain visible rather than weakening the project-wide ERC rule or
 - [ ] Final decoupling-capacitor counts (schematic step)
 - [ ] Confirm the fab supports 0.075 mm traces, 8 layers, 1.40 mm thickness and hard gold with bevel
 - [ ] SPD contents per Annex L (UDIMM), and the programming method
-- [ ] Component placement: all 206 parts are imported to the PCB but still outside the board (only J1 placed)
+- [ ] Component placement: DRAMs, SPD and 88 series resistors placed; 108 parts still off the board
+- [ ] `Clearance_LineToShape` (track–polygon 0.20 mm) was deleted on 2026-09-22; re-create it if that wasn't intended
 - [ ] Schematic part data: DRAM Comment says `MT40A2G8SA-062E IT:F` (BOM: `:F`); no MPN parameter on the 240 Ω, 1.0 µF, 4.7 µF and 0.01 µF parts; 0.1 µF datasheet link points to a 470 pF part
 - [ ] Project library paths are absolute (`D:\Projects\...`); make them relative
 - [ ] 204 of 206 parts come from the Altium Content Vault; snapshot them into a repo PcbLib/SchLib

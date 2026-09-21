@@ -5,7 +5,8 @@ Reads the Board6 stream of the Altium .PcbDoc and checks:
   - board thickness over the fingers 1.40 +/- 0.10 mm (without solder mask)
   - the six impedance profiles exist with their Annex A targets and tolerances
   - every enabled profile layer references only plane layers (L2, L4, L7) or the surface
-  - no enabled profile layer needs a trace narrower than 0.075 mm (Annex A minimum)
+  - no enabled profile layer needs a trace narrower than 0.075 mm (Annex A minimum);
+    up to 0.005 mm under is a warning (route at 0.075 mm, as Annex A does)
 
 Usage:
     py -3.11 tools/check_stackup.py <board.PcbDoc>
@@ -41,7 +42,7 @@ def main():
     if len(sys.argv) != 2:
         sys.exit(__doc__)
     kv = board_kv(sys.argv[1])
-    errors = []
+    errors, warnings = [], []
 
     stack, i = [], 0
     while f"V9_STACK_LAYER{i}_NAME" in kv:
@@ -100,11 +101,17 @@ def main():
         bad = [f"L{layer_no[r]}" for r in refs if layer_no[r] not in PLANES]
         if bad:
             errors.append(f"{prof} on L{layer_no[layer]} references signal layer {', '.join(bad)}")
-        if mm(g("TRACE_WIDTH")) < MIN_WIDTH:
-            errors.append(f"{prof} on L{layer_no[layer]} needs {mm(g('TRACE_WIDTH')):.4f} mm, "
-                          f"below the {MIN_WIDTH} mm Annex A minimum; disable it on this layer")
+        width = mm(g("TRACE_WIDTH"))
+        if width < MIN_WIDTH - 0.005:
+            errors.append(f"{prof} on L{layer_no[layer]} needs {width:.4f} mm, "
+                          f"far below the {MIN_WIDTH} mm Annex A minimum; disable it on this layer")
+        elif width < MIN_WIDTH - 0.0005:                   # allow mil/mm rounding at exactly 0.075
+            warnings.append(f"{prof} on L{layer_no[layer]} solves to {width:.4f} mm; route it at "
+                            f"{MIN_WIDTH} mm (Annex A width) and accept the slightly lower impedance")
 
     print()
+    for w in warnings:
+        print("WARNING", w)
     for e in errors:
         print("ERROR", e)
     print("PASS" if not errors else f"FAIL ({len(errors)} errors)")

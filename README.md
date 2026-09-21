@@ -38,12 +38,16 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Parts: [bom/BOM_v4
   - [x] Native Altium ERC: **0 errors**; 32 reviewed `no driving source` warnings are the address/command/clock/reset/SPD-address inputs driven externally through J1 ([record](docs/DESIGN_NOTES.md#9-schematic-erc-status))
 - [x] Stackup and impedance profiles — verified by `tools/check_stackup.py` (PASS)
   - [x] 8-layer stack per Annex A: 70/80/420/80/420/80/70 µm, 1.398 mm without mask ([table](docs/DESIGN_NOTES.md#3-pcb-stackup--annex-a-pcb-fabrication-table-of-a2-and-a3))
-  - [x] Six impedance profiles; every reference is a plane (L2/L4/L7); SE_55 and DIFF_93 limited to L1/L8 (inner widths would be under 0.075 mm)
+  - [x] Dielectric Dk 4.2 so Altium's widths match the Annex A table (50 Ω = 0.10 mm, 55 Ω ≈ 0.078 mm, 40 Ω ≈ 0.15 mm on L3)
+  - [x] Six impedance profiles on the Annex A layers; every reference is a plane (L2/L4/L7); DIFF_93 on L6 is routed at 0.075 mm (Annex A width)
 - [x] Board outline, key notch, latch notches (MO-309) — real PcbDoc Board Shape verified at **133.35 × 31.25 mm**, generated from the connector's 31 tracks + 9 arcs ([spec](docs/FOOTPRINT_EDGE.md))
-- [ ] Component placement
+- [ ] Component placement *(in progress)*
+  - [x] U1–U8 DRAMs (X 17–50 and 79–112 mm, Y 18.5), U9 SPD at the centre, 88 × 15 Ω series resistors in two rows above the fingers
+  - [ ] U4 Y 18.4 → 18.5; decide DRAM X (currently 8–14 mm off their byte-lane fingers)
+  - [ ] ZQ resistors, decoupling, VTT terminations, CK/ALERT networks, bulk caps (108 parts still off the board)
 - [ ] Design rules (impedance, length matching, clearances)
-  - [x] 19 net classes: BYTE0–BYTE7, DQ, DQS, DM, DATA, ADDR, CTRL, CK, CK_UNUSED, RESET, ALERT, POWER
-  - [x] Clearance rules: 0.10 mm general, track–pad 0.125, via–BGA pad 0.175, via–via 0.20, pad–pad 0.25, gold fingers 0.20, board outline 0.254
+  - [x] 21 net classes: BYTE0–BYTE7, DQ, DQS, DM, DATA, ADDR, CTRL, CK, CK_UNUSED, RESET, ALERT, SPD, POWER (connector side of the 15 Ω resistors; the DRAM side gets xSignals)
+  - [x] Clearance rules: 0.10 mm general, track–pad 0.125, via–BGA pad 0.175, via–via 0.20, pad–pad 0.25 (not inside a footprint), gold fingers 0.20, board outline 0.254; default ComponentClearance off (J1 spans the board), ComponentClearance_Physical 0.25 mm active
   - [ ] Differential pairs (CK0, DQS0–7), width rules from the impedance profiles, length matching, fanout vias, 1.2 mm height rule
 - [ ] Routing
 - [ ] Fabrication and assembly outputs
@@ -83,6 +87,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-22 | Stackup Block 0: Dk 4.8 → 4.2 so widths match Annex A; SE_55 back on L3/L5/L6 and DIFF_93 on L6 as Annex A specifies. Placement started (8 DRAMs, SPD, 88 series resistors). Net classes (21) and clearance-rule fixes synced |
 | 2026-09-21 | Stackup complete and verified (PASS): L6 single-ended references moved from L5 to L4, SE_55/DIFF_93 limited to outer layers; checker now also flags widths under 0.075 mm. PcbDoc synced from the Altium working copy, bringing in 19 net classes and 9 clearance rules |
 | 2026-09-21 | Stackup + impedance: 8-layer Annex A stack (1.398 mm) and six impedance profiles set in the PcbDoc; `tools/check_stackup.py` added (L6 reference fix pending); all 206 parts imported to the PCB, placement next |
 | 2026-09-20 | First PCB milestone: Altium project sources versioned; MO-309 Board Shape verified at 133.35 × 31.25 mm with center key and four latch notches |
