@@ -93,6 +93,7 @@ for _k in range(8):
     EXPECTED[f"ML_BYTE{_k}_DRAM"] = ("MatchedLengths", f"InNetClass('BYTE{_k}_DRAM')", None,
                                      {"TOLERANCE": 0.5}, True, None)
 
+EXPECTED["SolderMask_TentedVias"] = ("SolderMaskExpansion", "IsVia", None, {"ISTENTINGTOP": "TRUE"}, True, 1)
 EXPECTED["ML_DQS_PAIRS"] = ("MatchedLengths", "InDifferentialPairClass('DP_DQS')", None,
                             {"TOLERANCE": 0.1, "CHECKNETSINDIFFPAIR": "TRUE"}, True, None)   # Table 11
 

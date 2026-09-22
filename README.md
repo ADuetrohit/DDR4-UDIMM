@@ -62,6 +62,7 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Placement: [docs/P
   - [x] L4: solid VDD pour `L4_VDD_POUR`, (0, 1)–(133.35, 31.25), 3948.7 mm², clipped to the notches
   - [ ] L2 / L7: GND under the data band, VDD under the address band — drawn after routing
 - [ ] Routing
+  - [x] Vias tented (rule SolderMask_TentedVias) — clears ~2800 solder-mask-sliver warnings between fan-out vias and DRAM balls
   - [x] DRAM BGA fan-out U1–U8: 51 dog-bone vias each (42 signal 0.40/0.20 mm, 9 power 0.45/0.25 mm), vias centred between balls; Fanout_BGA now scoped to footprint SA_MFG
 - [ ] Fabrication and assembly outputs
 - [ ] Assembly, SPD programming, bring-up
@@ -103,6 +104,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-22 | First full DRC after fan-out: no shorts, clearance, width or length errors. Vias tented to clear 2809 solder-mask slivers; remaining items are expected while unrouted (un-routed nets, via antennae) or cosmetic silkscreen. L4 pour shelved during routing |
 | 2026-09-22 | Routing started: BGA fan-out of all eight DRAMs (408 vias, 51 per chip, identical pattern). Fanout rule re-scoped from IsBGA to HasFootprint('SA_MFG') — the Vault footprint isn't flagged BGA, so the first try used Auto fan-out |
 | 2026-09-22 | L4 VDD plane poured (3948.7 mm²); inner copper kept 1 mm off the bevelled finger edge; L2/L7 splits deferred until after routing |
 | 2026-09-22 | **Design rules complete** (Blocks 0–8): ML_DQS_PAIRS 0.1 mm added; `check_rules.py` PASS. Next: power/ground pours and routing |
