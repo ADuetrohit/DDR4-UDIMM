@@ -108,6 +108,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-23 | Byte 0 length tuning started: DQ7 tuned to 18.50 mm (inside DQS ± 1.0 mm), serpentine style fixed to Accordion/Rounded, and per-net tuning targets worked out (the gauge measures one net, so the Manual target is 16.66 − finger length) — see [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) |
 | 2026-09-23 | Byte 0 fully connected (11/11): the four crossing lines routed by `hardware/scripts/U1_Crossers.pas`; byte target is DQ3 at 17.66 mm and the others need +2.2 to +7.7 mm of tuning (option B: keep the JEDEC bit order, stretch to match) |
 | 2026-09-23 | DQS skew fixed by script on DQS1/3/4/5/7 (+0.331 mm each, 45° bumps): six of eight pairs now matched to ~0.001 mm; DQS2 (1.74 mm) and DQS6 (0.33 mm, no room for a bump) still open |
 | 2026-09-22 | Router `tools/route_dram_side.py` added; routing U1's four crossing lines the long way gives 12.9–20.5 mm (JEDEC ≈ 11.2–13.2), so a DQ0↔DQ3 / DQ4↔DQ7 nibble bit swap is proposed; half-matching rules ML_BYTEn(_DRAM) found unworkable, to be replaced by total-length checks |

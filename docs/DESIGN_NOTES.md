@@ -310,7 +310,25 @@ Wizard notes: the Addresses pattern `A[#]` misses A10_AP and A12_BC, and BG0/BG1
 
 **Byte-lane length strategy (decision, 2026-09-23).** The bit order stays exactly as JEDEC defines it (no DQ swapping), so four lines per byte cross the chip and set the byte's length. Byte 0 measures 9.95–17.66 mm finger-to-ball, so every line is tuned up to the longest (main spec Table 11: 12.0–32.0 mm per byte, matched within DQS ± 1.0 mm). Meander space: each DRAM has an empty corridor down its middle (between ball columns 3 and 7, ≈ 3.2 × 9.6 mm, no balls or fan-out vias on any layer - for U1 about x 7.7-10.9, y 10.1-20.1) plus the band just above the resistor rows.
 
-**Length tuning style.** Serpentines and skew bumps use 45° mitered corners (Altium length tuning: Accordion, Mitered Lines, miter 50 %, amplitude ≤ 0.4 mm near the DRAMs, spacing 0.3 mm = 3 × width). At DDR4-3200 edge rates a 90° corner on a 0.10 mm trace has no measurable signal effect; mitering is kept for etch quality and consistency. The coupled part of a pair has no room for bumps (0.1 mm to its partner), so pair skew is corrected where the two lines separate.
+**Tuning targets, byte 0 (2026-09-23).** Altium's tuning gauge measures only the net under the cursor, and each data line is three nets (finger-side `DQn`, the 15 Ω resistor ≈ 1.0 mm, DRAM-side `NetRm_1`), so the Manual target typed into the tuning dialog is a *per-net* number: DRAM-net target = 17.66 − 1.0 − finger length = 16.66 − finger. Table 11 allows DQ/DM within DQS ± 1.0 mm, so anything landing in 16.7–18.6 mm total passes; DQS0_T/C are tuned first because they set the reference.
+
+| Line | resistor | finger net | DRAM net | now | target for the DRAM net | to add |
+|---|---|---|---|---|---|---|
+| DQS0_T | R9 | 5.543 | NetR9_1 | 6.615 | 11.12 | +4.50 |
+| DQS0_C | R10 | 5.543 | NetR10_1 | 6.614 | 11.12 | +4.50 |
+| DQ0 | R2 | 2.950 | NetR2_1 | 9.429 | 13.71 | +4.28 |
+| DQ1 | R3 | 5.450 | NetR3_1 | 4.005 | 11.21 | +7.21 |
+| DQ2 | R4 | 2.950 | NetR4_1 | 8.271 | 13.71 | +5.44 |
+| DQ3 | R5 | 5.450 | NetR5_1 | 11.209 | 11.21 | done |
+| DQ4 | R6 | 2.950 | NetR6_1 | 11.021 | 13.71 | +2.69 |
+| DQ5 | R12 | 5.450 | NetR12_1 | 5.916 | 11.21 | +5.29 |
+| DQ6 | R7 | 2.950 | NetR7_1 | 9.361 | 13.71 | +4.35 |
+| DQ7 | R8 | 5.450 | NetR8_1 | 12.048 | 11.21 | done (+0.84 over, inside ± 1.0) |
+| DM0 | R11 | 2.950 | NetR11_1 | 6.001 | 13.71 | +7.71 |
+
+All lengths in mm, physical (not velocity-compensated); `tools/check_lengths.py` reports both.
+
+**Length tuning style.** Serpentines use Accordion / **Rounded** (semicircular humps, chosen 2026-09-23 over Mitered Lines for etch quality and appearance), amplitude ≤ 1.0 mm in the chip corridor and ≤ 0.4 mm near the balls, spacing 0.3 mm = 3 × width; skew bumps written by script use 45° mitered corners. At DDR4-3200 edge rates a 90° corner on a 0.10 mm trace has no measurable signal effect; mitering is kept for etch quality and consistency. The coupled part of a pair has no room for bumps (0.1 mm to its partner), so pair skew is corrected where the two lines separate.
 
 **Finding (2026-09-22): byte-lane crossings and the half-matching rules.** On each DRAM the data balls are grouped DQ1/3/5/7 + DM on one side and DQ0/2/4/6 + DQS on the other, while the resistors follow finger order. Four lines per byte (DQ0, DQ3, DQ4, DQ7) must then cross the byte; routed that way (`tools/route_dram_side.py`) they come out 12.9–20.5 mm finger-to-ball against ≈ 11.2–13.2 mm needed (DQS ± 1.0 mm). Proposed fix, pending the author's decision: swap DQ0 ↔ DQ3 and DQ4 ↔ DQ7 within their nibbles on every DRAM sheet (allowed by DDR4; recorded in SPD bytes 60–77, "DQ Map for CRC" in Annex A), which makes all four short and straight. Also: ML_BYTEn / ML_BYTEn_DRAM match each half within 0.5 mm, which cannot hold because back-finger halves are always ≈ 2.5 mm longer than front-finger ones; JEDEC's rule is on the total finger-to-ball length, so these rules are to be replaced by a total-length check.
 
