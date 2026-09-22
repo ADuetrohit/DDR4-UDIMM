@@ -107,6 +107,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-22 | Data resistors re-planned to sit above their own fingers in finger order (front-finger nets low row, back-finger nets high row) so finger-side traces never cross; resistor-only Altium script `DDR4_DataResistors.PrjScr` generated |
 | 2026-09-22 | First routed trace DQ0 (3.24 mm, L1, 0.10 mm, inside Annex A TL0 3.2–3.6 mm); `tools/check_lengths.py` added |
 | 2026-09-22 | Data resistors flipped 90° → 270° (the plan had the finger-side pad on top); all 88 verified pad-by-pad from the PcbDoc. Fan-out stub widths confirmed: data 0.10, address 0.075, power 0.30 mm |
 | 2026-09-22 | First full DRC after fan-out: no shorts, clearance, width or length errors. Vias tented to clear 2809 solder-mask slivers; remaining items are expected while unrouted (un-routed nets, via antennae) or cosmetic silkscreen. L4 pour shelved during routing |

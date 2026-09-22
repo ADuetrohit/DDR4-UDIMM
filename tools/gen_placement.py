@@ -6,6 +6,7 @@ main spec's Table 9); see docs/PLACEMENT.md for the derivation.
 Writes:
   hardware/placement.csv                         designator, x, y, rotation, reason
   hardware/scripts/DDR4_Placement.pas (+ .PrjScr) Altium DelphiScript that places every part
+  hardware/scripts/DDR4_DataResistors.pas (+ .PrjScr) the same for the 88 data resistors only
 
 Run the script in Altium: open the PcbDoc > File > Run Script > Browse to DDR4_Placement.PrjScr
 > PlaceComponents > OK. It only moves and rotates existing parts, so it can be re-run safely.
@@ -16,12 +17,14 @@ Usage:
 import csv
 import os
 
+ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+
 # ---- JEDEC-derived constants (mm, board origin = bottom-left, fingers along y = 0) -------------
 LANE_X = [9.3, 18.7, 28.0, 37.3, 92.6, 102.0, 111.3, 120.7]   # centre of each byte's 11 data fingers
 DRAM_PITCH = 10.93        # <= TL3 12.8 mm (Annex A p.10) between neighbouring DRAMs
 DRAM_Y = 15.3             # puts ball row A (data side) at y 10.5: finger-to-ball 11-14 mm (Annex A p.9)
 DRAM_ROT = 180            # ball A1 toward the fingers: data rows A-E face the connector
-RES_Y = (5.0, 7.0)        # 15 ohm rows: TL0 finger-to-resistor 3.1-6.0 mm, above the 4.0 mm finger zone
+RES_Y = (5.0, 7.5)        # 15 ohm rows: front-finger nets low, back-finger nets high (via in between)
 RES_PITCH = 1.3
 RES_ROT = 270             # pad 2 (connector-side net) toward the fingers, pad 1 (DRAM side) toward the DRAM
 CAP_DX = 4.6              # side decoupling: 0.85 mm outside the 7.5 mm DRAM body
@@ -32,6 +35,49 @@ BALL = 0.8                # DRAM ball pitch
 # data nets for the middle bytes (11.1 mm for byte 0 rising to 13.7 mm for byte 3).
 DRAM_X = [round(LANE_X[0] + i * DRAM_PITCH, 2) for i in range(4)] + \
          [round(LANE_X[7] - (3 - i) * DRAM_PITCH, 2) for i in range(4)]
+
+
+# On every DRAM sheet the data resistors R(base+1..base+11) carry these connector-side nets
+# (base = 12k+1): DQ0, DQ1, DQ2, DQ3, DQ4, DQ6, DQ7, DQS_t, DQS_c, DM, DQ5 of byte k.
+RES_ROLE = ["DQ0", "DQ1", "DQ2", "DQ3", "DQ4", "DQ6", "DQ7", "DQS_T", "DQS_C", "DM", "DQ5"]
+
+
+def finger_positions():
+    """{net: (x, side)} of every data finger, from the edge-connector tables."""
+    lib = os.path.join(ROOT, "hardware", "libraries", "edge_connector")
+    pads = {r["pad"]: (float(r["x"]), r["side"])
+            for r in csv.DictReader(open(os.path.join(lib, "DDR4_UDIMM_288_footprint_pads.csv"), encoding="utf-8"))}
+    return {r["Net on this design"]: pads[r["Pin"]]
+            for r in csv.DictReader(open(os.path.join(lib, "DDR4_UDIMM_288_pinout.csv"), encoding="utf-8"))}
+
+
+def role_net(k, role):
+    if role.startswith("DQS"):
+        return f"DQS{k}{role[3:]}"
+    if role == "DM":
+        return f"DM{k}"
+    return f"DQ{8 * k + int(role[2:])}"
+
+
+def data_resistors(k, fingers):
+    """Byte k's 11 series resistors, each above its own finger and in finger order, so no finger-side
+    trace crosses another: front-finger nets in the low row at the finger x; back-finger nets in the
+    high row at the finger x (they sit in the gaps between front fingers), with the DQS pair, whose
+    back fingers are only 0.85 mm apart, spread to 1.3 mm."""
+    base = 12 * k + 1
+    nets = [(fingers[role_net(k, role)], f"R{base + 1 + i}", role_net(k, role)) for i, role in enumerate(RES_ROLE)]
+    out = []
+    back = sorted((x, r, n) for (x, side), r, n in nets if side == "back")
+    for (x, side), r, n in nets:
+        if side == "front":
+            out.append((r, x, RES_Y[0], n))
+    dqs = [x for x, r, n in back if "DQS" in n]
+    mid = sum(dqs) / len(dqs)
+    for x, r, n in back:
+        if "DQS" in n:                              # keep finger order, 1.3 mm apart
+            x = mid + (RES_PITCH / 2 if x == max(dqs) else -RES_PITCH / 2)
+        out.append((r, x, RES_Y[1], n))
+    return out
 
 
 def ball(cx, col, row):
@@ -47,15 +93,13 @@ def placement():
         rows.append((des, round(x, 3), round(y, 3), rot, why))
 
     put("J1", 0.0, 0.0, 0, "gold fingers, board origin")
+    fingers = finger_positions()
     for k in range(8):
         cx, lane = DRAM_X[k], LANE_X[k]
         base = 12 * k + 1                           # R(base) = ZQ, R(base+1..base+11) = data
         put(f"U{k + 1}", cx, DRAM_Y, DRAM_ROT, f"byte {k} DRAM, lane {lane}, TL3/TL4 fly-by spacing")
-        xr = round((lane + cx) / 2, 2)              # 15 ohm group between its fingers and its DRAM
-        for i in range(6):
-            put(f"R{base + 1 + i}", xr - 3.25 + i * RES_PITCH, RES_Y[0], RES_ROT, f"byte {k} 15 ohm series, TL0")
-        for i in range(5):
-            put(f"R{base + 7 + i}", xr - 2.6 + i * RES_PITCH, RES_Y[1], RES_ROT, f"byte {k} 15 ohm series, TL0")
+        for r, x, y, net in data_resistors(k, fingers):
+            put(r, x, y, RES_ROT, f"byte {k} 15 ohm series for {net}, above its finger (TL0)")
         bx, by = ball(cx, 9, "B")
         put(f"R{base}", cx - CAP_DX, by, 90, f"U{k + 1} ZQ 240 ohm at ball B9 (5 pF max load)")
         c = 6 * k                                   # C(c+1) VREFCA, C(c+2..3) VDD, C(c+4) 1 uF, C(c+5..6) VPP
@@ -97,11 +141,11 @@ def placement():
     return rows
 
 
-def pas_script(rows):
+def pas_script(rows, what="every component of the DDR4 UDIMM", prjscr="DDR4_Placement.PrjScr"):
     out = ["{ DDR4_Placement.pas - generated by tools/gen_placement.py; do not edit by hand.",
-           "  Places every component of the DDR4 UDIMM at the JEDEC-derived position in",
+           f"  Places {what} at the JEDEC-derived position in",
            "  hardware/placement.csv (x, y in mm from the board origin, rotation in degrees).",
-           "  Run: open the PcbDoc > File > Run Script > Browse to DDR4_Placement.PrjScr > PlaceComponents > OK.",
+           f"  Run: open the PcbDoc > File > Run Script > Browse to {prjscr} > PlaceComponents > OK.",
            "  It only moves and rotates existing parts, so running it again is safe. }",
            "",
            "Var",
@@ -155,9 +199,23 @@ def pas_script(rows):
         out.append(f"    Place('{des}', {x:.3f}, {y:.3f}, {rot});")
     out += ["    PCBServer.PostProcess;",
             "    Board.ViewManager_FullUpdate;",
-            f"    ShowMessage('Placed ' + IntToStr(Placed) + ' of {len(rows) - 1} components.' + #13#10 + 'Not found: ' + Missed);",
+            f"    ShowMessage('Placed ' + IntToStr(Placed) + ' of {sum(1 for r in rows if r[0] != 'J1')} components.' + #13#10 + 'Not found: ' + Missed);",
             "End;", ""]
     return "\r\n".join(out)
+
+
+def write_script(pas_dir, name, text):
+    """Write <name>.pas and the one-document script project Altium's Run Script needs."""
+    with open(os.path.join(pas_dir, name + ".pas"), "w", newline="", encoding="ascii") as fh:
+        fh.write(text)
+    with open(os.path.join(pas_dir, name + ".PrjScr"), "w", newline="", encoding="ascii") as fh:
+        fh.write("\r\n".join(["[Design]", "Version=1.0", "HierarchyMode=0", "OpenOutputs=1", "ArchiveProject=0",
+                              "TimestampOutput=0", "SeparateFolders=0", "", "[Preferences]", "PrefsVaultGUID=",
+                              "PrefsRevisionGUID=", "", "[Document1]", f"DocumentPath={name}.pas",
+                              "AnnotationEnabled=1", "AnnotateStartValue=1", "AnnotationIndexControlEnabled=0",
+                              "AnnotateSuffix=", "AnnotateScope=All", "AnnotateOrder=-1", "DoLibraryUpdate=1",
+                              "DoDatabaseUpdate=1", "DItemRevisionGUID=", "GenerateClassCluster=0",
+                              "DocumentUniqueId=", ""]))
 
 
 def main():
@@ -172,17 +230,12 @@ def main():
         w.writerows(rows)
 
     pas_dir = os.path.join(root, "hardware", "scripts")
-    with open(os.path.join(pas_dir, "DDR4_Placement.pas"), "w", newline="", encoding="ascii") as fh:
-        fh.write(pas_script(rows))
-    with open(os.path.join(pas_dir, "DDR4_Placement.PrjScr"), "w", newline="", encoding="ascii") as fh:
-        fh.write("\r\n".join(["[Design]", "Version=1.0", "HierarchyMode=0", "OpenOutputs=1", "ArchiveProject=0",
-                              "TimestampOutput=0", "SeparateFolders=0", "", "[Preferences]", "PrefsVaultGUID=",
-                              "PrefsRevisionGUID=", "", "[Document1]", "DocumentPath=DDR4_Placement.pas",
-                              "AnnotationEnabled=1", "AnnotateStartValue=1", "AnnotationIndexControlEnabled=0",
-                              "AnnotateSuffix=", "AnnotateScope=All", "AnnotateOrder=-1", "DoLibraryUpdate=1",
-                              "DoDatabaseUpdate=1", "DItemRevisionGUID=", "GenerateClassCluster=0",
-                              "DocumentUniqueId=", ""]))
-    print(f"wrote hardware/placement.csv ({len(rows)} parts) and hardware/scripts/DDR4_Placement.pas")
+    write_script(pas_dir, "DDR4_Placement", pas_script(rows))
+    data = [r for r in rows if r[4].startswith("byte") and "15 ohm" in r[4]]
+    write_script(pas_dir, "DDR4_DataResistors", pas_script(data, "only the 88 x 15 ohm data resistors",
+                                                             "DDR4_DataResistors.PrjScr"))
+    print(f"wrote hardware/placement.csv ({len(rows)} parts), hardware/scripts/DDR4_Placement.pas and "
+          f"DDR4_DataResistors.pas ({len(data)} resistors)")
     print("DRAM X:", DRAM_X, " U4-U5 centre spacing:", round(DRAM_X[4] - DRAM_X[3], 2), "mm")
 
 

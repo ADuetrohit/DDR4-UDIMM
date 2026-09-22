@@ -11,7 +11,7 @@ Coordinates are in mm from the board origin: bottom-left corner, gold fingers al
 | JEDEC value (JESD21-C 4.20.26 Annex A, Raw Card A3) | Placement consequence |
 |---|---|
 | DQ/DQS/DM finger → DRAM ball **11.1–13.7 mm** total (p.9), shortest for bytes 0 and 7, longest for bytes 3 and 4 | Each DRAM sits over its own byte-lane fingers; the four middle DRAMs lean a few mm toward the centre. Data balls (rows A–E) must face the fingers. |
-| TL0 finger → 15 Ω resistor **3.1–6.0 mm** (p.9) | 15 Ω resistors in two rows at y 5.0 and 7.0, between each byte's fingers and its DRAM |
+| TL0 finger → 15 Ω resistor **3.1–6.0 mm** (p.9) | 15 Ω resistors directly above their own fingers: front-finger nets at y 5.0, back-finger nets at y 7.5 |
 | TL3 DRAM → DRAM on the fly-by **12.8 mm** (p.6, p.10–11) | DRAM pitch 10.93 mm (≤ 12.8 mm, meandered to length) |
 | TL4 across the centre (U4 → U5) **46.3 mm** | U4–U5 centre spacing 45.82 mm |
 | TL5 last DRAM → termination **13.0 mm** (p.6, p.10–11) | 26 × 39 Ω VTT terminations and the CK0 network next to U8 |
@@ -65,9 +65,13 @@ Other parts:
 | R102 ALERT_n 47 Ω | (4.4, 21.2) | pull-up before the first DRAM U1 (ball L9 at x 6.1, y 18.5) |
 | C50, C51, C52, C55 bulk | (48.8, 15.3), (81.2, 15.3), (25.0, 25.5), (100.0, 25.5) | spread along the module |
 
-**15 Ω orientation:** rotation 270°, so pad 2 (the connector-side net DQn/DQSn/DMn) points down to the fingers and pad 1 (NetRn_1, the DRAM side) points up to the DRAM. (The first plan used 90°, which put them the wrong way round; corrected 2026-09-22.)
+**15 Ω order and rows (revised 2026-09-22).** Each byte's 11 fingers alternate front/back. Every resistor now sits directly above its own finger, in finger order, so no finger-side trace crosses another:
 
-The order of the resistors inside a group (which 15 Ω goes to which finger, which termination to which address line) is set during routing by swapping identical parts; positions stay the same.
+- **Low row, y 5.0:** the 5 nets with **front** fingers (e.g. byte 0: DQ4, DQ0, DM0, DQ6, DQ2), each at its finger's x — a straight trace up on L1.
+- **High row, y 7.5:** the 6 nets with **back** fingers (byte 0: DQ5, DQ1, DQS0_C, DQS0_T, DQ7, DQ3), each at its finger's x (in the gaps between the front fingers); the trace comes up from the back through a via between the rows. The DQS pair's back fingers are only 0.85 mm apart, so their resistors are spread to 1.3 mm about the pair's centre.
+- **Rotation 270°:** pad 2 (the connector-side net DQn/DQSn/DMn) points down to the fingers, pad 1 (NetRn_1, the DRAM side) up to the DRAM.
+
+On every DRAM sheet R(12k+2) … R(12k+12) carry DQ0, DQ1, DQ2, DQ3, DQ4, DQ6, DQ7, DQS_t, DQS_c, DM, DQ5 of byte k (`RES_ROLE` in `tools/gen_placement.py`). The first plan grouped the 11 resistors in two rows by designator, which put them in a different order from their fingers (for byte 0, DQ4's finger is leftmost but R6 was near the right), and at 90°, which faced the wrong pad down. `hardware/scripts/DDR4_DataResistors.PrjScr` moves only these 88 resistors.
 
 ## Final placement vs the plan
 
