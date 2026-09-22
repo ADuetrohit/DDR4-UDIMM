@@ -63,7 +63,7 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Placement: [docs/P
   - [ ] L2 / L7: GND under the data band, VDD under the address band — drawn after routing
 - [ ] Routing
   - [x] Data lanes, finger → 15 Ω (TL0): **88 / 88** — 40 front-finger nets on L1 (2.95–3.20 mm), 48 back-finger nets L8 → via ≈ y 6.3 → L1 (5.45–5.81 mm); all 0.10 mm; DQS pairs matched within 0.042 mm
-  - [ ] Data lanes, 15 Ω → DRAM balls (TL1–TL3)
+  - [ ] Data lanes, 15 Ω → DRAM balls (TL1–TL3): byte 0 6/11 (DM0 on L1; DQ1, DQ2, DQ5, DQS0 pair via L3); DQS0 pair to be re-routed as a coupled pair (0.58 mm mismatch); length tuning after each byte is complete
   - [x] 88 × 15 Ω data resistors rotated to 270° so pad 2 (finger-side net) faces the fingers and pad 1 (DRAM side) faces the DRAM; placement script and placement_final.csv updated
   - [x] Vias tented (rule SolderMask_TentedVias) — clears ~2800 solder-mask-sliver warnings between fan-out vias and DRAM balls
   - [x] DRAM BGA fan-out U1–U8: 51 dog-bone vias each (42 signal 0.40/0.20 mm, 9 power 0.45/0.25 mm), vias centred between balls; Fanout_BGA now scoped to footprint SA_MFG
@@ -108,6 +108,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-22 | DRAM side started: byte 0 DM0 (L1) and DQ1, DQ2, DQ5, DQS0_T/C (L1 → via → L3 to the fan-out via); full finger-to-ball ≈ 9.1–11.7 mm, to be tuned |
 | 2026-09-22 | **Finger side of all 8 byte lanes routed (88/88)** |
 | 2026-09-22 | Routing: 47 of 48 back-finger data traces done (5.45–5.81 mm, one via each); all eight DQS pairs matched within 0.042 mm (limit 0.1) |
 | 2026-09-22 | Routing: first back-finger data traces (DQ5, DQ1, DQS0_C/T): L8 → via ≈ y 6.3 → L1, straight on a 0.025 mm grid; DQS0 halves equal |
