@@ -108,6 +108,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-23 | DQS skew fixed by script on DQS1/3/4/5/7 (+0.331 mm each, 45° bumps): six of eight pairs now matched to ~0.001 mm; DQS2 (1.74 mm) and DQS6 (0.33 mm, no room for a bump) still open |
 | 2026-09-22 | Router `tools/route_dram_side.py` added; routing U1's four crossing lines the long way gives 12.9–20.5 mm (JEDEC ≈ 11.2–13.2), so a DQ0↔DQ3 / DQ4↔DQ7 nibble bit swap is proposed; half-matching rules ML_BYTEn(_DRAM) found unworkable, to be replaced by total-length checks |
 | 2026-09-22 | Byte 0 DRAM side: DQ6 (R7 → U1-E3, 0.30 mm clearance) and DQ2 (R4 → U1-D3) routed on L1 → L3 |
 | 2026-09-22 | DQS0_C bump redrawn with 45° chamfers (every corner 135°) by `hardware/scripts/DQS0_C_Bump45.pas`; same +0.331 mm, pair still matched (0.002 mm) |
