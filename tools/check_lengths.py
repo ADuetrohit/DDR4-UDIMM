@@ -87,7 +87,7 @@ def main():
         names = [f"DQ{8 * k + j}" for j in range(8)] + [f"DQS{k}_T", f"DQS{k}_C", f"DM{k}"]
         if not any(n in m for n in names):
             continue
-        print(f"\nByte {k}: routed finger halves "
+        print(f"\nByte {k}: finger -> 15 ohm (TL0), compensated mm: "
               + ", ".join(f"{n} {m[n]['comp']:.2f}" for n in names if n in m))
     return 0
 
