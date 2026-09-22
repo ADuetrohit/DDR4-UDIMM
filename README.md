@@ -56,7 +56,8 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Placement: [docs/P
   - [x] Block 7 — placement: height ≤ 1.2 mm, top side only, room `Room_FingerZone` keeps every part except J1 out of the bottom 4.0 mm (MO-309 component area)
   - [ ] Block 8 — xSignals + length matching
     - [x] Address/command/clock: xSignal Multi-Chip Wizard (DDR4, fly-by J1 → U1 … U8) → classes ADDR_PP1–ADDR_PP8, 28 xSignals each; matched-length rules 1.0 mm per DRAM, CK pair 0.1 mm
-    - [ ] Data byte lanes: Altium's xSignal tools do not trace through the 15 Ω resistors on this board, so each half is matched instead — finger → resistor (BYTE0–7) within 0.5 mm and resistor → DRAM (classes BYTE0_DRAM–BYTE7_DRAM, created) within 0.5 mm, which keeps every DQ/DM within DQS ± 1.0 mm; full lengths checked by script after routing
+    - [x] Data byte lanes: Altium's xSignal tools do not trace through the 15 Ω resistors on this board, so each half is matched instead — 16 rules ML_BYTEn (finger → resistor) and ML_BYTEn_DRAM (resistor → DRAM), 0.5 mm each, keeping every DQ/DM within DQS ± 1.0 mm; full lengths checked by script after routing
+    - [ ] DQS pairs matched within 0.1 mm (Table 11)
 - [ ] Routing
 - [ ] Fabrication and assembly outputs
 - [ ] Assembly, SPD programming, bring-up
@@ -98,6 +99,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-22 | Block 8: 16 matched-length rules for the byte lanes (ML_BYTE0–7 and ML_BYTE0_DRAM–7_DRAM, 0.5 mm each), checked by `check_rules.py` |
 | 2026-09-22 | Block 8: net classes BYTE0_DRAM–BYTE7_DRAM (DRAM side of each byte's 11 × 15 Ω, NetR(12k+2…12k+12)_1) created and checked |
 | 2026-09-22 | Block 8: xSignal tools tried for the data lanes (wizard data group, between-components "through 1 series component", pin-pair); none trace through the 15 Ω resistors, test xSignals removed. Plan: split-segment matching (0.5 + 0.5 mm) per byte |
 | 2026-09-22 | Block 8 part 1: address/command/clock xSignals J1 → U1…U8 (ADDR_PP1–8, 28 each: A0–A13, A15_CAS, A16_RAS, ACT, BA0/1, BG0/1, CK0_T/C, CKE, CS, ODT, PAR, WE) and their matched-length rules |

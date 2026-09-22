@@ -86,6 +86,12 @@ EXPECTED = {
                         {"LAYER": "TOP", "CONFINEMENTSTYLE": "ConfineOut",
                          "REGION": [(0.0, 0.0), (0.0, 4.0), (133.35, 4.0), (133.35, 0.0)]}, True, None),
 }
+# Block 8: byte-lane matching in two halves (finger -> 15 ohm, 15 ohm -> DRAM), 0.5 mm each, so every
+# DQ/DM stays within DQS +/- 1.0 mm finger-to-ball (main spec Table 11)
+for _k in range(8):
+    EXPECTED[f"ML_BYTE{_k}"] = ("MatchedLengths", f"InNetClass('BYTE{_k}')", None, {"TOLERANCE": 0.5}, True, None)
+    EXPECTED[f"ML_BYTE{_k}_DRAM"] = ("MatchedLengths", f"InNetClass('BYTE{_k}_DRAM')", None,
+                                     {"TOLERANCE": 0.5}, True, None)
 
 # RoutingLayers keys for copper L1..L8 (Altium numbers inner layers Mid Layer 1..6)
 ROUTING_KEYS = {1: "TOP LAYER_V5", **{n: f"MID LAYER {n - 1}_V5" for n in range(2, 8)}, 8: "BOTTOM LAYER_V5"}
