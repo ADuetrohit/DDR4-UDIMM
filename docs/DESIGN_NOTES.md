@@ -310,6 +310,8 @@ Wizard notes: the Addresses pattern `A[#]` misses A10_AP and A12_BC, and BG0/BG1
 
 **Length tuning style.** Serpentines and skew bumps use 45° mitered corners (Altium length tuning: Accordion, Mitered Lines, miter 50 %, amplitude ≤ 0.4 mm near the DRAMs, spacing 0.3 mm = 3 × width). At DDR4-3200 edge rates a 90° corner on a 0.10 mm trace has no measurable signal effect; mitering is kept for etch quality and consistency. The coupled part of a pair has no room for bumps (0.1 mm to its partner), so pair skew is corrected where the two lines separate.
 
+**Finding (2026-09-22): byte-lane crossings and the half-matching rules.** On each DRAM the data balls are grouped DQ1/3/5/7 + DM on one side and DQ0/2/4/6 + DQS on the other, while the resistors follow finger order. Four lines per byte (DQ0, DQ3, DQ4, DQ7) must then cross the byte; routed that way (`tools/route_dram_side.py`) they come out 12.9–20.5 mm finger-to-ball against ≈ 11.2–13.2 mm needed (DQS ± 1.0 mm). Proposed fix, pending the author's decision: swap DQ0 ↔ DQ3 and DQ4 ↔ DQ7 within their nibbles on every DRAM sheet (allowed by DDR4; recorded in SPD bytes 60–77, "DQ Map for CRC" in Annex A), which makes all four short and straight. Also: ML_BYTEn / ML_BYTEn_DRAM match each half within 0.5 mm, which cannot hold because back-finger halves are always ≈ 2.5 mm longer than front-finger ones; JEDEC's rule is on the total finger-to-ball length, so these rules are to be replaced by a total-length check.
+
 ## 11. Open items
 
 - [ ] Download official CAD models for every BOM part (see [CAD_MODELS.md](CAD_MODELS.md))
