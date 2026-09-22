@@ -108,6 +108,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-22 | DQS0_C bump redrawn with 45° chamfers (every corner 135°) by `hardware/scripts/DQS0_C_Bump45.pas`; same +0.331 mm, pair still matched (0.002 mm) |
 | 2026-09-22 | DQS0 pair re-routed as a coupled pair on L3 and skew fixed with a 0.331 mm bump on DQS0_C by script `hardware/scripts/DQS0_C_LengthFix.pas`: DRAM-side halves 6.615 / 6.614 mm (limit 0.1 mm) |
 | 2026-09-22 | DRAM side started: byte 0 DM0 (L1) and DQ1, DQ2, DQ5, DQS0_T/C (L1 → via → L3 to the fan-out via); full finger-to-ball ≈ 9.1–11.7 mm, to be tuned |
 | 2026-09-22 | **Finger side of all 8 byte lanes routed (88/88)** |

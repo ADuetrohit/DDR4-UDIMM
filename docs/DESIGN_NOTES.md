@@ -308,6 +308,8 @@ Data byte lanes: none of Altium's xSignal tools (wizard data group, Create xSign
 
 Wizard notes: the Addresses pattern `A[#]` misses A10_AP and A12_BC, and BG0/BG1, ACT, PAR, CKE are not picked up, so add them with "Modify Nets in xSignal Classes"; RAS/CAS patterns `_RAS` / `_CAS` match A16_RAS / A15_CAS. The data group cannot trace through the 15 Ω series resistors, so the byte lanes are made separately.
 
+**Length tuning style.** Serpentines and skew bumps use 45° mitered corners (Altium length tuning: Accordion, Mitered Lines, miter 50 %, amplitude ≤ 0.4 mm near the DRAMs, spacing 0.3 mm = 3 × width). At DDR4-3200 edge rates a 90° corner on a 0.10 mm trace has no measurable signal effect; mitering is kept for etch quality and consistency. The coupled part of a pair has no room for bumps (0.1 mm to its partner), so pair skew is corrected where the two lines separate.
+
 ## 11. Open items
 
 - [ ] Download official CAD models for every BOM part (see [CAD_MODELS.md](CAD_MODELS.md))
