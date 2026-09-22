@@ -58,6 +58,9 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Placement: [docs/P
     - [x] Address/command/clock: xSignal Multi-Chip Wizard (DDR4, fly-by J1 → U1 … U8) → classes ADDR_PP1–ADDR_PP8, 28 xSignals each; matched-length rules 1.0 mm per DRAM, CK pair 0.1 mm
     - [x] Data byte lanes: Altium's xSignal tools do not trace through the 15 Ω resistors on this board, so each half is matched instead — 16 rules ML_BYTEn (finger → resistor) and ML_BYTEn_DRAM (resistor → DRAM), 0.5 mm each, keeping every DQ/DM within DQS ± 1.0 mm; full lengths checked by script after routing
     - [x] DQS pairs matched within 0.1 mm (ML_DQS_PAIRS, Table 11)
+- [ ] Power planes (JEDEC Table 12: DQ/DQS over GND; address, command, clock and VREFCA over VDD)
+  - [x] L4: solid VDD pour `L4_VDD_POUR`, (0, 1)–(133.35, 31.25), 3948.7 mm², clipped to the notches
+  - [ ] L2 / L7: GND under the data band, VDD under the address band — drawn after routing
 - [ ] Routing
 - [ ] Fabrication and assembly outputs
 - [ ] Assembly, SPD programming, bring-up
@@ -99,6 +102,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-22 | L4 VDD plane poured (3948.7 mm²); inner copper kept 1 mm off the bevelled finger edge; L2/L7 splits deferred until after routing |
 | 2026-09-22 | **Design rules complete** (Blocks 0–8): ML_DQS_PAIRS 0.1 mm added; `check_rules.py` PASS. Next: power/ground pours and routing |
 | 2026-09-22 | Block 8: 16 matched-length rules for the byte lanes (ML_BYTE0–7 and ML_BYTE0_DRAM–7_DRAM, 0.5 mm each), checked by `check_rules.py` |
 | 2026-09-22 | Block 8: net classes BYTE0_DRAM–BYTE7_DRAM (DRAM side of each byte's 11 × 15 Ω, NetR(12k+2…12k+12)_1) created and checked |

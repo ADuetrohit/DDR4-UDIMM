@@ -262,7 +262,7 @@ The DRAM footprint `SA_MFG` (read from the PcbDoc) has 78 round pads of 0.34 mm 
 | 1 | PolygonConnect_Vias | vias | direct (solid) |
 | 2 | PolygonConnect | everything else | thermal relief, 4 spokes × 0.20 mm, 0.20 mm air gap, 90° |
 
-Which net pours on which layer (L2/L7 GND with VDD areas, L4 VDD, VTT and VPP islands) is decided after placement.
+Pours so far: **L4_VDD_POUR** — net VDD on L4, rectangle (0, 1)–(133.35, 31.25), solid, pour over all same-net objects, 3948.7 mm². It starts 1 mm above the finger edge so the bevel never exposes inner copper. "Remove Dead Copper" stays **off** until VDD vias exist: with no VDD object on L4 yet, Altium deletes the whole pour as dead copper (area 0). L2/L7 (GND under the data band, VDD under the address band, per Table 12) and the VTT/VPP islands are drawn after routing. A large pour can be shelved (Polygon Manager → Shelving) while routing and repoured at the end.
 
 **Placement (Block 7)**
 
