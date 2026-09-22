@@ -62,6 +62,7 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Placement: [docs/P
   - [x] L4: solid VDD pour `L4_VDD_POUR`, (0, 1)–(133.35, 31.25), 3948.7 mm², clipped to the notches
   - [ ] L2 / L7: GND under the data band, VDD under the address band — drawn after routing
 - [ ] Routing
+  - [x] First trace: DQ0 finger → R2, 3.24 mm on L1 at 0.10 mm (Annex A TL0 for byte 0: 3.2–3.6 mm) — measured by `tools/check_lengths.py`
   - [x] 88 × 15 Ω data resistors rotated to 270° so pad 2 (finger-side net) faces the fingers and pad 1 (DRAM side) faces the DRAM; placement script and placement_final.csv updated
   - [x] Vias tented (rule SolderMask_TentedVias) — clears ~2800 solder-mask-sliver warnings between fan-out vias and DRAM balls
   - [x] DRAM BGA fan-out U1–U8: 51 dog-bone vias each (42 signal 0.40/0.20 mm, 9 power 0.45/0.25 mm), vias centred between balls; Fanout_BGA now scoped to footprint SA_MFG
@@ -97,6 +98,7 @@ py -3.11 tools/check_stackup.py "hardware/project/DDR4-UDIMM — 16 GB DDR4.PcbD
 py -3.11 tools/check_rules.py "hardware/project/DDR4-UDIMM — 16 GB DDR4.PcbDoc"     # design rules: scopes, values, priorities
 py -3.11 tools/gen_placement.py                   # regenerate hardware/placement.csv + Altium placement script
 py -3.11 tools/check_placement.py "hardware/project/DDR4-UDIMM — 16 GB DDR4.PcbDoc" # every part vs placement_final.csv (--plan: vs JEDEC plan, --export: record)
+py -3.11 tools/check_lengths.py "hardware/project/DDR4-UDIMM — 16 GB DDR4.PcbDoc" [nets]  # routed lengths, JEDEC-compensated (outer ÷ 1.1)
 ```
 
 Needs `py -3.11 -m pip install --user olefile`.
@@ -105,6 +107,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-22 | First routed trace DQ0 (3.24 mm, L1, 0.10 mm, inside Annex A TL0 3.2–3.6 mm); `tools/check_lengths.py` added |
 | 2026-09-22 | Data resistors flipped 90° → 270° (the plan had the finger-side pad on top); all 88 verified pad-by-pad from the PcbDoc. Fan-out stub widths confirmed: data 0.10, address 0.075, power 0.30 mm |
 | 2026-09-22 | First full DRC after fan-out: no shorts, clearance, width or length errors. Vias tented to clear 2809 solder-mask slivers; remaining items are expected while unrouted (un-routed nets, via antennae) or cosmetic silkscreen. L4 pour shelved during routing |
 | 2026-09-22 | Routing started: BGA fan-out of all eight DRAMs (408 vias, 51 per chip, identical pattern). Fanout rule re-scoped from IsBGA to HasFootprint('SA_MFG') — the Vault footprint isn't flagged BGA, so the first try used Auto fan-out |
