@@ -274,7 +274,7 @@ Pours so far: **L4_VDD_POUR** — net VDD on L4, rectangle (0, 1)–(133.35, 31.
 
 Drawing a room with Define: press Shift+Space for 90° corners and place each vertex with J → L (jump to location); in 45° mode Altium cuts the corners.
 
-Fanout_BGA: BGA style, away from centre, vias centred between pads. Hole size 0.2–0.3 mm, minimum annular ring 0.1 mm, hole-to-hole 0.254 mm. All vias are through-hole (1.40 mm board, 0.2 mm drill = 7:1 aspect ratio).
+Fanout_BGA (scope `HasFootprint('SA_MFG')`, because the Vault DRAM footprint is not flagged as a BGA so `IsBGA` matched nothing): BGA style, away from centre, vias centred between pads. Run with Route → Fanout → Component, *Fanout Pads Without Nets* off, *Outer 2 Rows* on, *escape diff pairs first* on: 51 vias per DRAM (42 × 0.40/0.20, 9 × 0.45/0.25 power). Hole size 0.2–0.3 mm, minimum annular ring 0.1 mm, hole-to-hole 0.254 mm. All vias are through-hole (1.40 mm board, 0.2 mm drill = 7:1 aspect ratio).
 
 **Length matching (for Block 8)** — main spec §6.3, Tables 10–12 and §6.4 (DDR4-3200 is a "higher speed" design). All lengths are velocity-compensated stripline equivalents: microstrip length ÷ 1.1.
 

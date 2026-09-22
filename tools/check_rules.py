@@ -69,7 +69,7 @@ EXPECTED = {
     "RoutingVias": ("RoutingVias", "All", None,
                     {"MINWIDTH": 0.4, "WIDTH": 0.4, "MAXWIDTH": 0.45,
                      "MINHOLEWIDTH": 0.2, "HOLEWIDTH": 0.2, "MAXHOLEWIDTH": 0.25}, True, 2),
-    "Fanout_BGA": ("FanoutControl", "IsBGA", None,
+    "Fanout_BGA": ("FanoutControl", "HasFootprint('SA_MFG')", None,
                    {"FANOUTSTYLE": "BGA", "BGAVIAMODE": "Centered"}, True, 1),
     "HoleSize": ("HoleSize", "All", None, {"MINLIMIT": 0.2, "MAXLIMIT": 0.3}, True, None),
     "MinimumAnnularRing": ("MinimumAnnularRing", "All", None, {"MINIMUMRING": 0.1}, True, None),
