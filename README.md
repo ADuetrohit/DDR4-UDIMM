@@ -63,7 +63,7 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Placement: [docs/P
   - [ ] L2 / L7: GND under the data band, VDD under the address band — drawn after routing
 - [ ] Routing
   - [x] Data lanes, finger → 15 Ω (TL0): **88 / 88** — 40 front-finger nets on L1 (2.95–3.20 mm), 48 back-finger nets L8 → via ≈ y 6.3 → L1 (5.45–5.81 mm); all 0.10 mm; DQS pairs matched within 0.042 mm
-  - [ ] Data lanes, 15 Ω → DRAM balls (TL1–TL3): byte 0: DM0 (L1), DQ1, DQ2, DQ5, DQ6, DQS0 pair (L3; pair matched to 0.002 mm) done — 7/11; crossing nets DQ0, DQ3, DQ4, DQ7 next on L8; length tuning after each byte is complete
+  - [ ] Data lanes, 15 Ω → DRAM balls (TL1–TL3): byte 0 complete (11/11): DM0 on L1, DQ1/DQ2/DQ5/DQ6/DQS0 pair on L3, crossing nets DQ0/DQ3/DQ4 on L8 and DQ7 on L3 (script `U1_Crossers.pas`); totals 9.95–17.66 mm, ≈48 mm of length tuning to do; length tuning after each byte is complete
   - [x] 88 × 15 Ω data resistors rotated to 270° so pad 2 (finger-side net) faces the fingers and pad 1 (DRAM side) faces the DRAM; placement script and placement_final.csv updated
   - [x] Vias tented (rule SolderMask_TentedVias) — clears ~2800 solder-mask-sliver warnings between fan-out vias and DRAM balls
   - [x] DRAM BGA fan-out U1–U8: 51 dog-bone vias each (42 signal 0.40/0.20 mm, 9 power 0.45/0.25 mm), vias centred between balls; Fanout_BGA now scoped to footprint SA_MFG
@@ -108,6 +108,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-23 | Byte 0 fully connected (11/11): the four crossing lines routed by `hardware/scripts/U1_Crossers.pas`; byte target is DQ3 at 17.66 mm and the others need +2.2 to +7.7 mm of tuning (option B: keep the JEDEC bit order, stretch to match) |
 | 2026-09-23 | DQS skew fixed by script on DQS1/3/4/5/7 (+0.331 mm each, 45° bumps): six of eight pairs now matched to ~0.001 mm; DQS2 (1.74 mm) and DQS6 (0.33 mm, no room for a bump) still open |
 | 2026-09-22 | Router `tools/route_dram_side.py` added; routing U1's four crossing lines the long way gives 12.9–20.5 mm (JEDEC ≈ 11.2–13.2), so a DQ0↔DQ3 / DQ4↔DQ7 nibble bit swap is proposed; half-matching rules ML_BYTEn(_DRAM) found unworkable, to be replaced by total-length checks |
 | 2026-09-22 | Byte 0 DRAM side: DQ6 (R7 → U1-E3, 0.30 mm clearance) and DQ2 (R4 → U1-D3) routed on L1 → L3 |
