@@ -26,6 +26,9 @@ import pcblib                                     # noqa: E402
 UNIT = 0.0254 / 10000
 GRID = 0.025
 CLEAR = 0.15                  # mm edge-to-edge (rules: 0.10 general, 0.125 track-pad) - extra margin
+PAD_CLEAR = 0.125             # Clearance_LineToPad
+VIA_PAD_CLEAR = 0.15          # Clearance_ViaToOtherPad
+VIA_BGA_CLEAR = 0.175         # Clearance_ViaToBGA (DRAM balls)
 WIDTH = 0.10
 VIA_D, VIA_HOLE = 0.40, 0.20
 LAYER_ID = {"L1": 1, "L3": 3, "L8": 32}
@@ -110,7 +113,7 @@ class Board:
                 return False
         for n, _, _, lay, c, w, h in self.pads:
             on = lay == 74 or (lay == 1 and lid == 1) or (lay == 32 and lid == 32)
-            if on and n != net and rect_dist(p, c, w, h) < radius + CLEAR:
+            if on and n != net and rect_dist(p, c, w, h) < radius + max(CLEAR, PAD_CLEAR):
                 return False
         return True
 
@@ -123,8 +126,9 @@ class Board:
         for n, c, d in self.vias:
             if n != net and math.dist(p, c) < r + d / 2 + CLEAR:
                 return False
-        for n, _, _, lay, c, w, h in self.pads:
-            if n != net and rect_dist(p, c, w, h) < r + CLEAR:
+        for n, comp, _, lay, c, w, h in self.pads:
+            need = VIA_BGA_CLEAR if comp and comp.startswith("U") else VIA_PAD_CLEAR
+            if n != net and rect_dist(p, c, w, h) < r + max(CLEAR, need):
                 return False
         return p[1] > 6.0                          # keep vias out of the finger area
 
