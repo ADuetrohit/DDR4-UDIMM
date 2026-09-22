@@ -2,7 +2,7 @@
 
 Reads the Rules6 stream of the Altium .PcbDoc and compares each expected rule's scope,
 values, enabled state and priority. Rules not listed here are only counted.
-Also checks the DATA_DRAM net class and the differential pairs (DifferentialPairs6): CK0, CK1, DQS0-7 on the
+Also checks the DATA_DRAM and BYTE0_DRAM-BYTE7_DRAM net classes and the differential pairs (DifferentialPairs6): CK0, CK1, DQS0-7 on the
 connector side and DQS0_DRAM-DQS7_DRAM between the 15 ohm resistors and the DRAMs.
 
 Usage:
@@ -213,6 +213,14 @@ def main():
         errors.append("net class DATA_DRAM missing")
     elif dd != DATA_DRAM:
         errors.append(f"DATA_DRAM missing {sorted(DATA_DRAM - dd)}, extra {sorted(dd - DATA_DRAM)}")
+    for k in range(8):                                  # BYTEk_DRAM: DRAM side of byte k's 11 resistors
+        want = {f"NetR{12 * k + i}_1" for i in range(2, 13)}
+        got = classes.get(f"BYTE{k}_DRAM")
+        if got is None:
+            errors.append(f"net class BYTE{k}_DRAM missing")
+        elif got != want:
+            errors.append(f"BYTE{k}_DRAM missing {sorted(want - got)}, extra {sorted(got - want)}")
+    print("Net classes BYTE0_DRAM-BYTE7_DRAM checked (11 nets each)")
 
     others = sorted(n for n in have if n not in EXPECTED)
     print(f"\nOther rules (not checked): {len(others)}")
