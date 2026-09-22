@@ -45,7 +45,7 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Placement: [docs/P
   - [x] Positions from Annex A (data-net lengths, fly-by TL3/TL4/TL5, CK1 TL0) and Table 9 decoupling: `tools/gen_placement.py` → `hardware/placement.csv` + `hardware/scripts/DDR4_Placement.pas`
   - [x] Placed by script in Altium; DRAMs rotated 180° so the data balls face the fingers
   - [ ] Full DRC pass on the placed board; silkscreen designators tidied before fab outputs
-- [ ] Design rules — built block by block, verified by `tools/check_rules.py` ([rules](docs/DESIGN_NOTES.md#10-pcb-design-rules))
+- [x] Design rules — built block by block, verified by `tools/check_rules.py` ([rules](docs/DESIGN_NOTES.md#10-pcb-design-rules))
   - [x] 30 net classes: BYTE0–BYTE7, BYTE0_DRAM–BYTE7_DRAM, DQ, DQS, DM, DATA, ADDR, CTRL, CK, CK_UNUSED, RESET, ALERT, SPD, POWER (connector side of the 15 Ω resistors) and DATA_DRAM (the 88 resistor-to-DRAM nets)
   - [x] Block 1 — clearances: 0.10 mm general, track–pad 0.125, via–BGA pad 0.175, via–via 0.20, pad–pad 0.25 (not inside a footprint), anything–polygon 0.20, gold fingers 0.20; component clearance 0.25 (J1 excluded)
   - [x] Block 2 — widths: DATA 0.10 (min 0.075), ADDR/CTRL/CK 0.075 (max 0.15), POWER 0.3 (min 0.15), SPD 0.15, default 0.10
@@ -54,10 +54,10 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Placement: [docs/P
   - [x] Block 5 — vias: signal 0.40/0.20 mm (max 0.45 to fit between DRAM balls), POWER 0.45/0.25 mm (JEDEC Table 14 large via); BGA fanout centred between pads; holes 0.2–0.3 mm, annular ring ≥ 0.1 mm
   - [x] Block 6 — polygon pours (L2/L4/L7 are signal layers with VDD/GND pours): vias direct-connect, pads 4-spoke thermal relief 0.2/0.2 mm; 0.2 mm clearance from any object to polygon copper
   - [x] Block 7 — placement: height ≤ 1.2 mm, top side only, room `Room_FingerZone` keeps every part except J1 out of the bottom 4.0 mm (MO-309 component area)
-  - [ ] Block 8 — xSignals + length matching
+  - [x] Block 8 — xSignals + length matching
     - [x] Address/command/clock: xSignal Multi-Chip Wizard (DDR4, fly-by J1 → U1 … U8) → classes ADDR_PP1–ADDR_PP8, 28 xSignals each; matched-length rules 1.0 mm per DRAM, CK pair 0.1 mm
     - [x] Data byte lanes: Altium's xSignal tools do not trace through the 15 Ω resistors on this board, so each half is matched instead — 16 rules ML_BYTEn (finger → resistor) and ML_BYTEn_DRAM (resistor → DRAM), 0.5 mm each, keeping every DQ/DM within DQS ± 1.0 mm; full lengths checked by script after routing
-    - [ ] DQS pairs matched within 0.1 mm (Table 11)
+    - [x] DQS pairs matched within 0.1 mm (ML_DQS_PAIRS, Table 11)
 - [ ] Routing
 - [ ] Fabrication and assembly outputs
 - [ ] Assembly, SPD programming, bring-up
@@ -99,6 +99,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-22 | **Design rules complete** (Blocks 0–8): ML_DQS_PAIRS 0.1 mm added; `check_rules.py` PASS. Next: power/ground pours and routing |
 | 2026-09-22 | Block 8: 16 matched-length rules for the byte lanes (ML_BYTE0–7 and ML_BYTE0_DRAM–7_DRAM, 0.5 mm each), checked by `check_rules.py` |
 | 2026-09-22 | Block 8: net classes BYTE0_DRAM–BYTE7_DRAM (DRAM side of each byte's 11 × 15 Ω, NetR(12k+2…12k+12)_1) created and checked |
 | 2026-09-22 | Block 8: xSignal tools tried for the data lanes (wizard data group, between-components "through 1 series component", pin-pair); none trace through the 15 Ω resistors, test xSignals removed. Plan: split-segment matching (0.5 + 0.5 mm) per byte |

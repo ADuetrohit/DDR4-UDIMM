@@ -93,6 +93,9 @@ for _k in range(8):
     EXPECTED[f"ML_BYTE{_k}_DRAM"] = ("MatchedLengths", f"InNetClass('BYTE{_k}_DRAM')", None,
                                      {"TOLERANCE": 0.5}, True, None)
 
+EXPECTED["ML_DQS_PAIRS"] = ("MatchedLengths", "InDifferentialPairClass('DP_DQS')", None,
+                            {"TOLERANCE": 0.1, "CHECKNETSINDIFFPAIR": "TRUE"}, True, None)   # Table 11
+
 # RoutingLayers keys for copper L1..L8 (Altium numbers inner layers Mid Layer 1..6)
 ROUTING_KEYS = {1: "TOP LAYER_V5", **{n: f"MID LAYER {n - 1}_V5" for n in range(2, 8)}, 8: "BOTTOM LAYER_V5"}
 
