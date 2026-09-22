@@ -65,6 +65,8 @@ Other parts:
 | R102 ALERT_n 47 Ω | (4.4, 21.2) | pull-up before the first DRAM U1 (ball L9 at x 6.1, y 18.5) |
 | C50, C51, C52, C55 bulk | (48.8, 15.3), (81.2, 15.3), (25.0, 25.5), (100.0, 25.5) | spread along the module |
 
+**15 Ω orientation:** rotation 270°, so pad 2 (the connector-side net DQn/DQSn/DMn) points down to the fingers and pad 1 (NetRn_1, the DRAM side) points up to the DRAM. (The first plan used 90°, which put them the wrong way round; corrected 2026-09-22.)
+
 The order of the resistors inside a group (which 15 Ω goes to which finger, which termination to which address line) is set during routing by swapping identical parts; positions stay the same.
 
 ## Final placement vs the plan

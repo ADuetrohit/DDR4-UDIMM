@@ -23,6 +23,7 @@ DRAM_Y = 15.3             # puts ball row A (data side) at y 10.5: finger-to-bal
 DRAM_ROT = 180            # ball A1 toward the fingers: data rows A-E face the connector
 RES_Y = (5.0, 7.0)        # 15 ohm rows: TL0 finger-to-resistor 3.1-6.0 mm, above the 4.0 mm finger zone
 RES_PITCH = 1.3
+RES_ROT = 270             # pad 2 (connector-side net) toward the fingers, pad 1 (DRAM side) toward the DRAM
 CAP_DX = 4.6              # side decoupling: 0.85 mm outside the 7.5 mm DRAM body
 BALL = 0.8                # DRAM ball pitch
 
@@ -52,9 +53,9 @@ def placement():
         put(f"U{k + 1}", cx, DRAM_Y, DRAM_ROT, f"byte {k} DRAM, lane {lane}, TL3/TL4 fly-by spacing")
         xr = round((lane + cx) / 2, 2)              # 15 ohm group between its fingers and its DRAM
         for i in range(6):
-            put(f"R{base + 1 + i}", xr - 3.25 + i * RES_PITCH, RES_Y[0], 90, f"byte {k} 15 ohm series, TL0")
+            put(f"R{base + 1 + i}", xr - 3.25 + i * RES_PITCH, RES_Y[0], RES_ROT, f"byte {k} 15 ohm series, TL0")
         for i in range(5):
-            put(f"R{base + 7 + i}", xr - 2.6 + i * RES_PITCH, RES_Y[1], 90, f"byte {k} 15 ohm series, TL0")
+            put(f"R{base + 7 + i}", xr - 2.6 + i * RES_PITCH, RES_Y[1], RES_ROT, f"byte {k} 15 ohm series, TL0")
         bx, by = ball(cx, 9, "B")
         put(f"R{base}", cx - CAP_DX, by, 90, f"U{k + 1} ZQ 240 ohm at ball B9 (5 pF max load)")
         c = 6 * k                                   # C(c+1) VREFCA, C(c+2..3) VDD, C(c+4) 1 uF, C(c+5..6) VPP
