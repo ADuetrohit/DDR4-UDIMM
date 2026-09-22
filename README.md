@@ -62,7 +62,7 @@ Full details: [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) · Placement: [docs/P
   - [x] L4: solid VDD pour `L4_VDD_POUR`, (0, 1)–(133.35, 31.25), 3948.7 mm², clipped to the notches
   - [ ] L2 / L7: GND under the data band, VDD under the address band — drawn after routing
 - [ ] Routing
-  - [ ] Data lanes, finger → 15 Ω (TL0): **40 / 88** — all front-finger nets done (L1, 0.10 mm, 2.95–3.20 mm, straight up); 48 back-finger nets next (via to L1)
+  - [ ] Data lanes, finger → 15 Ω (TL0): **44 / 88** — all 40 front-finger nets (L1, 0.10 mm, 2.95–3.20 mm) and 4 back-finger nets of byte 0 (L8 up to a via at y ≈ 6.3, then L1; 5.45–5.54 mm; DQS0 pair matched to 0.000 mm)
   - [x] 88 × 15 Ω data resistors rotated to 270° so pad 2 (finger-side net) faces the fingers and pad 1 (DRAM side) faces the DRAM; placement script and placement_final.csv updated
   - [x] Vias tented (rule SolderMask_TentedVias) — clears ~2800 solder-mask-sliver warnings between fan-out vias and DRAM balls
   - [x] DRAM BGA fan-out U1–U8: 51 dog-bone vias each (42 signal 0.40/0.20 mm, 9 power 0.45/0.25 mm), vias centred between balls; Fanout_BGA now scoped to footprint SA_MFG
@@ -107,6 +107,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-22 | Routing: first back-finger data traces (DQ5, DQ1, DQS0_C/T): L8 → via ≈ y 6.3 → L1, straight on a 0.025 mm grid; DQS0 halves equal |
 | 2026-09-22 | Routing: all 40 front-finger data traces finger → 15 Ω (5 per byte), L1, 0.10 mm, 2.95–3.20 mm |
 | 2026-09-22 | Resistor script run: all 88 data resistors verified at their finger-ordered positions (270°); old DQ0 trace removed; placement_final.csv re-recorded |
 | 2026-09-22 | Data resistors re-planned to sit above their own fingers in finger order (front-finger nets low row, back-finger nets high row) so finger-side traces never cross; resistor-only Altium script `DDR4_DataResistors.PrjScr` generated |
