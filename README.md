@@ -108,6 +108,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-23 | `tools/byte_status.py` added: per-byte worklist by designator (resistor, signal, DRAM ball, finger/DRAM/full length, net target, amount still to add), counting **arcs as well as tracks** — rounded serpentines are arcs, so track-only sums under-report. Byte 1: DQ13 (R24) routed |
 | 2026-09-23 | Rule **ML_BYTE0_FULL** (`InxSignalClass('BYTE0_FULL')`, 1.0 mm, group matched) replaces the disabled ML_BYTE0 / ML_BYTE0_DRAM half-rules; `check_rules.py` updated and PASS |
 | 2026-09-23 | xSignal class **BYTE0_FULL** created with the 11 full-path byte-0 xSignals; it replaces the unworkable ML_BYTE0 / ML_BYTE0_DRAM half-matching rules with one total-length rule |
 | 2026-09-23 | **Byte-0 xSignals created**: Design → xSignals → Create xSignals (J1 → U1) traced all 11 finger → 15 Ω → ball paths, 4 nodes each, once the byte was routed — so length tuning now reads the whole line and every target is simply 17.66 mm |
