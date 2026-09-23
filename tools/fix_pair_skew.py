@@ -17,10 +17,22 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import route_dram_side as R                      # noqa: E402
 
-# bump shape in local coordinates (u along the piece, v away from the partner), centred on u = 0
-BUMP = [(-0.28, 0.0), (-0.20, 0.08), (-0.20, 0.179), (-0.12, 0.259),
-        (0.12, 0.259), (0.20, 0.179), (0.20, 0.08), (0.28, 0.0)]
-BUMP_GAIN = sum(math.dist(a, b) for a, b in zip(BUMP, BUMP[1:])) - 0.56      # 0.3305 mm
+# Bump shape in local coordinates (u along the piece, v away from the partner), centred on u = 0.
+# The height h is solved from the length needed: a bump of height h adds 2h - 0.1875 mm, so
+# h = (gain + 0.1875) / 2. Corners stay at 45 degrees at every height.
+BASE = 0.56                   # footprint of one bump along the wire
+PITCH = 0.76                  # bump centre to bump centre
+
+
+def bump(h):
+    return [(-0.28, 0.0), (-0.20, 0.08), (-0.20, h - 0.08), (-0.12, h),
+            (0.12, h), (0.20, h - 0.08), (0.20, 0.08), (0.28, 0.0)]
+
+
+def height_for(gain):
+    return (gain + 0.1875) / 2.0
+
+
 LAYER_NAME = {1: "L1", 3: "L3"}
 
 
@@ -28,14 +40,14 @@ def length(tracks, net):
     return sum(math.dist(a, b) for n, _, a, b, _ in tracks if n == net)
 
 
-def shape(a, b, centres, side):
-    """Polyline from a to b with bumps centred at distances `centres` along the piece."""
+def shape(a, b, centres, side, h):
+    """Polyline from a to b with bumps of height h centred at distances `centres` along the piece."""
     L = math.dist(a, b)
     ux, uy = (b[0] - a[0]) / L, (b[1] - a[1]) / L
     vx, vy = -uy * side, ux * side
     pts = [a]
     for c in centres:
-        for du, dv in BUMP:
+        for du, dv in bump(h):
             u = c + du
             pts.append((a[0] + ux * u + vx * dv, a[1] + uy * u + vy * dv))
     pts.append(b)
@@ -70,36 +82,39 @@ def plan(path):
         if diff <= 0.1:
             print(f"DQS{k}: halves {lt:.3f} / {lc:.3f} mm - already matched")
             continue
-        n = round(diff / BUMP_GAIN)
-        if n < 1 or n > 3 or abs(diff - n * BUMP_GAIN) > 0.1:
-            print(f"DQS{k}: halves {lt:.3f} / {lc:.3f} mm, difference {diff:.3f} - too far for bumps, re-route")
-            continue
         short = c if lc < lt else t
         partner = t if short == c else c
         done = False
-        for seg in sorted((s for s in tracks if s[0] == short and s[1] in LAYER_NAME), key=lambda s: -math.dist(s[2], s[3])):
-            _, lay, a, b, _ = seg
-            L = math.dist(a, b)
-            need = 0.56 * n + 0.2 * (n - 1) + 0.2
-            if L < need:
+        # try the fewest, shortest bumps first: n bumps each adding diff/n
+        for n in range(1, 9):
+            h = height_for(diff / n)
+            if h < 0.12 or h > 0.60:              # too flat to draw, or too tall to fit beside a pair
                 continue
-            span = 0.56 * n + 0.2 * (n - 1)          # bumps plus 0.2 mm between them
-            starts = [0.1 + i * 0.025 for i in range(int((L - span - 0.2) / 0.025) + 1)]
-            starts.sort(key=lambda u: abs(u - (L - span) / 2))   # try the middle first, then slide
-            for first, side in ((u + 0.28, sd) for u in starts for sd in (1, -1)):
-                centres = [first + i * 0.76 for i in range(n)]
-                pts = shape(a, b, centres, side)
-                if fits(board, short, pts, LAYER_NAME[lay]):
-                    fixes.append((k, short, lay, a, b, pts, n))
-                    print(f"DQS{k}: {short} {lc if short == c else lt:.3f} -> +{n * BUMP_GAIN:.3f} mm "
-                          f"on {LAYER_NAME[lay]} ({a[0]:.3f},{a[1]:.3f})-({b[0]:.3f},{b[1]:.3f}), "
-                          f"{n} bump(s), partner {partner}")
-                    done = True
+            span = BASE * n + 0.2 * (n - 1)
+            for seg in sorted((s for s in tracks if s[0] == short and s[1] in LAYER_NAME),
+                              key=lambda s: -math.dist(s[2], s[3])):
+                _, lay, a, b, _ = seg
+                L = math.dist(a, b)
+                if L < span + 0.2:
+                    continue
+                starts = [0.1 + i * 0.025 for i in range(int((L - span - 0.2) / 0.025) + 1)]
+                starts.sort(key=lambda u: abs(u - (L - span) / 2))
+                for first, side in ((u + 0.28, sd) for u in starts for sd in (1, -1)):
+                    centres = [first + i * PITCH for i in range(n)]
+                    pts = shape(a, b, centres, side, h)
+                    if fits(board, short, pts, LAYER_NAME[lay]):
+                        fixes.append((k, short, lay, a, b, pts, n))
+                        print(f"DQS{k}: {short} {min(lt, lc):.3f} -> +{diff:.3f} mm on {LAYER_NAME[lay]} "
+                              f"({a[0]:.3f},{a[1]:.3f})-({b[0]:.3f},{b[1]:.3f}), "
+                              f"{n} bump(s) {h:.3f} mm tall, partner {partner}")
+                        done = True
+                        break
+                if done:
                     break
             if done:
                 break
         if not done:
-            print(f"DQS{k}: no straight piece of {short} with room for {n} bump(s) - tune by hand")
+            print(f"DQS{k}: halves {lt:.3f} / {lc:.3f}, difference {diff:.3f} - no room on {short}, re-route")
     return fixes
 
 

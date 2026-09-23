@@ -108,6 +108,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-23 | `fix_pair_skew.py` now sizes its bumps to the exact skew (height solved from the length needed, 1–8 bumps) instead of fixed 0.331 mm steps; DQS2's 1.743 mm fix generated as `DQS_SkewFix2.pas`. DQS0 re-routed shorter on the DRAM side and needs re-tuning |
 | 2026-09-23 | `tools/render_board.py` added: renders the PcbDoc (outline, copper, arcs, vias, pads, silkscreen) to PNG without opening Altium; board and U1 views in [docs/images/](docs/images/) |
 | 2026-09-23 | Byte 0 length tuning started: DQ7 tuned to 18.50 mm (inside DQS ± 1.0 mm), serpentine style fixed to Accordion/Rounded, and per-net tuning targets worked out (the gauge measures one net, so the Manual target is 16.66 − finger length) — see [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) |
 | 2026-09-23 | Byte 0 fully connected (11/11): the four crossing lines routed by `hardware/scripts/U1_Crossers.pas`; byte target is DQ3 at 17.66 mm and the others need +2.2 to +7.7 mm of tuning (option B: keep the JEDEC bit order, stretch to match) |
