@@ -57,6 +57,12 @@ def facts(path):
                   for r in records(ole, "DifferentialPairs6/Data") if r.get("NAME")}
     f["rules"] = {r.get("NAME"): r for r in records(ole, "Rules6/Data") if r.get("NAME")}
     f["bytes"] = {k: BS.byte_rows(path, k) for k in range(8)}
+    f["net_pins"] = collections.defaultdict(list)
+    for net, des, pin, _lay, _xy, _w, _h in pads:
+        if net and des:
+            f["net_pins"][net].append((des, pin))
+    for net in f["net_pins"]:
+        f["net_pins"][net].sort()
     return f
 
 
@@ -232,10 +238,12 @@ def build_html(f, board_name):
         for r in sorted(rows, key=lambda r: r["res"] and int(r["res"][1:])):
             add = target - r["total"]
             state = "in window" if abs(add) <= 1.0 else ("route it" if r["dram"] < ROUTED else "+%.2f mm" % add)
-            body.append([r["res"], r["signal"], "%s-%s" % (dram, r["ball"]), "L1 + L3 or L1 + L8",
+            jpin = ", ".join(p for d, p in f["net_pins"].get(r["signal"], []) if d == "J1")
+            body.append([r["res"], r["signal"], jpin or "-", "NetR%s_1" % r["res"][1:],
+                         "%s-%s" % (dram, r["ball"]), "L1 + L3 or L1 + L8",
                          "%.2f" % r["finger"], "%.2f" % r["dram"], "%.2f" % r["total"], state])
-        H.append(table(["Resistor", "Signal", "DRAM ball", "Layers", "finger mm", "DRAM mm", "full mm", "to do"],
-                       body))
+        H.append(table(["Resistor", "Finger net", "J1 pin", "DRAM-side net", "DRAM ball", "Layers",
+                        "finger mm", "DRAM mm", "full mm", "to do"], body))
 
     H.append("<h2>5. Address, command and control</h2>")
     H.append("<p>Fly-by from J1 through U1 to U8 and then into the 39 ohm termination to VTT. "
@@ -251,17 +259,27 @@ def build_html(f, board_name):
     H.append(table(["Resistor", "Signal", "Function", "Layers", "Status"], rows))
 
     H.append("<h2>6. Clocks, ZQ, ALERT_n and SPD</h2>")
-    rows = [["R115 / R117 + C56", "CK0_T / CK0_C", "39 ohm each plus 0.01 uF to VDD, after the last DRAM",
-             "L1, L6, L8", "differential pair, 93 ohm, gap 0.10 mm"],
+    rows = [["R115", "CK0_T / NetC56_1", "39 ohm, clock termination after the last DRAM", "L1, L6, L8",
+             "pairs with R117 and C56"],
+            ["R117", "CK0_C / NetC56_1", "39 ohm, clock termination", "L1, L6, L8", "pairs with R115"],
+            ["C56", "NetC56_1 / VDD", "0.01 uF from the termination node to VDD", "-",
+             "main spec Table 9 note 2"],
             ["R106", "CK1_T / CK1_C", "75 ohm across the unused clock pair", "L1, L6, L8",
-             "terminate at the connector end"],
-            [span(g.get("ZQ", [])), "ZQ of U1-U8", "240 ohm 1% to GND", "L1",
-             "keep it short, straight to the ball"],
-            ["R102", "ALERT_n", "47 ohm pull-up to VDD", "L1, L3, L5, L6, L8",
-             "must sit BEFORE the first DRAM (Annex A 6.3.7)"],
-            ["U9", "SA0, SA1, SA2, SCL, SDA", "SPD EEPROM (34AA04)", "any signal layer",
-             "low speed, no length rules"]]
-    H.append(table(["Components", "Signals", "Function", "Layers", "Notes"], rows))
+             "terminate at the connector end, Annex A"],
+            ["R102", "ALERT_n / VDD", "47 ohm pull-up", "L1, L3, L5, L6, L8",
+             "must sit BEFORE the first DRAM (Annex A 6.3.7)"]]
+    for des in g.get("ZQ", []):
+        pins = f["pins"][des]
+        net = [n for n in pins.values() if n != "GND"]
+        dram = [d for d, _p in f["net_pins"].get(net[0] if net else "", []) if d.startswith("U")]
+        ball = [p for d, p in f["net_pins"].get(net[0] if net else "", []) if d.startswith("U")]
+        rows.append([des, "%s / GND" % (net[0] if net else "?"), "240 ohm 1%% ZQ for %s" %
+                     (dram[0] if dram else "?"), "L1",
+                     "straight to ball %s, keep it short" % (ball[0] if ball else "?")])
+    spd = sorted(n for n in f["classes"].get("SPD", []))
+    rows.append(["U9", ", ".join(spd), "SPD EEPROM 34AA04", "any signal layer",
+                 "low speed, no length rules"])
+    H.append(table(["Component", "Nets", "Function", "Layers", "Notes"], rows))
 
     H.append("<h2>7. Differential pairs</h2>")
     rows = []
@@ -293,7 +311,68 @@ def build_html(f, board_name):
     H.append("<p>Address and command: the fly-by from the first DRAM onwards is not routed yet - "
              "only the connector stubs exist. Plan it on L5 and L6. Clocks CK1_T / CK1_C are unrouted "
              "(terminate at the connector). SPD nets are unrouted.</p>")
+
+    H.append("<h2>10. Decoupling and bulk capacitors</h2>")
+    H.append("<p>Every capacitor sits between a supply and its return, so none of them is routed as a "
+             "signal: connect each pad to the nearest plane with its own via, as short as possible.</p>")
+    caps = collections.defaultdict(list)
+    for des, pins in f["pins"].items():
+        if des.startswith("C"):
+            caps["/".join(sorted(set(n for n in pins.values() if n)))].append(des)
+    H.append(table(["Nets", "Capacitors", "Count"],
+                   [[k, span_any(v), len(v)] for k, v in sorted(caps.items(), key=lambda x: -len(x[1]))]))
+
+    H.append("<h2>11. Full signal cross-reference</h2>")
+    H.append("<p>Every signal net on the board: where it starts at the connector, which resistor is in "
+             "series or terminates it, which DRAM pins it lands on, and the layers it may use.</p>")
+    # group a net by the class that decides its routing layers, most specific first
+    GROUPS = [("Data", ("DATA", "DATA_DRAM"), "L1, L3, L8"),
+              ("Clock", ("CK", "CK_UNUSED"), "L1, L6, L8"),
+              ("Address", ("ADDR",), "L1, L3, L5, L6, L8"),
+              ("Control", ("CTRL", "RESET"), "L1, L3, L5, L6, L8"),
+              ("ALERT", ("ALERT",), "L1, L3, L5, L6, L8"),
+              ("SPD", ("SPD",), "any signal layer"),
+              ("Power", ("POWER",), "L1-L8")]
+    of_class, allowed = {}, {}
+    for label, cnames, lay in GROUPS:
+        for cname in cnames:
+            for n in f["classes"].get(cname, []):
+                of_class.setdefault(n, label)
+                allowed.setdefault(n, lay)
+    rows = []
+    for net in sorted(f["net_pins"], key=natural):
+        if net in ("GND", "VDD", "VTT", "VPP", "VSS", "VREFCA", "VDDSPD"):
+            continue
+        pins = f["net_pins"][net]
+        j = ", ".join(p for d, p in pins if d == "J1")
+        res = ", ".join("%s.%s" % (d, p) for d, p in pins if d.startswith("R"))
+        us = ", ".join("%s-%s" % (d, p) for d, p in pins if d.startswith("U"))
+        cs = ", ".join(d for d, _p in pins if d.startswith("C"))
+        cls = of_class.get(net, "Data" if net.startswith("NetR") else "-")
+        rows.append([net, j or "-", res or "-", us or "-", cs or "-", cls,
+                     allowed.get(net, "L1, L3, L8" if cls == "Data" else "L1, L3, L5, L6, L8"),
+                     "%.2f" % f["len"].get(net, 0.0)])
+    H.append(table(["Net", "J1 pin", "Resistor", "DRAM / SPD pin", "Cap", "Class", "Layers", "copper mm"],
+                   rows))
     return "".join(H)
+
+
+def natural(s):
+    return [int(t) if t.isdigit() else t for t in re.split(r"(\d+)", s)]
+
+
+def span_any(desigs):
+    """Compact designator list for any prefix, e.g. C1-C9, C11."""
+    pre = desigs[0][0]
+    nums = sorted(int(d[1:]) for d in desigs)
+    out, i = [], 0
+    while i < len(nums):
+        j = i
+        while j + 1 < len(nums) and nums[j + 1] == nums[j] + 1:
+            j += 1
+        out.append("%s%d" % (pre, nums[i]) if i == j else "%s%d-%s%d" % (pre, nums[i], pre, nums[j]))
+        i = j + 1
+    return ", ".join(out)
 
 
 def main():
