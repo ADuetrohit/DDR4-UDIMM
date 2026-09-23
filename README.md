@@ -108,6 +108,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-23 | `tools/render_board.py` added: renders the PcbDoc (outline, copper, arcs, vias, pads, silkscreen) to PNG without opening Altium; board and U1 views in [docs/images/](docs/images/) |
 | 2026-09-23 | Byte 0 length tuning started: DQ7 tuned to 18.50 mm (inside DQS ± 1.0 mm), serpentine style fixed to Accordion/Rounded, and per-net tuning targets worked out (the gauge measures one net, so the Manual target is 16.66 − finger length) — see [docs/DESIGN_NOTES.md](docs/DESIGN_NOTES.md) |
 | 2026-09-23 | Byte 0 fully connected (11/11): the four crossing lines routed by `hardware/scripts/U1_Crossers.pas`; byte target is DQ3 at 17.66 mm and the others need +2.2 to +7.7 mm of tuning (option B: keep the JEDEC bit order, stretch to match) |
 | 2026-09-23 | DQS skew fixed by script on DQS1/3/4/5/7 (+0.331 mm each, 45° bumps): six of eight pairs now matched to ~0.001 mm; DQS2 (1.74 mm) and DQS6 (0.33 mm, no room for a bump) still open |
