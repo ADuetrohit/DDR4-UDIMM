@@ -86,12 +86,20 @@ EXPECTED = {
                         {"LAYER": "TOP", "CONFINEMENTSTYLE": "ConfineOut",
                          "REGION": [(0.0, 0.0), (0.0, 4.0), (133.35, 4.0), (133.35, 0.0)]}, True, None),
 }
-# Block 8: byte-lane matching in two halves (finger -> 15 ohm, 15 ohm -> DRAM), 0.5 mm each, so every
-# DQ/DM stays within DQS +/- 1.0 mm finger-to-ball (main spec Table 11)
+# Block 8: byte-lane matching. Once a byte is routed, Create xSignals traces the whole
+# finger -> 15 ohm -> ball path, so the byte is matched as one group within 1.0 mm (main spec Table 11).
+# The older half-rules (0.5 mm on each half) cannot be met - back-finger halves are always ~2.5 mm
+# longer than front-finger ones - so they are disabled as each byte gets its xSignal class.
+BYTES_WITH_XSIGNALS = {0}
 for _k in range(8):
-    EXPECTED[f"ML_BYTE{_k}"] = ("MatchedLengths", f"InNetClass('BYTE{_k}')", None, {"TOLERANCE": 0.5}, True, None)
+    _done = _k in BYTES_WITH_XSIGNALS
+    if _done:
+        EXPECTED[f"ML_BYTE{_k}_FULL"] = ("MatchedLengths", f"InxSignalClass('BYTE{_k}_FULL')", None,
+                                         {"TOLERANCE": 1.0}, True, None)
+    EXPECTED[f"ML_BYTE{_k}"] = ("MatchedLengths", f"InNetClass('BYTE{_k}')", None,
+                                {"TOLERANCE": 0.5}, not _done, None)
     EXPECTED[f"ML_BYTE{_k}_DRAM"] = ("MatchedLengths", f"InNetClass('BYTE{_k}_DRAM')", None,
-                                     {"TOLERANCE": 0.5}, True, None)
+                                     {"TOLERANCE": 0.5}, not _done, None)
 
 EXPECTED["SolderMask_TentedVias"] = ("SolderMaskExpansion", "IsVia", None, {"ISTENTINGTOP": "TRUE"}, True, 1)
 EXPECTED["ML_DQS_PAIRS"] = ("MatchedLengths", "InDifferentialPairClass('DP_DQS')", None,

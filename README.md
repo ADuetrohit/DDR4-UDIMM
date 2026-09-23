@@ -108,6 +108,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-23 | Rule **ML_BYTE0_FULL** (`InxSignalClass('BYTE0_FULL')`, 1.0 mm, group matched) replaces the disabled ML_BYTE0 / ML_BYTE0_DRAM half-rules; `check_rules.py` updated and PASS |
 | 2026-09-23 | xSignal class **BYTE0_FULL** created with the 11 full-path byte-0 xSignals; it replaces the unworkable ML_BYTE0 / ML_BYTE0_DRAM half-matching rules with one total-length rule |
 | 2026-09-23 | **Byte-0 xSignals created**: Design → xSignals → Create xSignals (J1 → U1) traced all 11 finger → 15 Ω → ball paths, 4 nodes each, once the byte was routed — so length tuning now reads the whole line and every target is simply 17.66 mm |
 | 2026-09-23 | `fix_pair_skew.py` now sizes its bumps to the exact skew (height solved from the length needed, 1–8 bumps) instead of fixed 0.331 mm steps; DQS2's 1.743 mm fix generated as `DQS_SkewFix2.pas`. DQS0 re-routed shorter on the DRAM side and needs re-tuning |
