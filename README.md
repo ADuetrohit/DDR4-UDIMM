@@ -2,6 +2,17 @@
 
 A custom 288-pin DDR4 unbuffered DIMM with hard-gold edge fingers, designed in Altium Designer. It follows the JEDEC reference design **Raw Card A3**.
 
+![Whole module, top view](docs/images/board_top.png)
+
+*Top view rendered straight from the PcbDoc by [tools/render_board.py](tools/render_board.py) — board outline, copper on L1 (red), L3 (cyan) and L8 (blue), vias, pads and silkscreen. Nothing is drawn by hand.*
+
+| Byte 0 escaping U1 | Gold fingers and the series resistors |
+|---|---|
+| ![U1 byte 0](docs/images/u1_byte0.png) | ![Edge fingers](docs/images/fingers.png) |
+| 11 data lines out of the 0.8 mm-pitch BGA, layer changes at the fan-out vias, rounded serpentines for length matching | 288 hard-gold contacts with the off-centre key, and the 15 Ω series resistor rows above them |
+
+Regenerate any view: `py -3.11 tools/render_board.py "<board>.PcbDoc" out.png --box x1,y1,x2,y2 --dpi 900`
+
 ## Specification
 
 | Item | Value |
