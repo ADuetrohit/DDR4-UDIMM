@@ -108,6 +108,7 @@ Needs `py -3.11 -m pip install --user olefile`.
 
 | Date | Change |
 |---|---|
+| 2026-09-25 | `tools/route_byte.py` added: routes every unrouted line of a byte, trying L8 and L3 for each and keeping the shorter, hardest line first, each accepted route blocking space for the next. Byte 1 (U2) planned: 8 nets, 62.5 mm (`hardware/scripts/U2_Route.pas`) |
 | 2026-09-25 | `tools/fix_placement.py` added: compares the board with `placement_final.csv` and writes one script that moves the drifted parts back (`hardware/scripts/Fix_Placement.pas`). Found 21 parts moved around U1 and U5, which is what unrouted byte 0; the 23 Sep board with byte 0 connected is recoverable from commit `8f465e5` |
 | 2026-09-23 | **[docs/COMPONENT_GUIDE.pdf](docs/COMPONENT_GUIDE.pdf)** added (`tools/gen_component_guide.py`): the same information organised per component instead of per layer — J1's signal pins, all 78 balls of each of U1–U8, U9, every resistor's two pad nets with its function, and every capacitor; each row gives the net, its class, what it connects to and its allowed layers |
 | 2026-09-23 | Routing guide expanded to 12 pages: every table now carries the component designator and the net label (byte tables gained finger net, J1 pin and DRAM-side net; ZQ and clock parts listed individually), plus a decoupling section and a full signal cross-reference of all 131 nets (net, J1 pin, resistor pin, DRAM pins, class, allowed layers, copper so far) |
